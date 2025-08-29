@@ -1,0 +1,82 @@
+name: RRUIComponents
+options:
+  bundleIdPrefix: com.rrui
+  deploymentTarget:
+    iOS: "13.0"
+    macOS: "11.0"
+    tvOS: "13.0"
+    watchOS: "6.0"
+    visionOS: "1.0"
+
+packages:
+  RRFoundation:
+    url: https://github.com/rirp53021/rr-swift-foundation.git
+    from: 1.7.1
+
+settings:
+  PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
+  PRODUCT_NAME: RRUIComponents
+  SWIFT_VERSION: 5.9
+  IPHONEOS_DEPLOYMENT_TARGET: 13.0
+  MACOSX_DEPLOYMENT_TARGET: 11.0
+  TVOS_DEPLOYMENT_TARGET: 13.0
+  WATCHOS_DEPLOYMENT_TARGET: 6.0
+  XROS_DEPLOYMENT_TARGET: 1.0
+
+targets:
+  RRUIComponents:
+    type: framework
+    platform: iOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Sources/RRUIComponents
+    dependencies:
+      - package: RRFoundation
+    settings:
+      PRODUCT_NAME: RRUIComponents
+      PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
+    info:
+      path: Sources/RRUIComponents/Info.plist
+      properties:
+        CFBundleDisplayName: RRUIComponents
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleName: $(PRODUCT_NAME)
+        CFBundlePackageType: FMWK
+        CFBundleShortVersionString: 1.0
+        CFBundleVersion: 1
+
+  RRUIComponentsTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Tests/RRUIComponentsTests
+    dependencies:
+      - target: RRUIComponents
+    settings:
+      PRODUCT_NAME: RRUIComponentsTests
+      PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents.tests
+      TEST_HOST: "$(BUILT_PRODUCTS_DIR)/RRUIComponents.framework/RRUIComponents"
+      TEST_TARGET_NAME: RRUIComponents
+    info:
+      path: Tests/RRUIComponentsTests/Info.plist
+      properties:
+        CFBundleDisplayName: RRUIComponentsTests
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleName: $(PRODUCT_NAME)
+        CFBundlePackageType: BNDL
+        CFBundleShortVersionString: 1.0
+        CFBundleVersion: 1
+
+schemes:
+  RRUIComponents:
+    build:
+      targets:
+        RRUIComponents: all
+    test:
+      targets:
+        - RRUIComponentsTests
+    run:
+      config: Debug

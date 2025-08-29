@@ -1,0 +1,353 @@
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## User settings
+xcuserdata/
+
+## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
+*.xcscmblueprint
+*.xccheckout
+
+## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
+build/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+## Obj-C/Swift specific
+*.hmap
+
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager
+#
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# Packages/
+# Package.pins
+# Package.resolved
+# *.xcodeproj
+#
+# Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
+# hence it is not needed unless you have added a package configuration file to your project
+# .swiftpm
+
+# CocoaPods
+#
+# We recommend against adding the Pods directory to your .gitignore. However
+# you should judge for yourself, the pros and cons are mentioned at:
+# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
+#
+# Pods/
+#
+# Add this line if you want to avoid checking in source code from the Xcode workspace
+# *.xcworkspace
+
+# Carthage
+#
+# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Carthage/Checkouts
+
+Carthage/Build/
+
+# Accio dependency management
+Dependencies/
+.accio/
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo.
+# Instead, use fastlane to re-generate the screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+#
+# After new code Injection tools there's a generated folder /iOSInjectionProject
+# https://github.com/johnno1962/injectionforxcode
+
+iOSInjectionProject/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# XcodeGen specific
+# Generated Xcode project files
+*.xcodeproj/
+*.xcworkspace/
+
+# Build outputs
+build/
+output/
+*.xcframework/
+*.framework/
+
+# Derived data
+DerivedData/
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Node modules (if using any build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if using any build tools)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Ruby (if using any build tools)
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+# Backup files
+*~
+*.swp
+*.swo
+*#
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Documentation build
+docs/build/
+site/
+
+# Coverage reports
+*.gcov
+*.gcda
+*.gcno
+coverage/
+*.coverage
+.coverage.*
+
+# Profiling data
+*.prof
+
+# Memory dumps
+*.dmp
+*.heap
+
+# Crash logs
+*.crash
+*.ips
+
+# Network capture
+*.pcap
+*.pcapng
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Keychain files
+*.keychain
+
+# Certificate files
+*.p12
+*.pem
+*.crt
+*.cer
+*.der
+
+# Provisioning profiles
+*.mobileprovision
+*.provisionprofile
+
+# App Store Connect
+*.itmsp
+
+# Test results
+test-results/
+junit.xml
+test-results.xml
+
+# Performance testing
+*.trace
+*.tracearchive
+
+# Instruments
+*.trace
+
+# AppCode
+.idea/
+
+# AppCode
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Local configuration
+local.properties
+local.xcconfig
+local.plist
+
+# Fastlane
+fastlane/README.md
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Code coverage
+*.gcda
+*.gcno
+*.gcov
+coverage/
+
+# Profiling
+*.prof
+*.profraw
+
+# Memory profiling
+*.heapprofile
+*.memprofile
+
+# Network debugging
+*.pcap
+*.pcapng
+
+# Security
+*.key
+*.pem
+*.p12
+*.mobileprovision
+*.provisionprofile
+
+# Build artifacts
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.app.dSYM
+*.app.zip
+
+# Package manager
+Carthage/
+Pods/
+*.xcworkspace
+!default.xcworkspace
+
+# Generated files
+Generated/
+Generated.xcconfig
+
+# XcodeGen
+project.yml.local
+project.yml.backup
