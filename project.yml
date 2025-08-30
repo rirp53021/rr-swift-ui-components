@@ -22,6 +22,8 @@ settings:
   TVOS_DEPLOYMENT_TARGET: 15.0
   WATCHOS_DEPLOYMENT_TARGET: 8.0
   XROS_DEPLOYMENT_TARGET: 1.0
+  BUILD_LIBRARY_FOR_DISTRIBUTION: true
+  SWIFT_COMPILATION_MODE: "wholemodule"
 
 targets:
   RRUIComponents:
@@ -35,6 +37,9 @@ targets:
     settings:
       PRODUCT_NAME: RRUIComponents
       PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
+      BUILD_LIBRARY_FOR_DISTRIBUTION: true
+      SWIFT_ENABLE_LIBRARY_EVOLUTION: true
+      SWIFT_COMPILATION_MODE: "wholemodule"
     info:
       path: Sources/RRUIComponents/Info.plist
       properties:
