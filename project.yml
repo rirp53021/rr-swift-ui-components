@@ -2,10 +2,10 @@ name: RRUIComponents
 options:
   bundleIdPrefix: com.rrui
   deploymentTarget:
-    iOS: "13.0"
-    macOS: "11.0"
-    tvOS: "13.0"
-    watchOS: "6.0"
+    iOS: "15.0"
+    macOS: "12.0"
+    tvOS: "15.0"
+    watchOS: "8.0"
     visionOS: "1.0"
 
 packages:
@@ -17,17 +17,17 @@ settings:
   PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
   PRODUCT_NAME: RRUIComponents
   SWIFT_VERSION: 5.9
-  IPHONEOS_DEPLOYMENT_TARGET: 13.0
-  MACOSX_DEPLOYMENT_TARGET: 11.0
-  TVOS_DEPLOYMENT_TARGET: 13.0
-  WATCHOS_DEPLOYMENT_TARGET: 6.0
+  IPHONEOS_DEPLOYMENT_TARGET: 15.0
+  MACOSX_DEPLOYMENT_TARGET: 12.0
+  TVOS_DEPLOYMENT_TARGET: 15.0
+  WATCHOS_DEPLOYMENT_TARGET: 8.0
   XROS_DEPLOYMENT_TARGET: 1.0
 
 targets:
   RRUIComponents:
     type: framework
     platform: iOS
-    deploymentTarget: "13.0"
+    deploymentTarget: "15.0"
     sources:
       - path: Sources/RRUIComponents
     dependencies:
@@ -49,7 +49,7 @@ targets:
   RRUIComponentsTests:
     type: bundle.unit-test
     platform: iOS
-    deploymentTarget: "13.0"
+    deploymentTarget: "15.0"
     sources:
       - path: Tests/RRUIComponentsTests
     dependencies:
@@ -80,3 +80,4 @@ schemes:
         - RRUIComponentsTests
     run:
       config: Debug
+

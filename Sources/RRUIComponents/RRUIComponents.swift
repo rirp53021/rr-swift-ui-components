@@ -12,3 +12,4 @@ public enum RRUIComponents {
     /// Build number of the UI Components library
     public static let buildNumber = "1"
 }
+
