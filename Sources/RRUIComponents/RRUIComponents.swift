@@ -1,15 +1,21 @@
-import Foundation
+// Copyright (c) 2024 Ronald Ruiz
+// Licensed under the MIT License
 
-/// Main module for RRUIComponents
-/// Provides reusable UI components, centralized theming, and layout helpers
-@_exported import RRFoundation
+import SwiftUI
 
-/// Main module for RRUIComponents
+/// Main entry point for RRUIComponents library
+@_exported import SwiftUI
+
+// MARK: - Re-exported Foundation Utilities
+// Note: RRFoundation is no longer imported as UI utilities have been moved here
+
+// Re-export utilities for convenience
+// Note: These are automatically available since they're in the same module
+
+// Logger is available through direct import in files that need it
+
+// MARK: - Library Information
 public enum RRUIComponents {
-    /// Version of the UI Components library
     public static let version = "1.0.0"
-    
-    /// Build number of the UI Components library
-    public static let buildNumber = "1"
+    public static let name = "RRUIComponents"
 }
-

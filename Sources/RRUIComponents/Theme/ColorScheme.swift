@@ -1,76 +1,38 @@
+// Copyright (c) 2024 Ronald Ruiz
+// Licensed under the MIT License
+
 import SwiftUI
 
-/// Represents a color scheme for the UI components
-public struct RRColorScheme {
-    /// Primary colors used throughout the UI
-    public let primary: PrimaryColors
-    /// Secondary colors for accents and highlights
-    public let secondary: SecondaryColors
-    /// Semantic colors for different states
-    public let semantic: SemanticColors
-    /// Neutral colors for backgrounds and text
-    public let neutral: NeutralColors
+// MARK: - Nested Color Structures
+
+public struct NeutralColors {
+    public let text: Color
+    public let textSecondary: Color
+    public let textTertiary: Color
+    public let background: Color
+    public let surface: Color
+    public let border: Color
+    public let divider: Color
     
-    /// Creates a new color scheme
-    /// - Parameters:
-    ///   - primary: Primary color palette
-    ///   - secondary: Secondary color palette
-    ///   - semantic: Semantic color palette
-    ///   - neutral: Neutral color palette
     public init(
-        primary: PrimaryColors,
-        secondary: SecondaryColors,
-        semantic: SemanticColors,
-        neutral: NeutralColors
+        text: Color,
+        textSecondary: Color,
+        textTertiary: Color,
+        background: Color,
+        surface: Color,
+        border: Color,
+        divider: Color
     ) {
-        self.primary = primary
-        self.secondary = secondary
-        self.semantic = semantic
-        self.neutral = neutral
+        self.text = text
+        self.textSecondary = textSecondary
+        self.textTertiary = textTertiary
+        self.background = background
+        self.surface = surface
+        self.border = border
+        self.divider = divider
     }
 }
 
-// MARK: - Primary Colors
-public struct PrimaryColors {
-    public let main: Color
-    public let light: Color
-    public let dark: Color
-    public let contrast: Color
-    
-    public init(
-        main: Color,
-        light: Color,
-        dark: Color,
-        contrast: Color
-    ) {
-        self.main = main
-        self.light = light
-        self.dark = dark
-        self.contrast = contrast
-    }
-}
-
-// MARK: - Secondary Colors
-public struct SecondaryColors {
-    public let main: Color
-    public let light: Color
-    public let dark: Color
-    public let contrast: Color
-    
-    public init(
-        main: Color,
-        light: Color,
-        dark: Color,
-        contrast: Color
-    ) {
-        self.main = main
-        self.light = light
-        self.dark = dark
-        self.contrast = contrast
-    }
-}
-
-// MARK: - Semantic Colors
 public struct SemanticColors {
     public let success: Color
     public let warning: Color
@@ -90,91 +52,184 @@ public struct SemanticColors {
     }
 }
 
-// MARK: - Neutral Colors
-public struct NeutralColors {
+// MARK: - Color Scheme
+
+public struct RRColorScheme {
+    public let primary: Color
+    public let secondary: Color
+    public let accent: Color
     public let background: Color
     public let surface: Color
+    public let error: Color
+    public let warning: Color
+    public let success: Color
+    public let info: Color
     public let text: Color
     public let textSecondary: Color
+    public let textTertiary: Color
     public let border: Color
     public let divider: Color
     
+    // Nested structures for better organization
+    public let neutral: NeutralColors
+    public let semantic: SemanticColors
+    
     public init(
+        primary: Color,
+        secondary: Color,
+        accent: Color,
         background: Color,
         surface: Color,
+        error: Color,
+        warning: Color,
+        success: Color,
+        info: Color,
         text: Color,
         textSecondary: Color,
+        textTertiary: Color,
         border: Color,
         divider: Color
     ) {
+        self.primary = primary
+        self.secondary = secondary
+        self.accent = accent
         self.background = background
         self.surface = surface
+        self.error = error
+        self.warning = warning
+        self.success = success
+        self.info = info
         self.text = text
         self.textSecondary = textSecondary
+        self.textTertiary = textTertiary
         self.border = border
         self.divider = divider
+        
+        // Initialize nested structures
+        self.neutral = NeutralColors(
+            text: text,
+            textSecondary: textSecondary,
+            textTertiary: textTertiary,
+            background: background,
+            surface: surface,
+            border: border,
+            divider: divider
+        )
+        
+        self.semantic = SemanticColors(
+            success: success,
+            warning: warning,
+            error: error,
+            info: info
+        )
     }
 }
 
 // MARK: - Default Color Schemes
+
 public extension RRColorScheme {
-    /// Default light color scheme
+    
+    /// Light color scheme
     static let light = RRColorScheme(
-        primary: PrimaryColors(
-            main: Color(red: 0.2, green: 0.4, blue: 0.8),
-            light: Color(red: 0.4, green: 0.6, blue: 0.9),
-            dark: Color(red: 0.1, green: 0.3, blue: 0.7),
-            contrast: .white
-        ),
-        secondary: SecondaryColors(
-            main: Color(red: 0.8, green: 0.6, blue: 0.2),
-            light: Color(red: 0.9, green: 0.8, blue: 0.4),
-            dark: Color(red: 0.7, green: 0.5, blue: 0.1),
-            contrast: .white
-        ),
-        semantic: SemanticColors(
-            success: Color(red: 0.2, green: 0.7, blue: 0.3),
-            warning: Color(red: 0.9, green: 0.7, blue: 0.2),
-            error: Color(red: 0.9, green: 0.3, blue: 0.3),
-            info: Color(red: 0.2, green: 0.6, blue: 0.9)
-        ),
-        neutral: NeutralColors(
-            background: .white,
-            surface: Color(red: 0.98, green: 0.98, blue: 0.98),
-            text: Color(red: 0.1, green: 0.1, blue: 0.1),
-            textSecondary: Color(red: 0.4, green: 0.4, blue: 0.4),
-            border: Color(red: 0.9, green: 0.9, blue: 0.9),
-            divider: Color(red: 0.8, green: 0.8, blue: 0.8)
-        )
+        primary: Color.blue,
+        secondary: Color.gray,
+        accent: Color.orange,
+        background: Color.white,
+        surface: Color(.systemGray6),
+        error: Color.red,
+        warning: Color.orange,
+        success: Color.green,
+        info: Color.blue,
+        text: Color.primary,
+        textSecondary: Color.secondary,
+        textTertiary: Color(.systemGray3),
+        border: Color(.systemGray4),
+        divider: Color(.systemGray5)
     )
     
-    /// Default dark color scheme
+    /// Dark color scheme
     static let dark = RRColorScheme(
-        primary: PrimaryColors(
-            main: Color(red: 0.4, green: 0.6, blue: 0.9),
-            light: Color(red: 0.6, green: 0.8, blue: 1.0),
-            dark: Color(red: 0.2, green: 0.4, blue: 0.7),
-            contrast: .black
-        ),
-        secondary: SecondaryColors(
-            main: Color(red: 0.9, green: 0.7, blue: 0.3),
-            light: Color(red: 1.0, green: 0.9, blue: 0.5),
-            dark: Color(red: 0.8, green: 0.6, blue: 0.2),
-            contrast: .black
-        ),
-        semantic: SemanticColors(
-            success: Color(red: 0.3, green: 0.8, blue: 0.4),
-            warning: Color(red: 1.0, green: 0.8, blue: 0.3),
-            error: Color(red: 1.0, green: 0.4, blue: 0.4),
-            info: Color(red: 0.3, green: 0.7, blue: 1.0)
-        ),
-        neutral: NeutralColors(
-            background: Color(red: 0.1, green: 0.1, blue: 0.1),
-            surface: Color(red: 0.15, green: 0.15, blue: 0.15),
-            text: Color(red: 0.9, green: 0.9, blue: 0.9),
-            textSecondary: Color(red: 0.6, green: 0.6, blue: 0.6),
-            border: Color(red: 0.2, green: 0.2, blue: 0.2),
-            divider: Color(red: 0.3, green: 0.3, blue: 0.3)
-        )
+        primary: Color.blue,
+        secondary: Color.gray,
+        accent: Color.orange,
+        background: Color.black,
+        surface: Color(.systemGray6),
+        error: Color.red,
+        warning: Color.orange,
+        success: Color.green,
+        info: Color.blue,
+        text: Color.primary,
+        textSecondary: Color.secondary,
+        textTertiary: Color(.systemGray3),
+        border: Color(.systemGray4),
+        divider: Color(.systemGray5)
     )
+    
+    /// Material color scheme
+    static let material = RRColorScheme(
+        primary: Color(.systemBlue),
+        secondary: Color(.systemGray),
+        accent: Color(.systemOrange),
+        background: Color(.systemBackground),
+        surface: Color(.secondarySystemBackground),
+        error: Color(.systemRed),
+        warning: Color(.systemYellow),
+        success: Color(.systemGreen),
+        info: Color(.systemBlue),
+        text: Color(.label),
+        textSecondary: Color(.secondaryLabel),
+        textTertiary: Color(.tertiaryLabel),
+        border: Color(.separator),
+        divider: Color(.separator)
+    )
+    
+    /// Custom color scheme with CSS colors
+    static let custom = RRColorScheme(
+        primary: Color(hex: "#007AFF") ?? Color.blue,
+        secondary: Color(hex: "#8E8E93") ?? Color.gray,
+        accent: Color(hex: "#FF9500") ?? Color.orange,
+        background: Color(hex: "#FFFFFF") ?? Color.white,
+        surface: Color(hex: "#F2F2F7") ?? Color(.systemGray6),
+        error: Color(hex: "#FF3B30") ?? Color.red,
+        warning: Color(hex: "#FF9500") ?? Color.orange,
+        success: Color(hex: "#34C759") ?? Color.green,
+        info: Color(hex: "#007AFF") ?? Color.blue,
+        text: Color(hex: "#000000") ?? Color.primary,
+        textSecondary: Color(hex: "#8E8E93") ?? Color.secondary,
+        textTertiary: Color(hex: "#C7C7CC") ?? Color(.systemGray3),
+        border: Color(hex: "#D1D1D6") ?? Color(.systemGray4),
+        divider: Color(hex: "#E5E5EA") ?? Color(.systemGray5)
+    )
+}
+
+// MARK: - Color Extensions for Hex Support
+
+public extension Color {
+    /// Creates a color from a hex string
+    /// - Parameter hex: The hex string (e.g., "#FF0000", "FF0000", "#FF0000FF")
+    /// - Returns: A color object if the hex string is valid, nil otherwise
+    init?(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            return nil
+        }
+        
+        self.init(
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
 }

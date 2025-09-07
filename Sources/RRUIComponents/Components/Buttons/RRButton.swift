@@ -1,287 +1,217 @@
-import SwiftUI
+// Copyright (c) 2024 Ronald Ruiz
+// Licensed under the MIT License
 
-/// A customizable button component with different styles and states
-public struct RRButton: View {
-    /// The button style
-    public enum Style {
-        case primary
-        case secondary
-        case outline
-        case ghost
-        case danger
-        case success
-    }
+import SwiftUI
+import Foundation
+
+// MARK: - Button Style
+
+public enum RRButtonStyle {
+    case primary
+    case secondary
+    case destructive
+    case outline
+    case ghost
+}
+
+// MARK: - Button Size
+
+public enum RRButtonSize {
+    case small
+    case medium
+    case large
     
-    /// The button size
-    public enum Size {
-        case small
-        case medium
-        case large
-        
-        var height: CGFloat {
-            switch self {
-            case .small: return 32
-            case .medium: return 44
-            case .large: return 56
-            }
-        }
-        
-        var horizontalPadding: CGFloat {
-            switch self {
-            case .small: return 12
-            case .medium: return 16
-            case .large: return 24
-            }
-        }
-        
-        var fontSize: Font {
-            switch self {
-            case .small: return .caption
-            case .medium: return .body
-            case .large: return .title3
-            }
+    var padding: EdgeInsets {
+        switch self {
+        case .small:
+            return EdgeInsets(top: RRSpacing.xs, leading: RRSpacing.sm, bottom: RRSpacing.xs, trailing: RRSpacing.sm)
+        case .medium:
+            return EdgeInsets(top: RRSpacing.sm, leading: RRSpacing.md, bottom: RRSpacing.sm, trailing: RRSpacing.md)
+        case .large:
+            return EdgeInsets(top: RRSpacing.md, leading: RRSpacing.lg, bottom: RRSpacing.md, trailing: RRSpacing.lg)
         }
     }
     
-    /// The button's title
-    public let title: String
-    /// The button's icon (optional)
-    public let icon: Image?
-    /// The button's style
-    public let style: Style
-    /// The button's size
-    public let size: Size
-    /// Whether the button is disabled
-    public let isDisabled: Bool
-    /// Whether the button is loading
-    public let isLoading: Bool
-    /// The action to perform when tapped
-    public let action: () -> Void
+    var font: Font {
+        switch self {
+        case .small: return .caption
+        case .medium: return .body
+        case .large: return .title3
+        }
+    }
+}
+
+// MARK: - RRButton
+
+public struct RRButton<Label: View>: View {
+    private let action: () -> Void
+    private let label: () -> Label
+    private let style: RRButtonStyle
+    private let size: RRButtonSize
+    private let isEnabled: Bool
+    private let isLoading: Bool
+    private let enableLogging: Bool
     
-    /// Creates a new button
-    /// - Parameters:
-    ///   - title: The button's title
-    ///   - icon: The button's icon (optional)
-    ///   - style: The button's style
-    ///   - size: The button's size
-    ///   - isDisabled: Whether the button is disabled
-    ///   - isLoading: Whether the button is loading
-    ///   - action: The action to perform when tapped
     public init(
-        title: String,
-        icon: Image? = nil,
-        style: Style = .primary,
-        size: Size = .medium,
-        isDisabled: Bool = false,
+        _ title: String,
+        style: RRButtonStyle = .primary,
+        size: RRButtonSize = .medium,
+        isEnabled: Bool = true,
         isLoading: Bool = false,
+        enableLogging: Bool = false,
         action: @escaping () -> Void
-    ) {
-        self.title = title
-        self.icon = icon
+    ) where Label == Text {
+        self.action = action
+        self.label = { Text(title) }
         self.style = style
         self.size = size
-        self.isDisabled = isDisabled
+        self.isEnabled = isEnabled
         self.isLoading = isLoading
+        self.enableLogging = enableLogging
+    }
+    
+    public init(
+        style: RRButtonStyle = .primary,
+        size: RRButtonSize = .medium,
+        isEnabled: Bool = true,
+        isLoading: Bool = false,
+        enableLogging: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder label: @escaping () -> Label
+    ) {
         self.action = action
+        self.label = label
+        self.style = style
+        self.size = size
+        self.isEnabled = isEnabled
+        self.isLoading = isLoading
+        self.enableLogging = enableLogging
     }
     
     public var body: some View {
         Button(action: {
-            guard !isDisabled && !isLoading else { return }
             action()
         }) {
-            HStack(spacing: 8) {
+            HStack(spacing: RRSpacing.xs) {
                 if isLoading {
                     ProgressView()
                         .scaleEffect(0.8)
-                        .progressViewStyle(CircularProgressViewStyle(tint: textColor))
-                } else if let icon = icon {
-                    icon
-                        .font(.system(size: 16))
-                        .foregroundColor(textColor)
+                } else {
+                    label()
+                        .font(size.font)
                 }
-                
-                Text(title)
-                    .font(size.fontSize)
-                    .fontWeight(.medium)
-                    .foregroundColor(textColor)
             }
-            .frame(height: size.height)
-            .padding(.horizontal, size.horizontalPadding)
+            .padding(size.padding)
+            .frame(maxWidth: .infinity)
             .background(backgroundColor)
+            .foregroundColor(foregroundColor)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(borderColor, lineWidth: borderWidth)
             )
             .cornerRadius(8)
         }
-        .disabled(isDisabled || isLoading)
-        .opacity(isDisabled ? 0.6 : 1.0)
-        .scaleEffect(isLoading ? 0.98 : 1.0)
-        .animation(.easeInOut(duration: 0.1), value: isLoading)
+        .disabled(!isEnabled || isLoading)
+        .opacity(isEnabled ? 1.0 : 0.6)
     }
     
-    // MARK: - Private Properties
-    @Environment(\.themeManager) private var themeManager
-    
     private var backgroundColor: Color {
-        if isDisabled {
-            return themeManager.colorScheme.neutral.border
+        if !isEnabled {
+            return Color.gray.opacity(0.3)
         }
         
         switch style {
         case .primary:
-            return themeManager.colorScheme.primary.main
+            return Color.blue
         case .secondary:
-            return themeManager.colorScheme.secondary.main
+            return Color.gray.opacity(0.2)
+        case .destructive:
+            return Color.red
         case .outline:
-            return .clear
+            return Color.clear
         case .ghost:
-            return .clear
-        case .danger:
-            return themeManager.colorScheme.semantic.error
-        case .success:
-            return themeManager.colorScheme.semantic.success
+            return Color.clear
         }
     }
     
-    private var textColor: Color {
-        if isDisabled {
-            return themeManager.colorScheme.neutral.textSecondary
+    private var foregroundColor: Color {
+        if !isEnabled {
+            return Color.gray
         }
         
         switch style {
-        case .primary, .secondary, .danger, .success:
-            return themeManager.colorScheme.primary.contrast
-        case .outline, .ghost:
-            return themeManager.colorScheme.primary.main
+        case .primary:
+            return Color.white
+        case .secondary:
+            return Color.primary
+        case .destructive:
+            return Color.white
+        case .outline:
+            return Color.blue
+        case .ghost:
+            return Color.blue
         }
     }
     
     private var borderColor: Color {
-        if isDisabled {
-            return themeManager.colorScheme.neutral.border
+        if !isEnabled {
+            return Color.gray.opacity(0.3)
         }
         
         switch style {
+        case .primary, .secondary, .destructive, .ghost:
+            return Color.clear
         case .outline:
-            return themeManager.colorScheme.primary.main
-        case .ghost:
-            return .clear
-        default:
-            return .clear
+            return Color.blue
         }
     }
     
     private var borderWidth: CGFloat {
         switch style {
-        case .outline:
-            return 1.5
-        default:
+        case .primary, .secondary, .destructive, .ghost:
             return 0
+        case .outline:
+            return 1
         }
-    }
-}
-
-// MARK: - Convenience Initializers
-public extension RRButton {
-    /// Creates a primary button
-    /// - Parameters:
-    ///   - title: The button's title
-    ///   - icon: The button's icon (optional)
-    ///   - size: The button's size
-    ///   - isDisabled: Whether the button is disabled
-    ///   - isLoading: Whether the button is loading
-    ///   - action: The action to perform when tapped
-    static func primary(
-        title: String,
-        icon: Image? = nil,
-        size: Size = .medium,
-        isDisabled: Bool = false,
-        isLoading: Bool = false,
-        action: @escaping () -> Void
-    ) -> RRButton {
-        RRButton(
-            title: title,
-            icon: icon,
-            style: .primary,
-            size: size,
-            isDisabled: isDisabled,
-            isLoading: isLoading,
-            action: action
-        )
-    }
-    
-    /// Creates a secondary button
-    /// - Parameters:
-    ///   - title: The button's title
-    ///   - icon: Image? = nil,
-    ///   - size: The button's size
-    ///   - isDisabled: Whether the button is disabled
-    ///   - isLoading: Whether the button is loading
-    ///   - action: The action to perform when tapped
-    static func secondary(
-        title: String,
-        icon: Image? = nil,
-        size: Size = .medium,
-        isDisabled: Bool = false,
-        isLoading: Bool = false,
-        action: @escaping () -> Void
-    ) -> RRButton {
-        RRButton(
-            title: title,
-            icon: icon,
-            style: .secondary,
-            size: size,
-            isDisabled: isDisabled,
-            isLoading: isLoading,
-            action: action
-        )
-    }
-    
-    /// Creates an outline button
-    /// - Parameters:
-    ///   - title: The button's title
-    ///   - icon: The button's icon (optional)
-    ///   - size: The button's size
-    ///   - isDisabled: Whether the button is disabled
-    ///   - isLoading: Whether the button is loading
-    ///   - action: The action to perform when tapped
-    static func outline(
-        title: String,
-        icon: Image? = nil,
-        size: Size = .medium,
-        isDisabled: Bool = false,
-        isLoading: Bool = false,
-        action: @escaping () -> Void
-    ) -> RRButton {
-        RRButton(
-            title: title,
-            icon: icon,
-            style: .outline,
-            size: size,
-            isDisabled: isDisabled,
-            isLoading: isLoading,
-            action: action
-        )
     }
 }
 
 // MARK: - Preview
+
 #if DEBUG
 struct RRButton_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 20) {
-            RRButton.primary(title: "Primary Button") {}
-            RRButton.secondary(title: "Secondary Button") {}
-            RRButton.outline(title: "Outline Button") {}
-            RRButton(title: "Danger Button", style: .danger) {}
-            RRButton(title: "Success Button", style: .success) {}
-            RRButton(title: "Disabled Button", isDisabled: true) {}
-            RRButton(title: "Loading Button", isLoading: true) {}
+            Text("Button Styles")
+                .font(.headline)
+            
+            VStack(spacing: 10) {
+                RRButton("Primary Button", style: .primary, action: { })
+                RRButton("Secondary Button", style: .secondary, action: { })
+                RRButton("Destructive Button", style: .destructive, action: { })
+                RRButton("Outline Button", style: .outline, action: { })
+                RRButton("Ghost Button", style: .ghost, action: { })
+            }
+            
+            Text("Button Sizes")
+                .font(.headline)
+            
+            VStack(spacing: 10) {
+                RRButton("Small Button", size: .small, action: { })
+                RRButton("Medium Button", size: .medium, action: { })
+                RRButton("Large Button", size: .large, action: { })
+            }
+            
+            Text("Button States")
+                .font(.headline)
+            
+            VStack(spacing: 10) {
+                RRButton("Enabled Button", action: { })
+                RRButton("Disabled Button", isEnabled: false, action: { })
+                RRButton("Loading Button", isLoading: true, action: { })
+            }
         }
         .padding()
-        .themeManager(.preview)
     }
 }
 #endif

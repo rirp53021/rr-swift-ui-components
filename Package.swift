@@ -9,8 +9,7 @@ let package = Package(
         .iOS(.v15),
         .macOS(.v12),
         .tvOS(.v15),
-        .watchOS(.v8),
-        .visionOS(.v1)
+        .watchOS(.v8)
     ],
     products: [
         .library(
@@ -19,22 +18,21 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/rirp53021/rr-swift-foundation.git", from: "1.7.3"),
-        .package(url: "https://github.com/apple/swift-testing.git", from: "0.5.0")
+        // No external dependencies - all UI utilities are now self-contained
     ],
     targets: [
         .target(
             name: "RRUIComponents",
-            dependencies: [
-                .product(name: "RRFoundation", package: "rr-swift-foundation")
-            ],
-            path: "Sources/RRUIComponents"
+            dependencies: [],
+            path: "Sources/RRUIComponents",
+            resources: [
+                .process("Info.plist")
+            ]
         ),
         .testTarget(
             name: "RRUIComponentsTests",
-            dependencies: ["RRUIComponents", .product(name: "Testing", package: "swift-testing")],
+            dependencies: ["RRUIComponents"],
             path: "Tests/RRUIComponentsTests"
-        )
+        ),
     ]
 )
-
