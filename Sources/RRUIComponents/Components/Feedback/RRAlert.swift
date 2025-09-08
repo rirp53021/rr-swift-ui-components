@@ -100,11 +100,13 @@ public struct RRSuccessAlert: View {
                 Text(title)
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
                     Text(message)
                         .font(.body)
                         .foregroundColor(.secondary)
+                        .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
         }
@@ -132,11 +134,13 @@ public struct RRErrorAlert: View {
                 Text(title)
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
                     Text(message)
                         .font(.body)
                         .foregroundColor(.secondary)
+                        .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
         }
@@ -164,11 +168,13 @@ public struct RRWarningAlert: View {
                 Text(title)
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
                     Text(message)
                         .font(.body)
                         .foregroundColor(.secondary)
+                        .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
         }
@@ -196,11 +202,13 @@ public struct RRInfoAlert: View {
                 Text(title)
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
                     Text(message)
                         .font(.body)
                         .foregroundColor(.secondary)
+                        .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
         }

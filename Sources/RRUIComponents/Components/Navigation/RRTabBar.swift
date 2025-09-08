@@ -79,6 +79,32 @@ public struct RRTabBar: View {
         }
         .background(Color(.systemBackground))
         .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: -1)
+        .keyboardNavigation(
+            config: .navigation,
+            onMovement: { action in
+                switch action {
+                case .moveLeft:
+                    if selectedTab > 0 {
+                        selectedTab -= 1
+                        onTabSelected(selectedTab)
+                    }
+                case .moveRight:
+                    if selectedTab < items.count - 1 {
+                        selectedTab += 1
+                        onTabSelected(selectedTab)
+                    }
+                case .moveToStart:
+                    selectedTab = 0
+                    onTabSelected(selectedTab)
+                case .moveToEnd:
+                    selectedTab = items.count - 1
+                    onTabSelected(selectedTab)
+                default:
+                    break
+                }
+            }
+        )
+        .keyboardNavigationAccessibility(config: .navigation)
     }
 }
 

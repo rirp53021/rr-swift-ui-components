@@ -19,3 +19,7 @@ public enum RRUIComponents {
     public static let version = "1.0.0"
     public static let name = "RRUIComponents"
 }
+
+// MARK: - Accessibility Compliance
+/// WCAG AA compliance utilities for color contrast validation
+/// Access via: AccessibilityUtils, WCAGLevel, WCAGCompliance

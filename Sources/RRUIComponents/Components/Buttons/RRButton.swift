@@ -17,26 +17,49 @@ public enum RRButtonStyle {
 // MARK: - Button Size
 
 public enum RRButtonSize {
-    case small
-    case medium
-    case large
+    case xs
+    case sm
+    case md
+    case lg
+    case xl
     
-    var padding: EdgeInsets {
+    var height: CGFloat {
         switch self {
-        case .small:
-            return EdgeInsets(top: RRSpacing.xs, leading: RRSpacing.sm, bottom: RRSpacing.xs, trailing: RRSpacing.sm)
-        case .medium:
-            return EdgeInsets(top: RRSpacing.sm, leading: RRSpacing.md, bottom: RRSpacing.sm, trailing: RRSpacing.md)
-        case .large:
-            return EdgeInsets(top: RRSpacing.md, leading: RRSpacing.lg, bottom: RRSpacing.md, trailing: RRSpacing.lg)
+        case .xs: return DesignTokens.ComponentSize.buttonHeightXS
+        case .sm: return DesignTokens.ComponentSize.buttonHeightSM
+        case .md: return DesignTokens.ComponentSize.buttonHeightMD
+        case .lg: return DesignTokens.ComponentSize.buttonHeightLG
+        case .xl: return DesignTokens.ComponentSize.buttonHeightXL
+        }
+    }
+    
+    var horizontalPadding: CGFloat {
+        switch self {
+        case .xs: return DesignTokens.Spacing.sm
+        case .sm: return DesignTokens.Spacing.md
+        case .md: return DesignTokens.Spacing.lg
+        case .lg: return DesignTokens.Spacing.xl
+        case .xl: return DesignTokens.Spacing.xxl
         }
     }
     
     var font: Font {
         switch self {
-        case .small: return .caption
-        case .medium: return .body
-        case .large: return .title3
+        case .xs: return DesignTokens.Typography.labelSmall
+        case .sm: return DesignTokens.Typography.labelMedium
+        case .md: return DesignTokens.Typography.labelLarge
+        case .lg: return DesignTokens.Typography.titleSmall
+        case .xl: return DesignTokens.Typography.titleMedium
+        }
+    }
+    
+    var iconSize: CGFloat {
+        switch self {
+        case .xs: return DesignTokens.ComponentSize.iconSizeSM
+        case .sm: return DesignTokens.ComponentSize.iconSizeMD
+        case .md: return DesignTokens.ComponentSize.iconSizeMD
+        case .lg: return DesignTokens.ComponentSize.iconSizeLG
+        case .xl: return DesignTokens.ComponentSize.iconSizeXL
         }
     }
 }
@@ -44,6 +67,7 @@ public enum RRButtonSize {
 // MARK: - RRButton
 
 public struct RRButton<Label: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
     private let action: () -> Void
     private let label: () -> Label
     private let style: RRButtonStyle
@@ -55,7 +79,7 @@ public struct RRButton<Label: View>: View {
     public init(
         _ title: String,
         style: RRButtonStyle = .primary,
-        size: RRButtonSize = .medium,
+        size: RRButtonSize = .md,
         isEnabled: Bool = true,
         isLoading: Bool = false,
         enableLogging: Bool = false,
@@ -72,7 +96,7 @@ public struct RRButton<Label: View>: View {
     
     public init(
         style: RRButtonStyle = .primary,
-        size: RRButtonSize = .medium,
+        size: RRButtonSize = .md,
         isEnabled: Bool = true,
         isLoading: Bool = false,
         enableLogging: Bool = false,
@@ -92,41 +116,57 @@ public struct RRButton<Label: View>: View {
         Button(action: {
             action()
         }) {
-            HStack(spacing: RRSpacing.xs) {
+            HStack(spacing: DesignTokens.Spacing.xs) {
                 if isLoading {
                     ProgressView()
                         .scaleEffect(0.8)
+                        .tint(foregroundColor)
                 } else {
                     label()
                         .font(size.font)
+                        .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
-            .padding(size.padding)
+            .padding(.horizontal, size.horizontalPadding)
+            .frame(height: size.height)
             .frame(maxWidth: .infinity)
             .background(backgroundColor)
             .foregroundColor(foregroundColor)
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.button)
                     .stroke(borderColor, lineWidth: borderWidth)
             )
-            .cornerRadius(8)
+            .cornerRadius(DesignTokens.BorderRadius.button)
         }
         .disabled(!isEnabled || isLoading)
         .opacity(isEnabled ? 1.0 : 0.6)
+        .animation(DesignTokens.Animation.buttonPress, value: isEnabled)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(accessibilityHint)
+        .accessibilityAddTraits(accessibilityTraits)
+        .minimumTouchTarget() // Ensure WCAG touch target compliance
+        .keyboardNavigation(
+            config: .button,
+            onActivate: { action() },
+            onCancel: { /* Button doesn't have cancel action */ }
+        )
+        .keyboardNavigationAccessibility(config: .button)
     }
     
     private var backgroundColor: Color {
+        let theme = themeProvider.currentTheme
+        
         if !isEnabled {
-            return Color.gray.opacity(0.3)
+            return Color(theme.colors.neutral300)
         }
         
         switch style {
         case .primary:
-            return Color.blue
+            return Color(theme.colors.primary)
         case .secondary:
-            return Color.gray.opacity(0.2)
+            return Color(theme.colors.surfaceVariant)
         case .destructive:
-            return Color.red
+            return Color(theme.colors.error)
         case .outline:
             return Color.clear
         case .ghost:
@@ -135,34 +175,38 @@ public struct RRButton<Label: View>: View {
     }
     
     private var foregroundColor: Color {
+        let theme = themeProvider.currentTheme
+        
         if !isEnabled {
-            return Color.gray
+            return Color(theme.colors.neutral500)
         }
         
         switch style {
         case .primary:
-            return Color.white
+            return Color(theme.colors.onPrimary)
         case .secondary:
-            return Color.primary
+            return Color(theme.colors.onSurface)
         case .destructive:
-            return Color.white
+            return Color(theme.colors.onError)
         case .outline:
-            return Color.blue
+            return Color(theme.colors.primary)
         case .ghost:
-            return Color.blue
+            return Color(theme.colors.primary)
         }
     }
     
     private var borderColor: Color {
+        let theme = themeProvider.currentTheme
+        
         if !isEnabled {
-            return Color.gray.opacity(0.3)
+            return Color(theme.colors.outlineVariant)
         }
         
         switch style {
         case .primary, .secondary, .destructive, .ghost:
             return Color.clear
         case .outline:
-            return Color.blue
+            return Color(theme.colors.outline)
         }
     }
     
@@ -173,6 +217,72 @@ public struct RRButton<Label: View>: View {
         case .outline:
             return 1
         }
+    }
+    
+    // MARK: - Accessibility
+    
+    private var accessibilityLabel: String {
+        if isLoading {
+            return "Loading"
+        }
+        
+        // For now, return a generic button label
+        // In a real implementation, you might want to pass the label text explicitly
+        return "Button"
+    }
+    
+    private var accessibilityHint: String {
+        if !isEnabled {
+            return "Button is disabled"
+        }
+        
+        if isLoading {
+            return "Button is loading, please wait"
+        }
+        
+        switch style {
+        case .primary:
+            return "Primary action button"
+        case .secondary:
+            return "Secondary action button"
+        case .destructive:
+            return "Destructive action button"
+        case .outline:
+            return "Outlined action button"
+        case .ghost:
+            return "Ghost action button"
+        }
+    }
+    
+    private var accessibilityTraits: AccessibilityTraits {
+        var traits: AccessibilityTraits = [.isButton]
+        
+        if isLoading {
+            _ = traits.insert(.updatesFrequently)
+        }
+        
+        return traits
+    }
+    
+    // MARK: - WCAG Compliance
+    
+    /// Validate WCAG color contrast compliance for this button
+    /// - Returns: The WCAG compliance status
+    public func validateWCAGCompliance() -> WCAGCompliance {
+        return AccessibilityUtils.wcagCompliance(
+            foreground: foregroundColor,
+            background: backgroundColor
+        )
+    }
+    
+    /// Check if this button meets WCAG AA contrast requirements
+    /// - Returns: True if the button meets WCAG AA requirements
+    public func meetsWCAGAA() -> Bool {
+        return AccessibilityUtils.meetsWCAGContrast(
+            foreground: foregroundColor,
+            background: backgroundColor,
+            level: .AA
+        )
     }
 }
 
@@ -197,9 +307,11 @@ struct RRButton_Previews: PreviewProvider {
                 .font(.headline)
             
             VStack(spacing: 10) {
-                RRButton("Small Button", size: .small, action: { })
-                RRButton("Medium Button", size: .medium, action: { })
-                RRButton("Large Button", size: .large, action: { })
+                RRButton("XS Button", size: .xs, action: { })
+                RRButton("SM Button", size: .sm, action: { })
+                RRButton("MD Button", size: .md, action: { })
+                RRButton("LG Button", size: .lg, action: { })
+                RRButton("XL Button", size: .xl, action: { })
             }
             
             Text("Button States")

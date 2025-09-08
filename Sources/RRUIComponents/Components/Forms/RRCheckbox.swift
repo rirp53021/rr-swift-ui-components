@@ -64,6 +64,14 @@ public struct RRCheckbox: View {
                     }
             }
         }
+        .keyboardNavigation(
+            config: .button,
+            onActivate: {
+                isChecked.toggle()
+                onToggle(isChecked)
+            }
+        )
+        .keyboardNavigationAccessibility(config: .button)
     }
     
     private var cornerRadius: CGFloat {

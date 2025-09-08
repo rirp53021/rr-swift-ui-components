@@ -113,6 +113,14 @@ public struct RRCustomToggle: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
+        .keyboardNavigation(
+            config: .button,
+            onActivate: {
+                isOn.toggle()
+                onToggle(isOn)
+            }
+        )
+        .keyboardNavigationAccessibility(config: .button)
     }
 }
 
@@ -151,6 +159,14 @@ public struct RRSwitchToggle: View {
                     onToggle(newValue)
                 }
         }
+        .keyboardNavigation(
+            config: .button,
+            onActivate: {
+                isOn.toggle()
+                onToggle(isOn)
+            }
+        )
+        .keyboardNavigationAccessibility(config: .button)
     }
 }
 

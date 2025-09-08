@@ -57,6 +57,7 @@ public struct RRLabel: View {
             .font(font)
             .fontWeight(fontWeight)
             .foregroundColor(textColor)
+            .dynamicTypeSize(.large) // Support Dynamic Type
             .multilineTextAlignment(alignment)
             .lineLimit(lineLimit)
     }

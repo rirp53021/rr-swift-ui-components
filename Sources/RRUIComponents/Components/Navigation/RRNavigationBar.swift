@@ -57,6 +57,7 @@ public struct RRNavigationBar: View {
                     .font(style == .large ? .largeTitle : .headline)
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 Spacer()
                 

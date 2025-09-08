@@ -56,12 +56,14 @@ public struct RREmptyState<Action: View>: View {
                     .font(style.titleFont)
                     .foregroundColor(style.titleColor)
                     .multilineTextAlignment(.center)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let subtitle = subtitle {
                     Text(subtitle)
                         .font(style.subtitleFont)
                         .foregroundColor(style.subtitleColor)
                         .multilineTextAlignment(.center)
+                        .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
             

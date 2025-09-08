@@ -17,9 +17,51 @@ public struct RRTextField: View {
     }
     
     public enum Size {
-        case small
-        case medium
-        case large
+        case xs
+        case sm
+        case md
+        case lg
+        case xl
+        
+        var height: CGFloat {
+            switch self {
+            case .xs: return DesignTokens.ComponentSize.inputHeightXS
+            case .sm: return DesignTokens.ComponentSize.inputHeightSM
+            case .md: return DesignTokens.ComponentSize.inputHeightMD
+            case .lg: return DesignTokens.ComponentSize.inputHeightLG
+            case .xl: return DesignTokens.ComponentSize.inputHeightXL
+            }
+        }
+        
+        var horizontalPadding: CGFloat {
+            switch self {
+            case .xs: return DesignTokens.Spacing.sm
+            case .sm: return DesignTokens.Spacing.md
+            case .md: return DesignTokens.Spacing.lg
+            case .lg: return DesignTokens.Spacing.xl
+            case .xl: return DesignTokens.Spacing.xxl
+            }
+        }
+        
+        var font: Font {
+            switch self {
+            case .xs: return DesignTokens.Typography.bodySmall
+            case .sm: return DesignTokens.Typography.bodyMedium
+            case .md: return DesignTokens.Typography.bodyLarge
+            case .lg: return DesignTokens.Typography.titleSmall
+            case .xl: return DesignTokens.Typography.titleMedium
+            }
+        }
+        
+        var iconSize: CGFloat {
+            switch self {
+            case .xs: return DesignTokens.ComponentSize.iconSizeSM
+            case .sm: return DesignTokens.ComponentSize.iconSizeMD
+            case .md: return DesignTokens.ComponentSize.iconSizeMD
+            case .lg: return DesignTokens.ComponentSize.iconSizeLG
+            case .xl: return DesignTokens.ComponentSize.iconSizeXL
+            }
+        }
     }
     
     @Binding private var text: String
@@ -40,7 +82,7 @@ public struct RRTextField: View {
         text: Binding<String>,
         style: Style = .standard,
         validationState: ValidationState = .none,
-        size: Size = .medium,
+        size: Size = .md,
         isDisabled: Bool = false,
         helperText: String? = nil,
         errorText: String? = nil,
@@ -85,6 +127,7 @@ public struct RRTextField: View {
                 }
                 .font(textFont)
                 .foregroundColor(textColor)
+                .dynamicTypeSize(.large) // Support Dynamic Type
                 .disabled(isDisabled)
                 
                 if let trailingIcon = trailingIcon {
@@ -107,54 +150,66 @@ public struct RRTextField: View {
                 Text(errorText)
                     .font(.caption)
                     .foregroundColor(errorColor)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
             } else if let helperText = helperText {
                 Text(helperText)
                     .font(.caption)
                     .foregroundColor(helperTextColor)
+                    .dynamicTypeSize(.large) // Support Dynamic Type
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(accessibilityHint)
+        .accessibilityValue(accessibilityValue ?? "")
+        .accessibilityAddTraits(accessibilityTraits)
+        .minimumTouchTarget() // Ensure WCAG touch target compliance
+        .keyboardNavigation(
+            config: .textField,
+            onActivate: { onCommit() },
+            onCancel: { /* Text field doesn't have cancel action */ },
+            onMovement: { action in
+                switch action {
+                case .moveToNext:
+                    // Move to next field (handled by system)
+                    break
+                case .moveToPrevious:
+                    // Move to previous field (handled by system)
+                    break
+                default:
+                    break
+                }
+            }
+        )
+        .keyboardNavigationAccessibility(config: .textField)
     }
     
     // MARK: - Computed Properties
     
     private var textFont: Font {
-        switch size {
-        case .small: return .caption
-        case .medium: return .body
-        case .large: return .title3
-        }
+        return size.font
     }
     
     private var iconFont: Font {
-        switch size {
-        case .small: return .caption
-        case .medium: return .body
-        case .large: return .title3
-        }
+        return .system(size: size.iconSize)
     }
     
     private var horizontalPadding: CGFloat {
-        switch size {
-        case .small: return 8
-        case .medium: return 12
-        case .large: return 16
-        }
+        return size.horizontalPadding
     }
     
     private var verticalPadding: CGFloat {
         switch size {
-        case .small: return 6
-        case .medium: return 10
-        case .large: return 14
+        case .xs: return 4
+        case .sm: return 6
+        case .md: return 8
+        case .lg: return 10
+        case .xl: return 12
         }
     }
     
     private var cornerRadius: CGFloat {
-        switch size {
-        case .small: return 4
-        case .medium: return 6
-        case .large: return 8
-        }
+        return DesignTokens.BorderRadius.textField
     }
     
     private var borderWidth: CGFloat {
@@ -220,6 +275,87 @@ public struct RRTextField: View {
         let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
         return scheme.semantic.error
     }
+    
+    // MARK: - Accessibility
+    
+    private var accessibilityLabel: String {
+        var label = placeholder
+        
+        if leadingIcon != nil {
+            label += ", with icon"
+        }
+        
+        return label
+    }
+    
+    private var accessibilityHint: String {
+        var hint = ""
+        
+        if isDisabled {
+            hint += "Field is disabled. "
+        }
+        
+        switch validationState {
+        case .none:
+            break
+        case .success:
+            hint += "Input is valid. "
+        case .warning:
+            hint += "Input has a warning. "
+        case .error:
+            hint += "Input has an error. "
+        }
+        
+        if let helperText = helperText {
+            hint += helperText
+        } else if let errorText = errorText, validationState == .error {
+            hint += errorText
+        }
+        
+        return hint.isEmpty ? "" : hint
+    }
+    
+    private var accessibilityValue: String? {
+        return text.isEmpty ? nil : text
+    }
+    
+    private var accessibilityTraits: AccessibilityTraits {
+        var traits: AccessibilityTraits = [.isKeyboardKey]
+        
+        switch validationState {
+        case .error:
+            _ = traits.insert(.updatesFrequently)
+        case .success:
+            break
+        case .warning:
+            break
+        case .none:
+            break
+        }
+        
+        return traits
+    }
+    
+    // MARK: - WCAG Compliance
+    
+    /// Validate WCAG color contrast compliance for this text field
+    /// - Returns: The WCAG compliance status
+    public func validateWCAGCompliance() -> WCAGCompliance {
+        return AccessibilityUtils.wcagCompliance(
+            foreground: textColor,
+            background: backgroundColor
+        )
+    }
+    
+    /// Check if this text field meets WCAG AA contrast requirements
+    /// - Returns: True if the text field meets WCAG AA requirements
+    public func meetsWCAGAA() -> Bool {
+        return AccessibilityUtils.meetsWCAGContrast(
+            foreground: textColor,
+            background: backgroundColor,
+            level: .AA
+        )
+    }
 }
 
 // MARK: - Convenience Initializers
@@ -230,7 +366,7 @@ public extension RRTextField {
     static func standard(
         _ placeholder: String,
         text: Binding<String>,
-        size: Size = .medium,
+        size: Size = .md,
         isDisabled: Bool = false,
         helperText: String? = nil,
         errorText: String? = nil,
@@ -254,7 +390,7 @@ public extension RRTextField {
     static func secure(
         _ placeholder: String,
         text: Binding<String>,
-        size: Size = .medium,
+        size: Size = .md,
         isDisabled: Bool = false,
         helperText: String? = nil,
         errorText: String? = nil,
@@ -276,7 +412,7 @@ public extension RRTextField {
     static func multiline(
         _ placeholder: String,
         text: Binding<String>,
-        size: Size = .medium,
+        size: Size = .md,
         isDisabled: Bool = false,
         helperText: String? = nil,
         errorText: String? = nil,
@@ -352,10 +488,12 @@ struct RRTextField_Previews: PreviewProvider {
             )
             
             // Different sizes
-            HStack {
-                RRTextField.standard("Small", text: .constant(""), size: .small)
-                RRTextField.standard("Medium", text: .constant(""), size: .medium)
-                RRTextField.standard("Large", text: .constant(""), size: .large)
+            VStack {
+                RRTextField.standard("Extra Small", text: .constant(""), size: .xs)
+                RRTextField.standard("Small", text: .constant(""), size: .sm)
+                RRTextField.standard("Medium", text: .constant(""), size: .md)
+                RRTextField.standard("Large", text: .constant(""), size: .lg)
+                RRTextField.standard("Extra Large", text: .constant(""), size: .xl)
             }
         }
         .padding()
