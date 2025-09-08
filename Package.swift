@@ -18,16 +18,13 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // No external dependencies - all UI utilities are now self-contained
+        .package(url: "https://github.com/rirp53021/rr-swift-foundation.git", from: "1.8.0")
     ],
     targets: [
         .target(
             name: "RRUIComponents",
-            dependencies: [],
-            path: "Sources/RRUIComponents",
-            resources: [
-                .process("Info.plist")
-            ]
+            dependencies: [.product(name: "RRFoundation", package: "rr-swift-foundation")],
+            path: "Sources/RRUIComponents"
         ),
         .testTarget(
             name: "RRUIComponentsTests",

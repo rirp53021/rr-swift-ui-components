@@ -41,7 +41,7 @@ targets:
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
         CFBundleName: $(PRODUCT_NAME)
         CFBundlePackageType: FMWK
-        CFBundleShortVersionString: 1.0
+        CFBundleShortVersionString: 1.2.1
         CFBundleVersion: 1
 
   RRUIComponentsTests:
@@ -65,7 +65,7 @@ targets:
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
         CFBundleName: $(PRODUCT_NAME)
         CFBundlePackageType: BNDL
-        CFBundleShortVersionString: 1.0
+        CFBundleShortVersionString: 1.2.1
         CFBundleVersion: 1
 
 schemes:

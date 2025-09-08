@@ -2,21 +2,18 @@
 // Licensed under the MIT License
 
 import SwiftUI
+import RRFoundation
 
 /// Main entry point for RRUIComponents library
 @_exported import SwiftUI
+@_exported import RRFoundation
 
 // MARK: - Re-exported Foundation Utilities
-// Note: RRFoundation is no longer imported as UI utilities have been moved here
-
-// Re-export utilities for convenience
-// Note: These are automatically available since they're in the same module
-
-// Logger is available through direct import in files that need it
+// RRFoundation provides core utilities including Logger, colors, formatters, etc.
 
 // MARK: - Library Information
 public enum RRUIComponents {
-    public static let version = "1.0.0"
+    public static let version = "1.2.1"
     public static let name = "RRUIComponents"
 }
 
