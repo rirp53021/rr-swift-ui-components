@@ -39,14 +39,14 @@ Add the following dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/rirp53021/rr-swift-ui-component.git", from: "1.0.0")
+    .package(url: "https://github.com/rirp53021/rr-swift-ui-components.git", from: "1.1.0")
 ]
 ```
 
 Or add it directly in Xcode:
 1. File → Add Package Dependencies
-2. Enter: `https://github.com/rirp53021/rr-swift-ui-component.git`
-3. Select version: `1.0.0`
+2. Enter: `https://github.com/rirp53021/rr-swift-ui-components.git`
+3. Select version: `1.1.0`
 
 ## Quick Start
 
