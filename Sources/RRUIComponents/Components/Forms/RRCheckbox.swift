@@ -25,7 +25,7 @@ public struct RRCheckbox: View {
         isChecked: Binding<Bool>,
         title: String? = nil,
         style: CheckboxStyle = .square,
-        size: CGFloat = 20,
+        size: CGFloat = DesignTokens.ComponentSize.iconSizeLG,
         onToggle: @escaping (Bool) -> Void = { _ in }
     ) {
         self._isChecked = isChecked
@@ -36,20 +36,20 @@ public struct RRCheckbox: View {
     }
     
     public var body: some View {
-        HStack(spacing: RRSpacing.sm) {
+        HStack(spacing: DesignTokens.Spacing.sm) {
             Button(action: {
                 isChecked.toggle()
                 onToggle(isChecked)
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(isChecked ? Color.blue : Color.gray, lineWidth: 2)
+                        .stroke(isChecked ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral400), lineWidth: 2)
                         .frame(width: size, height: size)
                     
                     if isChecked {
                         Image(systemName: "checkmark")
-                            .foregroundColor(.blue)
-                            .font(.system(size: size * 0.6, weight: .bold))
+                            .foregroundColor(Color(DesignTokens.Colors.primary600))
+                            .font(.system(size: size * 0.6, weight: DesignTokens.Typography.weightBold))
                     }
                 }
             }
@@ -57,7 +57,8 @@ public struct RRCheckbox: View {
             
             if let title = title {
                 Text(title)
-                    .foregroundColor(.primary)
+                    .font(DesignTokens.Typography.bodyMedium)
+                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
                     .onTapGesture {
                         isChecked.toggle()
                         onToggle(isChecked)
@@ -76,9 +77,9 @@ public struct RRCheckbox: View {
     
     private var cornerRadius: CGFloat {
         switch style {
-        case .square: return 4
+        case .square: return DesignTokens.BorderRadius.sm
         case .circle: return size / 2
-        case .rounded: return 6
+        case .rounded: return DesignTokens.BorderRadius.md
         }
     }
 }
@@ -98,7 +99,7 @@ public struct RRCheckboxGroup<Item: Identifiable & Hashable>: View {
         selection: Binding<Set<Item>>,
         titleKeyPath: KeyPath<Item, String>,
         style: CheckboxStyle = .square,
-        size: CGFloat = 20,
+        size: CGFloat = DesignTokens.ComponentSize.iconSizeLG,
         onSelectionChange: @escaping (Set<Item>) -> Void = { _ in }
     ) {
         self.items = items
@@ -110,7 +111,7 @@ public struct RRCheckboxGroup<Item: Identifiable & Hashable>: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: RRSpacing.sm) {
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
             ForEach(items) { item in
                 RRCheckbox(
                     isChecked: Binding(

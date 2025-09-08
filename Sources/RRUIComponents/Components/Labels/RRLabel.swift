@@ -66,38 +66,36 @@ public struct RRLabel: View {
     
     private var font: Font {
         switch style {
-        case .title: return .largeTitle
-        case .subtitle: return .title2
-        case .body: return .body
-        case .caption: return .caption
-        case .overline: return .caption2
+        case .title: return DesignTokens.Typography.titleLarge
+        case .subtitle: return DesignTokens.Typography.titleMedium
+        case .body: return DesignTokens.Typography.bodyMedium
+        case .caption: return DesignTokens.Typography.bodySmall
+        case .overline: return DesignTokens.Typography.labelSmall
         }
     }
     
     private var fontWeight: Font.Weight {
         switch weight {
-        case .light: return .light
-        case .regular: return .regular
-        case .medium: return .medium
-        case .semibold: return .semibold
-        case .bold: return .bold
-        case .heavy: return .heavy
+        case .light: return DesignTokens.Typography.weightLight
+        case .regular: return DesignTokens.Typography.weightRegular
+        case .medium: return DesignTokens.Typography.weightMedium
+        case .semibold: return DesignTokens.Typography.weightSemibold
+        case .bold: return DesignTokens.Typography.weightBold
+        case .heavy: return DesignTokens.Typography.weightHeavy
         }
     }
     
     @Environment(\.colorScheme) private var colorScheme
     
     private var textColor: SwiftUI.Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        
         switch color {
-        case .primary: return scheme.neutral.text
-        case .secondary: return scheme.neutral.textSecondary
-        case .tertiary: return scheme.neutral.textSecondary.opacity(0.7)
-        case .success: return scheme.semantic.success
-        case .warning: return scheme.semantic.warning
-        case .error: return scheme.semantic.error
-        case .info: return scheme.semantic.info
+        case .primary: return colorScheme == .dark ? SwiftUI.Color(DesignTokens.Colors.neutral50) : SwiftUI.Color(DesignTokens.Colors.neutral900)
+        case .secondary: return colorScheme == .dark ? SwiftUI.Color(DesignTokens.Colors.neutral400) : SwiftUI.Color(DesignTokens.Colors.neutral600)
+        case .tertiary: return colorScheme == .dark ? SwiftUI.Color(DesignTokens.Colors.neutral500) : SwiftUI.Color(DesignTokens.Colors.neutral500)
+        case .success: return SwiftUI.Color(DesignTokens.Colors.success600)
+        case .warning: return SwiftUI.Color(DesignTokens.Colors.warning600)
+        case .error: return SwiftUI.Color(DesignTokens.Colors.error600)
+        case .info: return SwiftUI.Color(DesignTokens.Colors.info600)
         }
     }
 }

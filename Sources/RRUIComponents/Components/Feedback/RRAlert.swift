@@ -13,10 +13,10 @@ public enum AlertStyle {
     
     var color: Color {
         switch self {
-        case .success: return Color.green
-        case .error: return Color.red
-        case .warning: return Color.orange
-        case .info: return Color.blue
+        case .success: return Color(DesignTokens.Colors.success600)
+        case .error: return Color(DesignTokens.Colors.error600)
+        case .warning: return Color(DesignTokens.Colors.warning600)
+        case .info: return Color(DesignTokens.Colors.info600)
         }
     }
     

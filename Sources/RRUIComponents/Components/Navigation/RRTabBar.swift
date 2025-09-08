@@ -45,66 +45,85 @@ public struct RRTabBar: View {
     public var body: some View {
         HStack(spacing: 0) {
             ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                Button(action: {
-                    selectedTab = index
-                    onTabSelected(index)
-                }) {
-                    VStack(spacing: RRSpacing.xs) {
-                        ZStack {
-                            Image(systemName: selectedTab == index ? (item.selectedIcon ?? item.icon) : item.icon)
-                                .foregroundColor(selectedTab == index ? .blue : .gray)
-                                .font(.title3)
-                            
-                            if let badge = item.badge, selectedTab == index {
-                                Text(badge)
-                                    .font(.caption2)
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.red)
-                                    .cornerRadius(8)
-                                    .offset(x: 12, y: -8)
-                            }
-                        }
-                        
-                        Text(item.title)
-                            .font(.caption)
-                            .foregroundColor(selectedTab == index ? .blue : .gray)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, RRSpacing.sm)
-                }
-                .buttonStyle(PlainButtonStyle())
+                tabButton(for: item, at: index)
             }
         }
-        .background(Color(.systemBackground))
-        .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: -1)
+        .background(Color(DesignTokens.Colors.neutral50))
+        .shadow(color: Color(DesignTokens.Elevation.level1.color), radius: DesignTokens.Elevation.level1.radius, x: DesignTokens.Elevation.level1.x, y: DesignTokens.Elevation.level1.y)
         .keyboardNavigation(
             config: .navigation,
             onMovement: { action in
-                switch action {
-                case .moveLeft:
-                    if selectedTab > 0 {
-                        selectedTab -= 1
-                        onTabSelected(selectedTab)
-                    }
-                case .moveRight:
-                    if selectedTab < items.count - 1 {
-                        selectedTab += 1
-                        onTabSelected(selectedTab)
-                    }
-                case .moveToStart:
-                    selectedTab = 0
-                    onTabSelected(selectedTab)
-                case .moveToEnd:
-                    selectedTab = items.count - 1
-                    onTabSelected(selectedTab)
-                default:
-                    break
-                }
+                handleKeyboardMovement(action)
             }
         )
         .keyboardNavigationAccessibility(config: .navigation)
+    }
+    
+    private func tabButton(for item: TabItem, at index: Int) -> some View {
+        Button(action: {
+            selectedTab = index
+            onTabSelected(index)
+        }) {
+            VStack(spacing: DesignTokens.Spacing.xs) {
+                tabIcon(for: item, at: index)
+                tabTitle(for: item, at: index)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, DesignTokens.Spacing.sm)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private func tabIcon(for item: TabItem, at index: Int) -> some View {
+        ZStack {
+            Image(systemName: selectedTab == index ? (item.selectedIcon ?? item.icon) : item.icon)
+                .foregroundColor(selectedTab == index ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral500))
+                .font(DesignTokens.Typography.titleSmall)
+            
+            if let badge = item.badge, selectedTab == index {
+                badgeView(badge)
+            }
+        }
+    }
+    
+    private func tabTitle(for item: TabItem, at index: Int) -> some View {
+        Text(item.title)
+            .font(DesignTokens.Typography.labelMedium)
+            .foregroundColor(selectedTab == index ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral500))
+    }
+    
+    private func badgeView(_ badge: String) -> some View {
+        Text(badge)
+            .font(DesignTokens.Typography.labelSmall)
+            .foregroundColor(.white)
+            .padding(.horizontal, DesignTokens.Spacing.xs)
+            .padding(.vertical, DesignTokens.Spacing.xs)
+            .background(Color(DesignTokens.Colors.error600))
+            .cornerRadius(DesignTokens.BorderRadius.sm)
+            .offset(x: 12, y: -8)
+    }
+    
+    private func handleKeyboardMovement(_ action: KeyboardMovementAction) {
+        switch action {
+        case .moveLeft:
+            if selectedTab > 0 {
+                selectedTab -= 1
+                onTabSelected(selectedTab)
+            }
+        case .moveRight:
+            if selectedTab < items.count - 1 {
+                selectedTab += 1
+                onTabSelected(selectedTab)
+            }
+        case .moveToStart:
+            selectedTab = 0
+            onTabSelected(selectedTab)
+        case .moveToEnd:
+            selectedTab = items.count - 1
+            onTabSelected(selectedTab)
+        default:
+            break
+        }
     }
 }
 

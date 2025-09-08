@@ -32,10 +32,11 @@ public struct RRToggle: View {
     }
     
     public var body: some View {
-        HStack(spacing: RRSpacing.sm) {
+        HStack(spacing: DesignTokens.Spacing.sm) {
             if let title = title {
                 Text(title)
-                    .foregroundColor(.primary)
+                    .font(DesignTokens.Typography.bodyMedium)
+                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -49,15 +50,15 @@ public struct RRToggle: View {
                 onToggle(isOn)
             }) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(isOn ? Color.blue : Color.gray.opacity(0.3))
-                        .frame(width: 50, height: 30)
+                    RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.lg)
+                        .fill(isOn ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral300))
+                        .frame(width: DesignTokens.ComponentSize.toggleWidth, height: DesignTokens.ComponentSize.toggleHeight)
                     
                     Circle()
-                        .fill(Color.white)
-                        .frame(width: 26, height: 26)
+                        .fill(Color(DesignTokens.Colors.neutral50))
+                        .frame(width: DesignTokens.ComponentSize.toggleThumbSize, height: DesignTokens.ComponentSize.toggleThumbSize)
                         .offset(x: isOn ? 10 : -10)
-                        .animation(.spring(response: 0.3), value: isOn)
+                        .animation(.spring(response: DesignTokens.Animation.durationNormal), value: isOn)
                 }
             }
             .buttonStyle(PlainButtonStyle())
@@ -83,10 +84,11 @@ public struct RRCustomToggle: View {
     }
     
     public var body: some View {
-        HStack(spacing: RRSpacing.sm) {
+        HStack(spacing: DesignTokens.Spacing.sm) {
             if let title = title {
                 Text(title)
-                    .foregroundColor(.primary)
+                    .font(DesignTokens.Typography.bodyMedium)
+                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -100,15 +102,15 @@ public struct RRCustomToggle: View {
                 onToggle(isOn)
             }) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(isOn ? Color.blue : Color.gray.opacity(0.3))
-                        .frame(width: 40, height: 20)
+                    RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm)
+                        .fill(isOn ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral300))
+                        .frame(width: DesignTokens.ComponentSize.toggleWidthSmall, height: DesignTokens.ComponentSize.toggleHeightSmall)
                     
                     Circle()
-                        .fill(Color.white)
-                        .frame(width: 16, height: 16)
+                        .fill(Color(DesignTokens.Colors.neutral50))
+                        .frame(width: DesignTokens.ComponentSize.toggleThumbSizeSmall, height: DesignTokens.ComponentSize.toggleThumbSizeSmall)
                         .offset(x: isOn ? 10 : -10)
-                        .animation(.spring(response: 0.3), value: isOn)
+                        .animation(.spring(response: DesignTokens.Animation.durationNormal), value: isOn)
                 }
             }
             .buttonStyle(PlainButtonStyle())
@@ -142,10 +144,11 @@ public struct RRSwitchToggle: View {
     }
     
     public var body: some View {
-        HStack(spacing: RRSpacing.sm) {
+        HStack(spacing: DesignTokens.Spacing.sm) {
             if let title = title {
                 Text(title)
-                    .foregroundColor(.primary)
+                    .font(DesignTokens.Typography.bodyMedium)
+                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)

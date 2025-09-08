@@ -293,6 +293,14 @@ public struct DesignTokens {
         public static let iconSizeMD: CGFloat = 20
         public static let iconSizeLG: CGFloat = 24
         public static let iconSizeXL: CGFloat = 32
+        
+        // Toggle Sizes
+        public static let toggleWidth: CGFloat = 50
+        public static let toggleHeight: CGFloat = 30
+        public static let toggleThumbSize: CGFloat = 26
+        public static let toggleWidthSmall: CGFloat = 40
+        public static let toggleHeightSmall: CGFloat = 20
+        public static let toggleThumbSizeSmall: CGFloat = 16
     }
     
     // MARK: - Breakpoint Tokens

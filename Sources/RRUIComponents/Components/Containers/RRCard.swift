@@ -20,7 +20,12 @@ public struct RRCard<Content: View>: View {
     
     public init(
         style: CardStyle = .standard,
-        padding: EdgeInsets = RRSpacing.paddingMD,
+        padding: EdgeInsets = EdgeInsets(
+            top: DesignTokens.Spacing.md,
+            leading: DesignTokens.Spacing.md,
+            bottom: DesignTokens.Spacing.md,
+            trailing: DesignTokens.Spacing.md
+        ),
         cornerRadius: CGFloat? = nil,
         shadowRadius: CGFloat? = nil,
         shadowOffset: CGSize? = nil,
@@ -76,18 +81,18 @@ public extension RRCard {
         var cornerRadius: CGFloat {
             switch self {
             case .standard, .elevated, .filled:
-                return 12
+                return DesignTokens.BorderRadius.card
             case .outlined, .flat:
-                return 8
+                return DesignTokens.BorderRadius.md
             }
         }
         
         var shadowRadius: CGFloat {
             switch self {
             case .standard:
-                return 4
+                return DesignTokens.Elevation.level2.radius
             case .elevated:
-                return 8
+                return DesignTokens.Elevation.level3.radius
             case .outlined, .filled, .flat:
                 return 0
             }
@@ -96,9 +101,9 @@ public extension RRCard {
         var shadowOffset: CGSize {
             switch self {
             case .standard:
-                return CGSize(width: 0, height: 2)
+                return CGSize(width: DesignTokens.Elevation.level2.x, height: DesignTokens.Elevation.level2.y)
             case .elevated:
-                return CGSize(width: 0, height: 4)
+                return CGSize(width: DesignTokens.Elevation.level3.x, height: DesignTokens.Elevation.level3.y)
             case .outlined, .filled, .flat:
                 return CGSize(width: 0, height: 0)
             }
@@ -107,7 +112,7 @@ public extension RRCard {
         var shadowColor: Color {
             switch self {
             case .standard, .elevated:
-                return Color.black.opacity(0.1)
+                return Color(DesignTokens.Elevation.level2.color)
             case .outlined, .filled, .flat:
                 return Color.clear
             }
@@ -116,11 +121,11 @@ public extension RRCard {
         var backgroundColor: Color {
             switch self {
             case .standard, .elevated, .flat:
-                return Color(.systemBackground)
+                return Color(DesignTokens.Colors.neutral50)
             case .outlined:
                 return Color.clear
             case .filled:
-                return Color(.secondarySystemBackground)
+                return Color(DesignTokens.Colors.neutral100)
             }
         }
         
@@ -129,7 +134,7 @@ public extension RRCard {
             case .standard, .elevated, .filled, .flat:
                 return Color.clear
             case .outlined:
-                return Color(.separator)
+                return Color(DesignTokens.Colors.neutral300)
             }
         }
         

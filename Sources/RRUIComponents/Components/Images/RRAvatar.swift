@@ -4,17 +4,21 @@ import SwiftUI
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
 public struct RRAvatar: View {
     public enum Size {
-        case small
-        case medium
-        case large
-        case extraLarge
+        case xs
+        case sm
+        case md
+        case lg
+        case xl
+        case xxl
         
         var dimension: CGFloat {
             switch self {
-            case .small: return 32
-            case .medium: return 48
-            case .large: return 64
-            case .extraLarge: return 96
+            case .xs: return DesignTokens.ComponentSize.avatarSizeXS
+            case .sm: return DesignTokens.ComponentSize.avatarSizeSM
+            case .md: return DesignTokens.ComponentSize.avatarSizeMD
+            case .lg: return DesignTokens.ComponentSize.avatarSizeLG
+            case .xl: return DesignTokens.ComponentSize.avatarSizeXL
+            case .xxl: return DesignTokens.ComponentSize.avatarSizeXXL
             }
         }
     }
@@ -36,7 +40,7 @@ public struct RRAvatar: View {
     public init(
         image: Image? = nil,
         initials: String? = nil,
-        size: Size = .medium,
+        size: Size = .md,
         style: Style = .circle,
         backgroundColor: Color? = nil,
         borderColor: Color? = nil,
@@ -91,9 +95,9 @@ public struct RRAvatar: View {
         case .circle:
             return AnyShape(Circle())
         case .rounded:
-            return AnyShape(RoundedRectangle(cornerRadius: size.dimension * 0.2))
+            return AnyShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.lg))
         case .square:
-            return AnyShape(RoundedRectangle(cornerRadius: size.dimension * 0.1))
+            return AnyShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm))
         }
     }
     
@@ -102,27 +106,31 @@ public struct RRAvatar: View {
         case .circle:
             return AnyShape(Circle())
         case .rounded:
-            return AnyShape(RoundedRectangle(cornerRadius: size.dimension * 0.2))
+            return AnyShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.lg))
         case .square:
-            return AnyShape(RoundedRectangle(cornerRadius: size.dimension * 0.1))
+            return AnyShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm))
         }
     }
     
     private var initialsFont: Font {
         switch size {
-        case .small: return .caption
-        case .medium: return .body
-        case .large: return .title3
-        case .extraLarge: return .title
+        case .xs: return .caption
+        case .sm: return .body
+        case .md: return .body
+        case .lg: return .title3
+        case .xl: return .title
+        case .xxl: return .title
         }
     }
     
     private var iconFont: Font {
         switch size {
-        case .small: return .caption
-        case .medium: return .body
-        case .large: return .title3
-        case .extraLarge: return .title
+        case .xs: return .caption
+        case .sm: return .body
+        case .md: return .body
+        case .lg: return .title3
+        case .xl: return .title
+        case .xxl: return .title
         }
     }
     
@@ -155,7 +163,7 @@ public extension RRAvatar {
     /// Creates an avatar with an image
     static func image(
         _ image: Image,
-        size: Size = .medium,
+        size: Size = .md,
         style: Style = .circle,
         borderColor: Color? = nil,
         borderWidth: CGFloat = 0
@@ -172,7 +180,7 @@ public extension RRAvatar {
     /// Creates an avatar with initials
     static func initials(
         _ initials: String,
-        size: Size = .medium,
+        size: Size = .md,
         style: Style = .circle,
         backgroundColor: Color? = nil,
         borderColor: Color? = nil,
@@ -191,7 +199,7 @@ public extension RRAvatar {
     /// Creates an avatar with a name (extracts initials automatically)
     static func name(
         _ name: String,
-        size: Size = .medium,
+        size: Size = .md,
         style: Style = .circle,
         backgroundColor: Color? = nil,
         borderColor: Color? = nil,
@@ -210,7 +218,7 @@ public extension RRAvatar {
     
     /// Creates a placeholder avatar
     static func placeholder(
-        size: Size = .medium,
+        size: Size = .md,
         style: Style = .circle,
         borderColor: Color? = nil,
         borderWidth: CGFloat = 0
@@ -255,10 +263,12 @@ struct RRAvatar_Previews: PreviewProvider {
         VStack(spacing: 20) {
             // Different sizes
             HStack(spacing: 16) {
-                RRAvatar.initials("AB", size: .small)
-                RRAvatar.initials("AB", size: .medium)
-                RRAvatar.initials("AB", size: .large)
-                RRAvatar.initials("AB", size: .extraLarge)
+                RRAvatar.initials("AB", size: .xs)
+                RRAvatar.initials("AB", size: .sm)
+                RRAvatar.initials("AB", size: .md)
+                RRAvatar.initials("AB", size: .lg)
+                RRAvatar.initials("AB", size: .xl)
+                RRAvatar.initials("AB", size: .xxl)
             }
             
             // Different styles
@@ -292,7 +302,7 @@ struct RRAvatar_Previews: PreviewProvider {
             // Placeholder avatars
             HStack(spacing: 16) {
                 RRAvatar.placeholder()
-                RRAvatar.placeholder(size: .large)
+                RRAvatar.placeholder(size: .lg)
                 RRAvatar.placeholder(style: .rounded)
             }
         }

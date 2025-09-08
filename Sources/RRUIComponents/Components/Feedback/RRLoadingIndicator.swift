@@ -17,10 +17,10 @@ public struct RRLoadingIndicator: View {
     
     public init(
         style: LoadingStyle = .spinner,
-        size: CGFloat = 24,
-        color: Color = .blue,
+        size: CGFloat = DesignTokens.ComponentSize.iconSizeLG,
+        color: Color = Color(DesignTokens.Colors.primary600),
         lineWidth: CGFloat = 3,
-        animationSpeed: Double = 1.0
+        animationSpeed: Double = DesignTokens.Animation.durationNormal
     ) {
         self.style = style
         self.size = size
@@ -62,7 +62,7 @@ public struct RRLoadingIndicator: View {
             .frame(width: size, height: size)
             .rotationEffect(.degrees(isAnimating ? 360 : 0))
             .animation(
-                .linear(duration: 1.0 / animationSpeed)
+                .linear(duration: DesignTokens.Animation.durationNormal / animationSpeed)
                 .repeatForever(autoreverses: false),
                 value: isAnimating
             )

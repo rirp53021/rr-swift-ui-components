@@ -42,6 +42,19 @@ Follow these rules at all times:
 - Write clear commit messages (e.g., `feat: add APIClient`, `fix: handle 401 errors`).
 - Tag releases with semantic versioning.
 
+## Design System (MANDATORY)
+- **ALL UI components MUST use the design system** - this is non-negotiable.
+- Use `DesignTokens` for all styling: colors, typography, spacing, border radius, elevation, animations.
+- Use `ThemeProvider` for theme-aware components and dynamic theming.
+- Never use hardcoded values for colors, fonts, spacing, or other design properties.
+- All components must support size variants (xs, sm, md, lg, xl) using `DesignTokens.ComponentSize`.
+- All text components must use `DesignTokens.Typography` fonts and weights.
+- All color usage must reference `DesignTokens.Colors` with appropriate semantic naming.
+- All spacing must use `DesignTokens.Spacing` values.
+- All border radius must use `DesignTokens.BorderRadius` values.
+- All shadows/elevation must use `DesignTokens.Elevation` values.
+- All animations must use `DesignTokens.Animation` values.
+
 ## Security
 - Never commit API keys, secrets, or credentials.
 - Use `.env` or secure storage for sensitive configs.
