@@ -93,11 +93,11 @@ public enum TimelineStatus {
     
     var color: Color {
         switch self {
-        case .pending: return Color(.systemGray4)
+        case .pending: return Color.gray.opacity(0.3)
         case .current: return .blue
         case .completed: return .green
         case .error: return .red
-        case .skipped: return Color(.systemGray3)
+        case .skipped: return Color.gray.opacity(0.4)
         }
     }
     
@@ -240,7 +240,7 @@ public struct TimelineStyle {
         lineWidth: 2,
         lineHeight: 20,
         iconSize: 24,
-        iconBackgroundColor: Color(.systemBackground),
+        iconBackgroundColor: Color.primary,
         iconColor: .primary,
         itemSpacing: 12,
         contentSpacing: 8,
@@ -253,7 +253,7 @@ public struct TimelineStyle {
         descriptionColor: .secondary,
         dateFont: .caption,
         dateColor: .secondary,
-        pendingConnectorColor: Color(.systemGray4),
+        pendingConnectorColor: Color.gray.opacity(0.3),
         currentConnectorColor: .blue,
         completedConnectorColor: .green
     )
@@ -262,7 +262,7 @@ public struct TimelineStyle {
         lineWidth: 1,
         lineHeight: 16,
         iconSize: 16,
-        iconBackgroundColor: Color(.systemBackground),
+        iconBackgroundColor: Color.primary,
         iconColor: .primary,
         itemSpacing: 8,
         contentSpacing: 4,
@@ -275,7 +275,7 @@ public struct TimelineStyle {
         descriptionColor: .secondary,
         dateFont: .caption2,
         dateColor: .secondary,
-        pendingConnectorColor: Color(.systemGray5),
+        pendingConnectorColor: Color.gray.opacity(0.2),
         currentConnectorColor: .blue,
         completedConnectorColor: .green
     )
@@ -284,7 +284,7 @@ public struct TimelineStyle {
         lineWidth: 3,
         lineHeight: 24,
         iconSize: 32,
-        iconBackgroundColor: Color(.systemBackground),
+        iconBackgroundColor: Color.primary,
         iconColor: .primary,
         itemSpacing: 16,
         contentSpacing: 12,
@@ -297,7 +297,7 @@ public struct TimelineStyle {
         descriptionColor: .secondary,
         dateFont: .subheadline,
         dateColor: .secondary,
-        pendingConnectorColor: Color(.systemGray4),
+        pendingConnectorColor: Color.gray.opacity(0.3),
         currentConnectorColor: .blue,
         completedConnectorColor: .green
     )

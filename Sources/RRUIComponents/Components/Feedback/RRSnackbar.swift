@@ -81,7 +81,7 @@ public struct RRSnackbar<Content: View>: View {
                     }
                 }
                 .padding(RRSpacing.md)
-                .background(Color(.systemBackground))
+                .background(Color.primary)
                 .cornerRadius(12)
                 .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                 .offset(y: dragOffset)

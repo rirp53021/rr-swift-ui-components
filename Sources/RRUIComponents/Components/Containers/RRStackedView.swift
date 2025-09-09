@@ -161,7 +161,7 @@ public struct RRSpacer {
 public struct RRDivider {
     /// Creates a horizontal divider with custom styling
     public static func horizontal(
-        color: Color = Color(.separator),
+        color: Color = Color.gray.opacity(0.3),
         thickness: CGFloat = 0.5,
         contentPadding: EdgeInsets = EdgeInsets(top: RRSpacing.sm, leading: 0, bottom: RRSpacing.sm, trailing: 0)
     ) -> some View {
@@ -172,7 +172,7 @@ public struct RRDivider {
     
     /// Creates a vertical divider with custom styling
     public static func vertical(
-        color: Color = Color(.separator),
+        color: Color = Color.gray.opacity(0.3),
         thickness: CGFloat = 0.5,
         contentPadding: EdgeInsets = EdgeInsets(top: 0, leading: RRSpacing.sm, bottom: 0, trailing: RRSpacing.sm)
     ) -> some View {
@@ -199,7 +199,7 @@ struct RRStackedView_Previews: PreviewProvider {
                         alignment: .leading,
                         spacing: RRSpacing.sm,
                         contentPadding: RRSpacing.paddingMD,
-                        backgroundColor: Color(.systemGray6),
+                        backgroundColor: Color.gray.opacity(0.1),
                         cornerRadius: 8
                     ) {
                         Text("Item 1")
@@ -230,7 +230,7 @@ struct RRStackedView_Previews: PreviewProvider {
                         alignment: .center,
                         spacing: RRSpacing.sm,
                         contentPadding: RRSpacing.paddingMD,
-                        backgroundColor: Color(.systemGray6),
+                        backgroundColor: Color.gray.opacity(0.1),
                         cornerRadius: 8
                     ) {
                         Image(systemName: "person.circle")
@@ -293,7 +293,7 @@ struct RRStackedView_Previews: PreviewProvider {
                         }
                     }
                     .padding(RRSpacing.paddingMD)
-                    .background(Color(.systemGray6))
+                    .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
                 }
                 
@@ -310,7 +310,7 @@ struct RRStackedView_Previews: PreviewProvider {
                         Text("Section 3")
                     }
                     .padding(RRSpacing.paddingMD)
-                    .background(Color(.systemGray6))
+                    .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
                 }
             }

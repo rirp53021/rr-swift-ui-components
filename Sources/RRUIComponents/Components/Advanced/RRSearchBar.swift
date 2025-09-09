@@ -56,7 +56,7 @@ public struct RRSearchBar: View {
                     }
                 }
                 .padding(RRSpacing.sm)
-                .background(Color(.systemGray6))
+                .background(Color.gray.opacity(0.1))
                 .cornerRadius(8)
                 
                 if isSearching {
@@ -81,7 +81,7 @@ public struct RRSearchBar: View {
                         }
                     }
                 }
-                .background(Color(.systemBackground))
+                .background(Color.primary)
                 .cornerRadius(8)
                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                 .padding(.top, RRSpacing.xs)

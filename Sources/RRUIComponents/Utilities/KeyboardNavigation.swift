@@ -32,7 +32,7 @@ public struct NavigationConfig {
     // Predefined configurations for common component types
     public static let button = NavigationConfig(focusTraits: .isButton)
     public static let textField = NavigationConfig(focusTraits: .isKeyboardKey)
-    @available(iOS 17.0, *)
+    @available(iOS 17.0, macOS 14.0, *)
     public static let toggle = NavigationConfig(focusTraits: .isToggle)
     public static let slider = NavigationConfig(focusTraits: .isButton) // Fallback for older iOS versions
     public static let navigation = NavigationConfig(focusTraits: .isHeader) // For tab bars, nav bars

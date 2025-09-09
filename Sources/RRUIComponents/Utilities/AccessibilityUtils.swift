@@ -16,6 +16,7 @@ public struct AccessibilityUtils {
     /// - Parameter color: The color to calculate luminance for
     /// - Returns: The relative luminance value (0.0 to 1.0)
     public static func relativeLuminance(_ color: Color) -> Double {
+        #if canImport(UIKit)
         let uiColor = UIColor(color)
         var red: CGFloat = 0
         var green: CGFloat = 0
@@ -30,6 +31,10 @@ public struct AccessibilityUtils {
         let b = blue <= 0.03928 ? blue / 12.92 : pow((blue + 0.055) / 1.055, 2.4)
         
         return 0.2126 * r + 0.7152 * g + 0.0722 * b
+        #else
+        // Fallback for macOS - return a default value
+        return 0.5
+        #endif
     }
     
     /// Calculate the contrast ratio between two colors

@@ -253,7 +253,7 @@ public struct RRProgressBar: View {
     public init(
         progress: Double,
         height: CGFloat = 8,
-        backgroundColor: Color = Color(.systemGray5),
+        backgroundColor: Color = Color.gray.opacity(0.2),
         progressColor: Color = .blue,
         cornerRadius: CGFloat = 4,
         showPercentage: Bool = false,
@@ -277,7 +277,7 @@ public struct RRProgressBar: View {
                 
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(progressColor)
-                    .frame(width: CGFloat(progress) * UIScreen.main.bounds.width, height: height)
+                    .frame(width: CGFloat(progress) * 300, height: height)
                     .animation(animation, value: progress)
             }
             
@@ -366,20 +366,20 @@ struct RRLoadingIndicator_Previews: PreviewProvider {
                     ) {
                         VStack(spacing: 16) {
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(Color(.systemGray6))
+                                .fill(Color.gray.opacity(0.1))
                                 .frame(height: 100)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(.systemGray5))
+                                    .fill(Color.gray.opacity(0.2))
                                     .frame(height: 20)
                                 
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(.systemGray5))
+                                    .fill(Color.gray.opacity(0.2))
                                     .frame(height: 16)
                                 
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(.systemGray5))
+                                    .fill(Color.gray.opacity(0.2))
                                     .frame(height: 16)
                             }
                         }

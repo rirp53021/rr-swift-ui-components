@@ -71,7 +71,7 @@ public struct RRModal<Content: View>: View {
                         
                         content
                     }
-                    .background(Color(.systemBackground))
+                    .background(Color.primary)
                     .cornerRadius(style == .bottomSheet ? 16 : 0)
                     .offset(y: dragOffset)
                     .gesture(

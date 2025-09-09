@@ -184,8 +184,8 @@ public struct TagInputStyle {
     public let tagStyle: TagStyle
     
     public static let `default` = TagInputStyle(
-        containerBackgroundColor: Color(.systemBackground),
-        containerBorderColor: Color(.systemGray4),
+        containerBackgroundColor: Color.primary,
+        containerBorderColor: Color.gray.opacity(0.3),
         containerCornerRadius: 8,
         containerHorizontalPadding: 12,
         containerVerticalPadding: 12,
@@ -200,13 +200,13 @@ public struct TagInputStyle {
     )
     
     public static let filled = TagInputStyle(
-        containerBackgroundColor: Color(.systemGray6),
-        containerBorderColor: Color(.systemGray4),
+        containerBackgroundColor: Color.gray.opacity(0.1),
+        containerBorderColor: Color.gray.opacity(0.3),
         containerCornerRadius: 8,
         containerHorizontalPadding: 12,
         containerVerticalPadding: 12,
-        inputBackgroundColor: Color(.systemBackground),
-        inputBorderColor: Color(.systemGray3),
+        inputBackgroundColor: Color.primary,
+        inputBorderColor: Color.gray.opacity(0.4),
         inputTextColor: .primary,
         inputFont: .body,
         inputCornerRadius: 4,
@@ -217,12 +217,12 @@ public struct TagInputStyle {
     
     public static let outlined = TagInputStyle(
         containerBackgroundColor: Color.clear,
-        containerBorderColor: Color(.systemGray4),
+        containerBorderColor: Color.gray.opacity(0.3),
         containerCornerRadius: 8,
         containerHorizontalPadding: 12,
         containerVerticalPadding: 12,
         inputBackgroundColor: Color.clear,
-        inputBorderColor: Color(.systemGray3),
+        inputBorderColor: Color.gray.opacity(0.4),
         inputTextColor: .primary,
         inputFont: .body,
         inputCornerRadius: 4,

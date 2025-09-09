@@ -8,6 +8,11 @@ options:
     watchOS: "8.0"
     visionOS: "1.0"
 
+packages:
+  RRFoundation:
+    url: https://github.com/rirp53021/rr-swift-foundation.git
+    majorVersion: 1.8.0
+
 settings:
   PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
   PRODUCT_NAME: RRUIComponents
@@ -27,6 +32,8 @@ targets:
     deploymentTarget: "15.0"
     sources:
       - path: Sources/RRUIComponents
+    dependencies:
+      - package: RRFoundation
     settings:
       PRODUCT_NAME: RRUIComponents
       PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
@@ -41,7 +48,7 @@ targets:
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
         CFBundleName: $(PRODUCT_NAME)
         CFBundlePackageType: FMWK
-        CFBundleShortVersionString: 1.2.1
+        CFBundleShortVersionString: 1.2.2
         CFBundleVersion: 1
 
   RRUIComponentsTests:
@@ -65,7 +72,7 @@ targets:
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
         CFBundleName: $(PRODUCT_NAME)
         CFBundlePackageType: BNDL
-        CFBundleShortVersionString: 1.2.1
+        CFBundleShortVersionString: 1.2.2
         CFBundleVersion: 1
 
 schemes:

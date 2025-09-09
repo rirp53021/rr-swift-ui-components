@@ -2,10 +2,16 @@
 // Licensed under the MIT License
 
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 import RRFoundation
 
 /// Main entry point for RRUIComponents library
 @_exported import SwiftUI
+#if canImport(UIKit)
+@_exported import UIKit
+#endif
 @_exported import RRFoundation
 
 // MARK: - Re-exported Foundation Utilities
@@ -13,7 +19,7 @@ import RRFoundation
 
 // MARK: - Library Information
 public enum RRUIComponents {
-    public static let version = "1.2.1"
+    public static let version = "1.2.2"
     public static let name = "RRUIComponents"
 }
 

@@ -66,7 +66,7 @@ public struct RRStepper: View {
             .disabled(value >= range.upperBound)
         }
         .padding(style == .compact ? RRSpacing.xs : RRSpacing.sm)
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
 }

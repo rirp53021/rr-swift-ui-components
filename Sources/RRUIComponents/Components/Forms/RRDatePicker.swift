@@ -123,7 +123,11 @@ public struct RRDatePicker: View {
                         in: dateRange,
                         displayedComponents: mode.displayedComponents
                     )
+                    #if os(iOS)
                     .datePickerStyle(.wheel)
+                    #else
+                    .datePickerStyle(.compact)
+                    #endif
                     .labelsHidden()
                     .padding()
                     .background(style.pickerBackgroundColor)
@@ -180,7 +184,7 @@ public struct DatePickerStyle {
     public let pickerBorderColor: Color
     
     public static let `default` = DatePickerStyle(
-        backgroundColor: Color(.systemBackground),
+        backgroundColor: Color.primary,
         textColor: .primary,
         titleColor: .primary,
         iconColor: .secondary,
@@ -190,12 +194,12 @@ public struct DatePickerStyle {
         horizontalPadding: 12,
         verticalPadding: 12,
         cornerRadius: 8,
-        pickerBackgroundColor: Color(.systemBackground),
-        pickerBorderColor: Color(.systemGray4)
+        pickerBackgroundColor: Color.primary,
+        pickerBorderColor: Color.gray.opacity(0.3)
     )
     
     public static let filled = DatePickerStyle(
-        backgroundColor: Color(.systemGray6),
+        backgroundColor: Color.gray.opacity(0.1),
         textColor: .primary,
         titleColor: .primary,
         iconColor: .secondary,
@@ -205,8 +209,8 @@ public struct DatePickerStyle {
         horizontalPadding: 12,
         verticalPadding: 12,
         cornerRadius: 8,
-        pickerBackgroundColor: Color(.systemBackground),
-        pickerBorderColor: Color(.systemGray4)
+        pickerBackgroundColor: Color.primary,
+        pickerBorderColor: Color.gray.opacity(0.3)
     )
     
     public static let outlined = DatePickerStyle(
@@ -220,8 +224,8 @@ public struct DatePickerStyle {
         horizontalPadding: 12,
         verticalPadding: 12,
         cornerRadius: 8,
-        pickerBackgroundColor: Color(.systemBackground),
-        pickerBorderColor: Color(.systemGray4)
+        pickerBackgroundColor: Color.primary,
+        pickerBorderColor: Color.gray.opacity(0.3)
     )
 }
 
@@ -375,7 +379,11 @@ public struct RRTimeRangePicker: View {
                             selection: $startTime,
                             displayedComponents: .hourAndMinute
                         )
-                        .datePickerStyle(.wheel)
+                        #if os(iOS)
+                    .datePickerStyle(.wheel)
+                    #else
+                    .datePickerStyle(.compact)
+                    #endif
                         .labelsHidden()
                     }
                     
@@ -389,7 +397,11 @@ public struct RRTimeRangePicker: View {
                             selection: $endTime,
                             displayedComponents: .hourAndMinute
                         )
-                        .datePickerStyle(.wheel)
+                        #if os(iOS)
+                    .datePickerStyle(.wheel)
+                    #else
+                    .datePickerStyle(.compact)
+                    #endif
                         .labelsHidden()
                     }
                 }

@@ -227,13 +227,13 @@ public struct CarouselStyle {
         animation: .easeInOut(duration: 0.2),
         arrowSize: 16,
         arrowColor: .primary,
-        arrowBackgroundColor: Color(.systemBackground).opacity(0.8),
+        arrowBackgroundColor: Color.primary.opacity(0.8),
         arrowPadding: 6,
         arrowHorizontalPadding: 12,
         indicatorSize: 6,
         indicatorSpacing: 6,
         activeIndicatorColor: .blue,
-        inactiveIndicatorColor: Color(.systemGray4),
+        inactiveIndicatorColor: Color.gray.opacity(0.3),
         indicatorBottomPadding: 12
     )
     
@@ -247,7 +247,7 @@ public struct CarouselStyle {
         indicatorSize: 10,
         indicatorSpacing: 10,
         activeIndicatorColor: .blue,
-        inactiveIndicatorColor: Color(.systemGray5),
+        inactiveIndicatorColor: Color.gray.opacity(0.2),
         indicatorBottomPadding: 20
     )
 }
@@ -309,7 +309,7 @@ public struct RRImageCarousel: View {
                     .aspectRatio(contentMode: contentMode)
             } placeholder: {
                 Rectangle()
-                    .fill(Color(.systemGray6))
+                    .fill(Color.gray.opacity(0.1))
                     .overlay(
                         ProgressView()
                     )

@@ -318,7 +318,7 @@ struct RREmptyState_Previews: PreviewProvider {
                         title: "Custom State",
                         subtitle: "This is a custom empty state with a star icon.",
                         style: .standard,
-                        backgroundColor: Color(.systemGray6)
+                        backgroundColor: Color.gray.opacity(0.1)
                     ) {
                         HStack(spacing: 12) {
                             Button("Cancel") {
@@ -328,7 +328,7 @@ struct RREmptyState_Previews: PreviewProvider {
                             .foregroundColor(.secondary)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
-                            .background(Color(.systemGray5))
+                            .background(Color.gray.opacity(0.2))
                             .cornerRadius(6)
                             
                             Button("Continue") {

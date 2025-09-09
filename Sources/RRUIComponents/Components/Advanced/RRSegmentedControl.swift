@@ -146,11 +146,11 @@ public struct SegmentedControlStyle {
     public let selectionIndicatorCornerRadius: CGFloat
     
     public static let `default` = SegmentedControlStyle(
-        containerBackgroundColor: Color(.systemGray6),
+        containerBackgroundColor: Color.gray.opacity(0.1),
         containerBorderColor: Color.clear,
         containerBorderWidth: 0,
         backgroundColor: Color.clear,
-        selectedBackgroundColor: Color(.systemBackground),
+        selectedBackgroundColor: Color.primary,
         textColor: .primary,
         selectedTextColor: .primary,
         iconColor: .secondary,
@@ -166,16 +166,16 @@ public struct SegmentedControlStyle {
         cornerRadius: 8,
         showBackground: true,
         showSelectionIndicator: false,
-        selectionIndicatorColor: Color(.systemBlue),
+        selectionIndicatorColor: Color.blue,
         selectionIndicatorCornerRadius: 6
     )
     
     public static let pill = SegmentedControlStyle(
-        containerBackgroundColor: Color(.systemGray6),
+        containerBackgroundColor: Color.gray.opacity(0.1),
         containerBorderColor: Color.clear,
         containerBorderWidth: 0,
         backgroundColor: Color.clear,
-        selectedBackgroundColor: Color(.systemBlue),
+        selectedBackgroundColor: Color.blue,
         textColor: .primary,
         selectedTextColor: .white,
         iconColor: .secondary,
@@ -197,10 +197,10 @@ public struct SegmentedControlStyle {
     
     public static let outlined = SegmentedControlStyle(
         containerBackgroundColor: Color.clear,
-        containerBorderColor: Color(.systemGray4),
+        containerBorderColor: Color.gray.opacity(0.3),
         containerBorderWidth: 1,
         backgroundColor: Color.clear,
-        selectedBackgroundColor: Color(.systemBlue).opacity(0.1),
+        selectedBackgroundColor: Color.blue.opacity(0.1),
         textColor: .primary,
         selectedTextColor: .blue,
         iconColor: .secondary,
@@ -221,7 +221,7 @@ public struct SegmentedControlStyle {
     )
     
     public static let indicator = SegmentedControlStyle(
-        containerBackgroundColor: Color(.systemGray6),
+        containerBackgroundColor: Color.gray.opacity(0.1),
         containerBorderColor: Color.clear,
         containerBorderWidth: 0,
         backgroundColor: Color.clear,

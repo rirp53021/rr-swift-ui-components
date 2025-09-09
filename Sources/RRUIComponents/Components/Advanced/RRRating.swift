@@ -103,7 +103,7 @@ public enum RatingStyle {
         if value <= displayRating {
             return .yellow
         } else {
-            return Color(.systemGray4)
+            return Color.gray.opacity(0.3)
         }
     }
     

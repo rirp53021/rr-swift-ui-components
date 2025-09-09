@@ -135,16 +135,16 @@ public extension RRColorScheme {
         secondary: Color.gray,
         accent: Color.orange,
         background: Color.white,
-        surface: Color(.systemGray6),
+        surface: Color.gray.opacity(0.1),
         error: Color.red,
         warning: Color.orange,
         success: Color.green,
         info: Color.blue,
         text: Color.primary,
         textSecondary: Color.secondary,
-        textTertiary: Color(.systemGray3),
-        border: Color(.systemGray4),
-        divider: Color(.systemGray5)
+        textTertiary: Color.gray.opacity(0.6),
+        border: Color.gray.opacity(0.3),
+        divider: Color.gray.opacity(0.2)
     )
     
     /// Dark color scheme
@@ -153,34 +153,34 @@ public extension RRColorScheme {
         secondary: Color.gray,
         accent: Color.orange,
         background: Color.black,
-        surface: Color(.systemGray6),
+        surface: Color.gray.opacity(0.2),
         error: Color.red,
         warning: Color.orange,
         success: Color.green,
         info: Color.blue,
         text: Color.primary,
         textSecondary: Color.secondary,
-        textTertiary: Color(.systemGray3),
-        border: Color(.systemGray4),
-        divider: Color(.systemGray5)
+        textTertiary: Color.gray.opacity(0.6),
+        border: Color.gray.opacity(0.3),
+        divider: Color.gray.opacity(0.2)
     )
     
     /// Material color scheme
     static let material = RRColorScheme(
-        primary: Color(.systemBlue),
-        secondary: Color(.systemGray),
-        accent: Color(.systemOrange),
-        background: Color(.systemBackground),
-        surface: Color(.secondarySystemBackground),
-        error: Color(.systemRed),
-        warning: Color(.systemYellow),
-        success: Color(.systemGreen),
-        info: Color(.systemBlue),
-        text: Color(.label),
-        textSecondary: Color(.secondaryLabel),
-        textTertiary: Color(.tertiaryLabel),
-        border: Color(.separator),
-        divider: Color(.separator)
+        primary: Color.blue,
+        secondary: Color.gray,
+        accent: Color.orange,
+        background: Color.primary,
+        surface: Color.secondary,
+        error: Color.red,
+        warning: Color.yellow,
+        success: Color.green,
+        info: Color.blue,
+        text: Color.primary,
+        textSecondary: Color.secondary,
+        textTertiary: Color.gray.opacity(0.6),
+        border: Color.gray.opacity(0.3),
+        divider: Color.gray.opacity(0.2)
     )
     
     /// Custom color scheme with CSS colors
@@ -189,16 +189,16 @@ public extension RRColorScheme {
         secondary: Color(hex: "#8E8E93") ?? Color.gray,
         accent: Color(hex: "#FF9500") ?? Color.orange,
         background: Color(hex: "#FFFFFF") ?? Color.white,
-        surface: Color(hex: "#F2F2F7") ?? Color(.systemGray6),
+        surface: Color(hex: "#F2F2F7") ?? Color.gray.opacity(0.1),
         error: Color(hex: "#FF3B30") ?? Color.red,
         warning: Color(hex: "#FF9500") ?? Color.orange,
         success: Color(hex: "#34C759") ?? Color.green,
         info: Color(hex: "#007AFF") ?? Color.blue,
         text: Color(hex: "#000000") ?? Color.primary,
         textSecondary: Color(hex: "#8E8E93") ?? Color.secondary,
-        textTertiary: Color(hex: "#C7C7CC") ?? Color(.systemGray3),
-        border: Color(hex: "#D1D1D6") ?? Color(.systemGray4),
-        divider: Color(hex: "#E5E5EA") ?? Color(.systemGray5)
+        textTertiary: Color(hex: "#C7C7CC") ?? Color.gray.opacity(0.6),
+        border: Color(hex: "#D1D1D6") ?? Color.gray.opacity(0.3),
+        divider: Color(hex: "#E5E5EA") ?? Color.gray.opacity(0.2)
     )
 }
 

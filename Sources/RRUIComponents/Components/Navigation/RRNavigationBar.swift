@@ -73,7 +73,7 @@ public struct RRNavigationBar: View {
             }
             .padding(.horizontal, RRSpacing.md)
             .padding(.vertical, RRSpacing.sm)
-            .background(Color(.systemBackground))
+            .background(Color.primary)
             .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
         }
     }

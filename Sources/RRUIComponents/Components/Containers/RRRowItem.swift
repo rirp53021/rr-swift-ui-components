@@ -162,11 +162,11 @@ public extension RRRowItem {
         }
         
         var backgroundColor: Color {
-            return Color(.systemBackground)
+            return Color.primary
         }
         
         var separatorColor: Color {
-            return Color(.separator)
+            return Color.gray.opacity(0.3)
         }
     }
 }
