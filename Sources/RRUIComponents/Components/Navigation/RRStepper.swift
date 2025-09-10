@@ -14,6 +14,9 @@ public enum StepperStyle {
 // MARK: - RRStepper
 
 public struct RRStepper: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var value: Int
     private let range: ClosedRange<Int>
     private let step: Int
@@ -35,7 +38,7 @@ public struct RRStepper: View {
     }
     
     public var body: some View {
-        HStack(spacing: RRSpacing.sm) {
+        HStack(spacing: DesignTokens.Spacing.sm) {
             Button(action: {
                 if value > range.lowerBound {
                     value = max(range.lowerBound, value - step)
@@ -43,15 +46,18 @@ public struct RRStepper: View {
                 }
             }) {
                 Image(systemName: "minus")
-                    .foregroundColor(value <= range.lowerBound ? .gray : .blue)
+                    .foregroundColor(value <= range.lowerBound ? theme.colors.disabled : theme.colors.primary)
                     .font(style == .large ? .title2 : .title3)
             }
             .disabled(value <= range.lowerBound)
             
-            Text("\(value)")
-                .font(style == .large ? .title : .headline)
-                .foregroundColor(.primary)
-                .frame(minWidth: 40)
+            RRLabel(
+                "\(value)",
+                style: style == .large ? .title : .subtitle,
+                weight: .medium,
+                color: .primary
+            )
+            .frame(minWidth: 40)
             
             Button(action: {
                 if value < range.upperBound {
@@ -60,20 +66,23 @@ public struct RRStepper: View {
                 }
             }) {
                 Image(systemName: "plus")
-                    .foregroundColor(value >= range.upperBound ? .gray : .blue)
+                    .foregroundColor(value >= range.upperBound ? theme.colors.disabled : theme.colors.primary)
                     .font(style == .large ? .title2 : .title3)
             }
             .disabled(value >= range.upperBound)
         }
-        .padding(style == .compact ? RRSpacing.xs : RRSpacing.sm)
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(8)
+        .padding(style == .compact ? DesignTokens.Spacing.xs : DesignTokens.Spacing.sm)
+        .background(theme.colors.surfaceVariant)
+        .cornerRadius(DesignTokens.BorderRadius.md)
     }
 }
 
 // MARK: - Stepper with Label
 
 public struct RRStepperWithLabel: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var value: Int
     private let label: String
     private let range: ClosedRange<Int>
@@ -98,10 +107,13 @@ public struct RRStepperWithLabel: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: RRSpacing.sm) {
-            Text(label)
-                .font(.headline)
-                .foregroundColor(.primary)
+        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+            RRLabel(
+                label,
+                style: .subtitle,
+                weight: .medium,
+                color: .primary
+            )
             
             RRStepper(
                 value: $value,
@@ -119,11 +131,21 @@ public struct RRStepperWithLabel: View {
 #if DEBUG
 struct RRStepper_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Stepper Styles")
-                .font(.headline)
+        RRStepperPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRStepper Examples")
+    }
+}
+
+private struct RRStepperPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel.title("Stepper Styles")
             
-            VStack(spacing: 15) {
+            VStack(spacing: DesignTokens.Spacing.md) {
                 RRStepper(value: .constant(5), in: 0...10, style: .standard)
                 
                 RRStepper(value: .constant(3), in: 0...5, style: .compact)
@@ -139,7 +161,7 @@ struct RRStepper_Previews: PreviewProvider {
                 )
             }
         }
-        .padding()
+        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif

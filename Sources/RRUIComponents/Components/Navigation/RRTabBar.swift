@@ -28,6 +28,9 @@ public struct TabItem: Identifiable {
 // MARK: - RRTabBar
 
 public struct RRTabBar: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var selectedTab: Int
     private let items: [TabItem]
     private let onTabSelected: (Int) -> Void
@@ -48,8 +51,8 @@ public struct RRTabBar: View {
                 tabButton(for: item, at: index)
             }
         }
-        .background(Color.gray.opacity(0.1))
-        .shadow(color: Color.black.opacity(0.1), radius: DesignTokens.Elevation.level1.radius, x: DesignTokens.Elevation.level1.x, y: DesignTokens.Elevation.level1.y)
+        .background(theme.colors.surfaceVariant)
+        .shadow(color: theme.colors.outline.opacity(0.1), radius: DesignTokens.Elevation.level1.radius, x: 0, y: 1)
         .keyboardNavigation(
             config: .navigation,
             onMovement: { action in
@@ -77,7 +80,7 @@ public struct RRTabBar: View {
     private func tabIcon(for item: TabItem, at index: Int) -> some View {
         ZStack {
             Image(systemName: selectedTab == index ? (item.selectedIcon ?? item.icon) : item.icon)
-                .foregroundColor(selectedTab == index ? .blue : .gray)
+                .foregroundColor(selectedTab == index ? theme.colors.primary : theme.colors.secondaryText)
                 .font(DesignTokens.Typography.titleSmall)
             
             if let badge = item.badge, selectedTab == index {
@@ -87,20 +90,26 @@ public struct RRTabBar: View {
     }
     
     private func tabTitle(for item: TabItem, at index: Int) -> some View {
-        Text(item.title)
-            .font(DesignTokens.Typography.labelMedium)
-            .foregroundColor(selectedTab == index ? .blue : .gray)
+        RRLabel(
+            item.title,
+            style: .caption,
+            weight: .medium,
+            customColor: selectedTab == index ? theme.colors.primary : theme.colors.secondaryText
+        )
     }
     
     private func badgeView(_ badge: String) -> some View {
-        Text(badge)
-            .font(DesignTokens.Typography.labelSmall)
-            .foregroundColor(.white)
-            .padding(.horizontal, DesignTokens.Spacing.xs)
-            .padding(.vertical, DesignTokens.Spacing.xs)
-            .background(.red)
-            .cornerRadius(DesignTokens.BorderRadius.sm)
-            .offset(x: 12, y: -8)
+        RRLabel(
+            badge,
+            style: .caption,
+            weight: .medium,
+            customColor: theme.colors.onError
+        )
+        .padding(.horizontal, DesignTokens.Spacing.xs)
+        .padding(.vertical, DesignTokens.Spacing.xs)
+        .background(theme.colors.error)
+        .cornerRadius(DesignTokens.BorderRadius.sm)
+        .offset(x: 12, y: -8)
     }
     
     private func handleKeyboardMovement(_ action: KeyboardMovementAction) {
@@ -165,9 +174,19 @@ public struct RRTabBarWithContent<Content: View>: View {
 #if DEBUG
 struct RRTabBar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Tab Bar")
-                .font(.headline)
+        RRTabBarPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRTabBar Examples")
+    }
+}
+
+private struct RRTabBarPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel.title("Tab Bar")
             
             RRTabBar(
                 selectedTab: .constant(0),
@@ -179,7 +198,7 @@ struct RRTabBar_Previews: PreviewProvider {
                 ]
             )
         }
-        .padding()
+        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif

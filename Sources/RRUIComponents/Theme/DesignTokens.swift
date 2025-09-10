@@ -156,6 +156,38 @@ public struct DesignTokens {
         public static let loadingSpinner = SwiftUI.Animation.linear(duration: 1.0).repeatForever(autoreverses: false)
     }
     
+    // MARK: - Transition Tokens
+    
+    /// Transition design tokens for consistent motion design
+    public struct Transition {
+        // Fade transitions
+        public static let fadeIn = SwiftUI.Animation.easeIn(duration: 0.2)
+        public static let fadeOut = SwiftUI.Animation.easeOut(duration: 0.15)
+        
+        // Slide transitions
+        public static let slideIn = SwiftUI.Animation.easeOut(duration: 0.3)
+        public static let slideOut = SwiftUI.Animation.easeIn(duration: 0.25)
+        public static let slideInFromTop = SwiftUI.Animation.easeOut(duration: 0.3)
+        public static let slideInFromBottom = SwiftUI.Animation.easeOut(duration: 0.3)
+        public static let slideInFromLeft = SwiftUI.Animation.easeOut(duration: 0.3)
+        public static let slideInFromRight = SwiftUI.Animation.easeOut(duration: 0.3)
+        
+        // Scale transitions
+        public static let scaleIn = SwiftUI.Animation.spring(response: 0.3, dampingFraction: 0.8)
+        public static let scaleOut = SwiftUI.Animation.easeIn(duration: 0.2)
+        public static let scaleInBounce = SwiftUI.Animation.spring(response: 0.4, dampingFraction: 0.6)
+        
+        // Rotation transitions
+        public static let rotateIn = SwiftUI.Animation.easeOut(duration: 0.3)
+        public static let rotateOut = SwiftUI.Animation.easeIn(duration: 0.25)
+        
+        // Combined transitions
+        public static let slideAndFadeIn = SwiftUI.Animation.easeOut(duration: 0.3)
+        public static let slideAndFadeOut = SwiftUI.Animation.easeIn(duration: 0.25)
+        public static let scaleAndFadeIn = SwiftUI.Animation.spring(response: 0.3, dampingFraction: 0.8)
+        public static let scaleAndFadeOut = SwiftUI.Animation.easeIn(duration: 0.2)
+    }
+    
     // MARK: - Component Size Tokens
     
     /// Component size design tokens for consistent component sizing
@@ -203,6 +235,20 @@ public struct DesignTokens {
         public static let toggleWidthSmall: CGFloat = 40
         public static let toggleHeightSmall: CGFloat = 20
         public static let toggleThumbSizeSmall: CGFloat = 16
+    }
+    
+    // MARK: - Z-Index Tokens
+    
+    /// Z-Index design tokens for consistent layer ordering
+    public struct ZIndex {
+        public static let modal: CGFloat = 1000
+        public static let dropdown: CGFloat = 100
+        public static let tooltip: CGFloat = 200
+        public static let floating: CGFloat = 50
+        public static let overlay: CGFloat = 500
+        public static let navigation: CGFloat = 300
+        public static let content: CGFloat = 1
+        public static let background: CGFloat = 0
     }
     
     // MARK: - Breakpoint Tokens

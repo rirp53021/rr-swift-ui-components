@@ -192,6 +192,13 @@ public struct ThemeColors: Equatable {
     public let onInfo: Color
     public let disabled: Color
     
+    // Interactive State Colors
+    public let focus: Color
+    public let hover: Color
+    public let pressed: Color
+    public let selected: Color
+    public let active: Color
+    
     // Text Colors
     public let primaryText: Color
     public let secondaryText: Color
@@ -240,6 +247,11 @@ public struct ThemeColors: Equatable {
         info: Color,
         onInfo: Color,
         disabled: Color,
+        focus: Color,
+        hover: Color,
+        pressed: Color,
+        selected: Color,
+        active: Color,
         primaryText: Color,
         secondaryText: Color,
         white: Color,
@@ -282,6 +294,11 @@ public struct ThemeColors: Equatable {
         self.info = info
         self.onInfo = onInfo
         self.disabled = disabled
+        self.focus = focus
+        self.hover = hover
+        self.pressed = pressed
+        self.selected = selected
+        self.active = active
         self.primaryText = primaryText
         self.secondaryText = secondaryText
         self.white = white
@@ -342,6 +359,13 @@ public struct ThemeColors: Equatable {
         self.onInfo = Color.fromDesignSystem(.onInfo, bundle: bundle)
         self.disabled = Color.fromDesignSystem(.disabled, bundle: bundle)
         
+        // Interactive State Colors
+        self.focus = Color.fromDesignSystem(.focus, bundle: bundle)
+        self.hover = Color.fromDesignSystem(.hover, bundle: bundle)
+        self.pressed = Color.fromDesignSystem(.pressed, bundle: bundle)
+        self.selected = Color.fromDesignSystem(.selected, bundle: bundle)
+        self.active = Color.fromDesignSystem(.active, bundle: bundle)
+        
         // Text Colors
         self.primaryText = Color.fromDesignSystem(.primaryText, bundle: bundle)
         self.secondaryText = Color.fromDesignSystem(.secondaryText, bundle: bundle)
@@ -397,6 +421,11 @@ public struct ThemeColors: Equatable {
             info: colors.info,
             onInfo: colors.onSurface, // Different for dark theme
             disabled: colors.disabled,
+            focus: colors.focus,
+            hover: colors.hover,
+            pressed: colors.pressed,
+            selected: colors.selected,
+            active: colors.active,
             primaryText: colors.primaryText,
             secondaryText: colors.secondaryText,
             white: colors.white,
@@ -446,6 +475,11 @@ public struct ThemeColors: Equatable {
             info: baseColors.info,
             onInfo: baseColors.white,
             disabled: baseColors.disabled,
+            focus: baseColors.focus,
+            hover: baseColors.hover,
+            pressed: baseColors.pressed,
+            selected: baseColors.selected,
+            active: baseColors.active,
             primaryText: baseColors.black,
             secondaryText: baseColors.secondaryText,
             white: baseColors.white,

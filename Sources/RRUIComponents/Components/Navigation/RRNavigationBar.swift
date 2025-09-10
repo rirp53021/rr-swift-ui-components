@@ -15,6 +15,9 @@ public enum NavigationBarStyle {
 // MARK: - RRNavigationBar
 
 public struct RRNavigationBar: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let title: String
     private let style: NavigationBarStyle
     private let leadingButton: (() -> AnyView)?
@@ -53,11 +56,13 @@ public struct RRNavigationBar: View {
                 
                 Spacer()
                 
-                Text(title)
-                    .font(style == .large ? .largeTitle : .headline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-                    .dynamicTypeSize(.large) // Support Dynamic Type
+                RRLabel(
+                    title,
+                    style: style == .large ? .title : .subtitle,
+                    weight: .semibold,
+                    color: .primary
+                )
+                .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 Spacer()
                 
@@ -71,10 +76,10 @@ public struct RRNavigationBar: View {
                         .frame(width: 44)
                 }
             }
-            .padding(.horizontal, RRSpacing.md)
-            .padding(.vertical, RRSpacing.sm)
-            .background(Color.primary)
-            .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+            .padding(.horizontal, DesignTokens.Spacing.md)
+            .padding(.vertical, DesignTokens.Spacing.sm)
+            .background(theme.colors.surface)
+            .shadow(color: theme.colors.outline.opacity(0.1), radius: DesignTokens.Elevation.level1.radius, x: 0, y: 1)
         }
     }
 }
@@ -82,6 +87,9 @@ public struct RRNavigationBar: View {
 // MARK: - Action Button View
 
 public struct ActionButtonView: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let icon: String
     private let action: () -> Void
     
@@ -95,7 +103,7 @@ public struct ActionButtonView: View {
             action()
         }) {
             Image(systemName: icon)
-                .foregroundColor(.blue)
+                .foregroundColor(theme.colors.primary)
                 .font(.title3)
         }
     }
@@ -106,11 +114,21 @@ public struct ActionButtonView: View {
 #if DEBUG
 struct RRNavigationBar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Navigation Bar Styles")
-                .font(.headline)
+        RRNavigationBarPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRNavigationBar Examples")
+    }
+}
+
+private struct RRNavigationBarPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel.title("Navigation Bar Styles")
             
-            VStack(spacing: 10) {
+            VStack(spacing: DesignTokens.Spacing.sm) {
                 RRNavigationBar(
                     title: "Standard Title",
                     style: .standard,
@@ -145,7 +163,7 @@ struct RRNavigationBar_Previews: PreviewProvider {
                 )
             }
         }
-        .padding()
+        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif

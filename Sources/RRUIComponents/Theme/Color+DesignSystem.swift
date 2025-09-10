@@ -55,6 +55,13 @@ extension Color {
         case onInfo
         case disabled
         
+        // Interactive State Colors
+        case focus
+        case hover
+        case pressed
+        case selected
+        case active
+        
         // Basic Colors
         case white
         case black
@@ -87,6 +94,11 @@ extension Color {
             case .info: return "Info"
             case .onInfo: return "White"
             case .disabled: return "Disabled"
+            case .focus: return "Focus"
+            case .hover: return "Hover"
+            case .pressed: return "Pressed"
+            case .selected: return "Selected"
+            case .active: return "Active"
             case .white: return "White"
             case .black: return "Black"
             }
