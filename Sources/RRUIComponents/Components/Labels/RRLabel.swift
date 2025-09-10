@@ -96,14 +96,16 @@ public struct RRLabel: View {
             return customColor
         }
         
+        let theme = themeProvider.currentTheme
+        
         switch color {
-        case .primary: return .primaryText
-        case .secondary: return .secondary
-        case .tertiary: return .tertiary
-        case .success: return .success
-        case .warning: return .warning
-        case .error: return .error
-        case .info: return .info
+        case .primary: return theme.colors.primaryText
+        case .secondary: return theme.colors.secondary
+        case .tertiary: return theme.colors.tertiary
+        case .success: return theme.colors.success
+        case .warning: return theme.colors.warning
+        case .error: return theme.colors.error
+        case .info: return theme.colors.info
         }
     }
 }
@@ -214,7 +216,7 @@ struct RRLabel_Previews: PreviewProvider {
                 RRLabel.body("Custom Purple", customColor: .purple)
                 RRLabel.body("Custom Orange", customColor: .orange)
                 RRLabel.body("Custom Pink", customColor: .pink)
-                RRLabel.body("Disabled Gray", customColor: .disabled)
+                RRLabel.body("Disabled Gray", customColor: .gray)
             }
         }
         .padding()

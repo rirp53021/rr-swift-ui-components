@@ -9,23 +9,37 @@ import Combine
 
 private final class BundleToken {}
 
+public extension Bundle {
+    static let uiComponents = Bundle(for: BundleToken.self)
+}
+
+// MARK: - Theme Color Scheme
+
+public enum ThemeColorScheme: String, CaseIterable {
+    case light = "light"
+    case dark = "dark"
+    case highContrast = "highContrast"
+}
+
 // MARK: - Theme Provider
 
 /// SwiftUI environment-based theme provider for consistent theming across the app
-/// 
+///
 /// This ThemeProvider guarantees that components use the colors configured in the app's Colors.xcassets.
 /// The Color extensions automatically read from the asset catalog, ensuring that:
 /// - Light and dark mode variants are properly applied
 /// - App-specific brand colors are respected
 /// - The library integrates seamlessly with the app's design system
-/// 
+///
 /// Usage: Components should always use @Environment(\.themeProvider) and theme.colors.xxx
 /// instead of direct Color references to ensure proper theming.
 public class ThemeProvider: ObservableObject {
     @Published public var currentTheme: Theme = .light
     @Published public var colorScheme: SwiftUI.ColorScheme = .light
+    private let bundle: Bundle
     
-    public init(theme: Theme = .light) {
+    public init(theme: Theme = .light, bundle: Bundle = .uiComponents) {
+        self.bundle = bundle
         self.currentTheme = theme
         self.colorScheme = theme.colorScheme == .light ? .light : .dark
     }
@@ -59,7 +73,7 @@ public class ThemeProvider: ObservableObject {
 /// Comprehensive theme definition with all design tokens
 public struct Theme: Equatable {
     public let name: String
-    public let colorScheme: ColorScheme
+    public let colorScheme: ThemeColorScheme
     public let colors: ThemeColors
     public let typography: ThemeTypography
     public let spacing: ThemeSpacing
@@ -70,7 +84,7 @@ public struct Theme: Equatable {
     
     public init(
         name: String,
-        colorScheme: ColorScheme,
+        colorScheme: ThemeColorScheme,
         colors: ThemeColors,
         typography: ThemeTypography = .default,
         spacing: ThemeSpacing = .default,
@@ -90,30 +104,56 @@ public struct Theme: Equatable {
         self.componentSize = componentSize
     }
     
+    /// Creates a theme with the specified bundle for colors
+    public static func create(
+        name: String,
+        colorScheme: ThemeColorScheme,
+        bundle: Bundle = .uiComponents,
+        typography: ThemeTypography = .default,
+        spacing: ThemeSpacing = .default,
+        elevation: ThemeElevation = .default,
+        borderRadius: ThemeBorderRadius = .default,
+        animation: ThemeAnimation = .default,
+        componentSize: ThemeComponentSize = .default
+    ) -> Theme {
+        let colors: ThemeColors
+        switch colorScheme {
+        case .light:
+            colors = ThemeColors(bundle: bundle)
+        case .dark:
+            colors = ThemeColors.dark(bundle: bundle)
+        case .highContrast:
+            colors = ThemeColors.highContrast(bundle: bundle)
+        }
+        
+        return Theme(
+            name: name,
+            colorScheme: colorScheme,
+            colors: colors,
+            typography: typography,
+            spacing: spacing,
+            elevation: elevation,
+            borderRadius: borderRadius,
+            animation: animation,
+            componentSize: componentSize
+        )
+    }
+    
     // MARK: - Predefined Themes
     
-    public static let light = Theme(
-        name: "Light",
-        colorScheme: .light,
-        colors: .light
-    )
+    public static let light = Theme.create(name: "Light", colorScheme: .light)
     
-    public static let dark = Theme(
-        name: "Dark",
-        colorScheme: .dark,
-        colors: .dark
-    )
+    public static let dark = Theme.create(name: "Dark", colorScheme: .dark)
     
-    public static let highContrast = Theme(
-        name: "High Contrast",
-        colorScheme: .light,
-        colors: .highContrast
-    )
+    public static let highContrast = Theme.create(name: "High Contrast", colorScheme: .highContrast)
 }
 
 // MARK: - Theme Colors
 
 public struct ThemeColors: Equatable {
+    // MARK: - Bundle Helper
+    private let bundle: Bundle
+    
     // Primary Colors
     public let primary: Color
     public let primaryVariant: Color
@@ -123,6 +163,9 @@ public struct ThemeColors: Equatable {
     public let secondary: Color
     public let secondaryVariant: Color
     public let onSecondary: Color
+    
+    // Tertiary Colors
+    public let tertiary: Color
     
     // Background Colors
     public let background: Color
@@ -153,6 +196,10 @@ public struct ThemeColors: Equatable {
     public let primaryText: Color
     public let secondaryText: Color
     
+    // Basic Colors
+    public let white: Color
+    public let black: Color
+    
     // Neutral Colors
     public let neutral50: Color
     public let neutral100: Color
@@ -166,12 +213,14 @@ public struct ThemeColors: Equatable {
     public let neutral900: Color
     
     public init(
+        bundle: Bundle = .uiComponents,
         primary: Color,
         primaryVariant: Color,
         onPrimary: Color,
         secondary: Color,
         secondaryVariant: Color,
         onSecondary: Color,
+        tertiary: Color,
         background: Color,
         surface: Color,
         surfaceVariant: Color,
@@ -193,6 +242,8 @@ public struct ThemeColors: Equatable {
         disabled: Color,
         primaryText: Color,
         secondaryText: Color,
+        white: Color,
+        black: Color,
         neutral50: Color,
         neutral100: Color,
         neutral200: Color,
@@ -204,12 +255,14 @@ public struct ThemeColors: Equatable {
         neutral800: Color,
         neutral900: Color
     ) {
+        self.bundle = bundle
         self.primary = primary
         self.primaryVariant = primaryVariant
         self.onPrimary = onPrimary
         self.secondary = secondary
         self.secondaryVariant = secondaryVariant
         self.onSecondary = onSecondary
+        self.tertiary = tertiary
         self.background = background
         self.surface = surface
         self.surfaceVariant = surfaceVariant
@@ -231,6 +284,8 @@ public struct ThemeColors: Equatable {
         self.disabled = disabled
         self.primaryText = primaryText
         self.secondaryText = secondaryText
+        self.white = white
+        self.black = black
         self.neutral50 = neutral50
         self.neutral100 = neutral100
         self.neutral200 = neutral200
@@ -243,127 +298,178 @@ public struct ThemeColors: Equatable {
         self.neutral900 = neutral900
     }
     
+    // MARK: - Convenience Initializer
+    
+    /// Creates ThemeColors from asset catalog names using the specified bundle
+    public init(bundle: Bundle = .uiComponents) {
+        self.bundle = bundle
+        
+        // Primary Colors
+        self.primary = Color.fromDesignSystem(.primary, bundle: bundle)
+        self.primaryVariant = Color.fromDesignSystem(.primary, bundle: bundle)
+        self.onPrimary = Color.fromDesignSystem(.onPrimary, bundle: bundle)
+        
+        // Secondary Colors
+        self.secondary = Color.fromDesignSystem(.secondary, bundle: bundle)
+        self.secondaryVariant = Color.fromDesignSystem(.secondary, bundle: bundle)
+        self.onSecondary = Color.fromDesignSystem(.onSecondary, bundle: bundle)
+        
+        // Tertiary Colors
+        self.tertiary = Color.fromDesignSystem(.tertiary, bundle: bundle)
+        
+        // Background Colors
+        self.background = Color.fromDesignSystem(.background, bundle: bundle)
+        self.surface = Color.fromDesignSystem(.surface, bundle: bundle)
+        self.surfaceVariant = Color.fromDesignSystem(.surfaceVariant, bundle: bundle)
+        self.onBackground = Color.fromDesignSystem(.onBackground, bundle: bundle)
+        self.onSurface = Color.fromDesignSystem(.onSurface, bundle: bundle)
+        self.onSurfaceVariant = Color.fromDesignSystem(.onSurfaceVariant, bundle: bundle)
+        
+        // Outline Colors
+        self.outline = Color.fromDesignSystem(.outline, bundle: bundle)
+        self.outlineVariant = Color.fromDesignSystem(.outlineVariant, bundle: bundle)
+        self.onOutline = Color.fromDesignSystem(.onOutline, bundle: bundle)
+        self.onOutlineVariant = Color.fromDesignSystem(.onOutlineVariant, bundle: bundle)
+        
+        // State Colors
+        self.success = Color.fromDesignSystem(.success, bundle: bundle)
+        self.onSuccess = Color.fromDesignSystem(.onSuccess, bundle: bundle)
+        self.warning = Color.fromDesignSystem(.warning, bundle: bundle)
+        self.onWarning = Color.fromDesignSystem(.onWarning, bundle: bundle)
+        self.error = Color.fromDesignSystem(.error, bundle: bundle)
+        self.onError = Color.fromDesignSystem(.onError, bundle: bundle)
+        self.info = Color.fromDesignSystem(.info, bundle: bundle)
+        self.onInfo = Color.fromDesignSystem(.onInfo, bundle: bundle)
+        self.disabled = Color.fromDesignSystem(.disabled, bundle: bundle)
+        
+        // Text Colors
+        self.primaryText = Color.fromDesignSystem(.primaryText, bundle: bundle)
+        self.secondaryText = Color.fromDesignSystem(.secondaryText, bundle: bundle)
+        
+        // Basic Colors
+        self.white = Color.fromDesignSystem(.white, bundle: bundle)
+        self.black = Color.fromDesignSystem(.black, bundle: bundle)
+        
+        // Neutral Colors (mapped to existing design system colors)
+        self.neutral50 = Color.fromDesignSystem(.surfaceVariant, bundle: bundle)
+        self.neutral100 = Color.fromDesignSystem(.surfaceVariant, bundle: bundle)
+        self.neutral200 = Color.fromDesignSystem(.outlineVariant, bundle: bundle)
+        self.neutral300 = Color.fromDesignSystem(.outlineVariant, bundle: bundle)
+        self.neutral400 = Color.fromDesignSystem(.outline, bundle: bundle)
+        self.neutral500 = Color.fromDesignSystem(.outline, bundle: bundle)
+        self.neutral600 = Color.fromDesignSystem(.onSurfaceVariant, bundle: bundle)
+        self.neutral700 = Color.fromDesignSystem(.onSurfaceVariant, bundle: bundle)
+        self.neutral800 = Color.fromDesignSystem(.onSurface, bundle: bundle)
+        self.neutral900 = Color.fromDesignSystem(.onSurface, bundle: bundle)
+    }
+    
+    // MARK: - Theme-Specific Initializers
+    
+    /// Creates a dark theme variation with appropriate color mappings
+    public static func dark(bundle: Bundle = .uiComponents) -> ThemeColors {
+        var colors = ThemeColors(bundle: bundle)
+        // Override specific colors for dark theme
+        colors = ThemeColors(
+            bundle: bundle,
+            primary: colors.primary,
+            primaryVariant: colors.primaryVariant,
+            onPrimary: colors.onPrimary,
+            secondary: colors.secondary,
+            secondaryVariant: colors.secondaryVariant,
+            onSecondary: colors.onSurface, // Different for dark theme
+            tertiary: colors.tertiary,
+            background: colors.background,
+            surface: colors.surface,
+            surfaceVariant: colors.surfaceVariant,
+            onBackground: colors.onBackground,
+            onSurface: colors.onSurface,
+            onSurfaceVariant: colors.onSurfaceVariant,
+            outline: colors.outline,
+            outlineVariant: colors.outlineVariant,
+            onOutline: colors.onOutline,
+            onOutlineVariant: colors.onOutlineVariant,
+            success: colors.success,
+            onSuccess: colors.onSurface, // Different for dark theme
+            warning: colors.warning,
+            onWarning: colors.onSurface, // Different for dark theme
+            error: colors.error,
+            onError: colors.onError,
+            info: colors.info,
+            onInfo: colors.onSurface, // Different for dark theme
+            disabled: colors.disabled,
+            primaryText: colors.primaryText,
+            secondaryText: colors.secondaryText,
+            white: colors.white,
+            black: colors.black,
+            neutral50: colors.background, // Different for dark theme
+            neutral100: colors.surface, // Different for dark theme
+            neutral200: colors.surfaceVariant, // Different for dark theme
+            neutral300: colors.outlineVariant,
+            neutral400: colors.outline,
+            neutral500: colors.outline,
+            neutral600: colors.onSurfaceVariant,
+            neutral700: colors.onSurfaceVariant,
+            neutral800: colors.onSurface,
+            neutral900: colors.onSurface
+        )
+        return colors
+    }
+    
+    /// Creates a high contrast theme variation with appropriate color mappings
+    public static func highContrast(bundle: Bundle = .uiComponents) -> ThemeColors {
+        let baseColors = ThemeColors(bundle: bundle)
+        return ThemeColors(
+            bundle: bundle,
+            primary: baseColors.black,
+            primaryVariant: baseColors.black,
+            onPrimary: baseColors.white,
+            secondary: baseColors.black,
+            secondaryVariant: baseColors.black,
+            onSecondary: baseColors.white,
+            tertiary: baseColors.black,
+            background: baseColors.white,
+            surface: baseColors.white,
+            surfaceVariant: baseColors.surfaceVariant,
+            onBackground: baseColors.black,
+            onSurface: baseColors.black,
+            onSurfaceVariant: baseColors.black,
+            outline: baseColors.black,
+            outlineVariant: baseColors.outlineVariant,
+            onOutline: baseColors.white,
+            onOutlineVariant: baseColors.white,
+            success: baseColors.success,
+            onSuccess: baseColors.white,
+            warning: baseColors.warning,
+            onWarning: baseColors.black,
+            error: baseColors.error,
+            onError: baseColors.white,
+            info: baseColors.info,
+            onInfo: baseColors.white,
+            disabled: baseColors.disabled,
+            primaryText: baseColors.black,
+            secondaryText: baseColors.secondaryText,
+            white: baseColors.white,
+            black: baseColors.black,
+            neutral50: baseColors.white,
+            neutral100: baseColors.surfaceVariant,
+            neutral200: baseColors.outlineVariant,
+            neutral300: baseColors.outlineVariant,
+            neutral400: baseColors.outline,
+            neutral500: baseColors.outline,
+            neutral600: baseColors.onSurfaceVariant,
+            neutral700: baseColors.onSurfaceVariant,
+            neutral800: baseColors.onSurface,
+            neutral900: baseColors.black
+        )
+    }
+    
     // MARK: - Predefined Color Schemes
     
-    public static let light = ThemeColors(
-        primary: Color("Primary", bundle: Bundle(for: BundleToken.self)),
-        primaryVariant: Color("Primary", bundle: Bundle(for: BundleToken.self)),
-        onPrimary: Color("OnPrimary", bundle: Bundle(for: BundleToken.self)),
-        secondary: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
-        secondaryVariant: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
-        onSecondary: Color("White", bundle: Bundle(for: BundleToken.self)),
-        background: Color("Background", bundle: Bundle(for: BundleToken.self)),
-        surface: Color("Surface", bundle: Bundle(for: BundleToken.self)),
-        surfaceVariant: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        onBackground: Color("OnBackground", bundle: Bundle(for: BundleToken.self)),
-        onSurface: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        onSurfaceVariant: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        outline: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        outlineVariant: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        onOutline: Color("OnOutline", bundle: Bundle(for: BundleToken.self)),
-        onOutlineVariant: Color("OnOutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        success: Color("Success", bundle: Bundle(for: BundleToken.self)),
-        onSuccess: Color("White", bundle: Bundle(for: BundleToken.self)),
-        warning: Color("Warning", bundle: Bundle(for: BundleToken.self)),
-        onWarning: Color("White", bundle: Bundle(for: BundleToken.self)),
-        error: Color("Error", bundle: Bundle(for: BundleToken.self)),
-        onError: Color("OnError", bundle: Bundle(for: BundleToken.self)),
-        info: Color("Info", bundle: Bundle(for: BundleToken.self)),
-        onInfo: Color("White", bundle: Bundle(for: BundleToken.self)),
-        disabled: Color("Disabled", bundle: Bundle(for: BundleToken.self)),
-        primaryText: Color("PrimaryText", bundle: Bundle(for: BundleToken.self)),
-        secondaryText: Color("SecondaryText", bundle: Bundle(for: BundleToken.self)),
-        neutral50: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral100: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral200: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral300: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral400: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        neutral500: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        neutral600: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral700: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral800: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        neutral900: Color("OnSurface", bundle: Bundle(for: BundleToken.self))
-    )
+    public static let light = ThemeColors()
     
-    public static let dark = ThemeColors(
-        primary: Color("Primary", bundle: Bundle(for: BundleToken.self)),
-        primaryVariant: Color("Primary", bundle: Bundle(for: BundleToken.self)),
-        onPrimary: Color("OnPrimary", bundle: Bundle(for: BundleToken.self)),
-        secondary: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
-        secondaryVariant: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
-        onSecondary: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        background: Color("Background", bundle: Bundle(for: BundleToken.self)),
-        surface: Color("Surface", bundle: Bundle(for: BundleToken.self)),
-        surfaceVariant: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        onBackground: Color("OnBackground", bundle: Bundle(for: BundleToken.self)),
-        onSurface: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        onSurfaceVariant: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        outline: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        outlineVariant: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        onOutline: Color("OnOutline", bundle: Bundle(for: BundleToken.self)),
-        onOutlineVariant: Color("OnOutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        success: Color("Success", bundle: Bundle(for: BundleToken.self)),
-        onSuccess: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        warning: Color("Warning", bundle: Bundle(for: BundleToken.self)),
-        onWarning: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        error: Color("Error", bundle: Bundle(for: BundleToken.self)),
-        onError: Color("OnError", bundle: Bundle(for: BundleToken.self)),
-        info: Color("Info", bundle: Bundle(for: BundleToken.self)),
-        onInfo: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        disabled: Color("Disabled", bundle: Bundle(for: BundleToken.self)),
-        primaryText: Color("PrimaryText", bundle: Bundle(for: BundleToken.self)),
-        secondaryText: Color("SecondaryText", bundle: Bundle(for: BundleToken.self)),
-        neutral50: Color("Background", bundle: Bundle(for: BundleToken.self)),
-        neutral100: Color("Surface", bundle: Bundle(for: BundleToken.self)),
-        neutral200: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral300: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral400: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        neutral500: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        neutral600: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral700: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral800: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        neutral900: Color("OnSurface", bundle: Bundle(for: BundleToken.self))
-    )
+    public static let dark = ThemeColors.dark()
     
-    public static let highContrast = ThemeColors(
-        primary: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        primaryVariant: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        onPrimary: Color("White", bundle: Bundle(for: BundleToken.self)),
-        secondary: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        secondaryVariant: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        onSecondary: Color("White", bundle: Bundle(for: BundleToken.self)),
-        background: Color("White", bundle: Bundle(for: BundleToken.self)),
-        surface: Color("White", bundle: Bundle(for: BundleToken.self)),
-        surfaceVariant: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        onBackground: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        onSurface: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        onSurfaceVariant: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        outline: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        outlineVariant: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        onOutline: Color("White", bundle: Bundle(for: BundleToken.self)),
-        onOutlineVariant: Color("White", bundle: Bundle(for: BundleToken.self)),
-        success: Color("Success", bundle: Bundle(for: BundleToken.self)),
-        onSuccess: Color("White", bundle: Bundle(for: BundleToken.self)),
-        warning: Color("Warning", bundle: Bundle(for: BundleToken.self)),
-        onWarning: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        error: Color("Error", bundle: Bundle(for: BundleToken.self)),
-        onError: Color("White", bundle: Bundle(for: BundleToken.self)),
-        info: Color("Info", bundle: Bundle(for: BundleToken.self)),
-        onInfo: Color("White", bundle: Bundle(for: BundleToken.self)),
-        disabled: Color("Disabled", bundle: Bundle(for: BundleToken.self)),
-        primaryText: Color("Black", bundle: Bundle(for: BundleToken.self)),
-        secondaryText: Color("SecondaryText", bundle: Bundle(for: BundleToken.self)),
-        neutral50: Color("White", bundle: Bundle(for: BundleToken.self)),
-        neutral100: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral200: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral300: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral400: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        neutral500: Color("Outline", bundle: Bundle(for: BundleToken.self)),
-        neutral600: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral700: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
-        neutral800: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
-        neutral900: Color("Black", bundle: Bundle(for: BundleToken.self))
-    )
+    public static let highContrast = ThemeColors.highContrast()
 }
 
 // MARK: - Theme Typography

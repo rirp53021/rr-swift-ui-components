@@ -136,24 +136,19 @@ public struct RRAvatar: View {
         }
     }
     
-    @Environment(\.colorScheme) private var colorScheme
-    
     private var avatarBackgroundColor: Color {
         if let backgroundColor = backgroundColor {
             return backgroundColor
         }
         
-        
         return theme.colors.primary
     }
     
     private var initialsColor: Color {
-        
         return .white
     }
     
     private var iconColor: Color {
-        
         return theme.colors.onSurfaceVariant
     }
 }
@@ -262,9 +257,9 @@ private extension RRAvatar {
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
 struct RRAvatar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: DesignTokens.Spacing.lg) {
             // Different sizes
-            HStack(spacing: 16) {
+            HStack(spacing: DesignTokens.Spacing.md) {
                 RRAvatar.initials("AB", size: .xs)
                 RRAvatar.initials("AB", size: .sm)
                 RRAvatar.initials("AB", size: .md)
@@ -274,35 +269,35 @@ struct RRAvatar_Previews: PreviewProvider {
             }
             
             // Different styles
-            HStack(spacing: 16) {
+            HStack(spacing: DesignTokens.Spacing.md) {
                 RRAvatar.initials("AB", style: .circle)
                 RRAvatar.initials("AB", style: .rounded)
                 RRAvatar.initials("AB", style: .square)
             }
             
             // With names (auto-extract initials)
-            HStack(spacing: 16) {
+            HStack(spacing: DesignTokens.Spacing.md) {
                 RRAvatar.name("John Doe")
                 RRAvatar.name("Jane Smith")
                 RRAvatar.name("Bob")
             }
             
             // With custom colors
-            HStack(spacing: 16) {
+            HStack(spacing: DesignTokens.Spacing.md) {
                 RRAvatar.initials("AB", backgroundColor: .blue)
                 RRAvatar.initials("CD", backgroundColor: .green)
                 RRAvatar.initials("EF", backgroundColor: .orange)
             }
             
             // With borders
-            HStack(spacing: 16) {
+            HStack(spacing: DesignTokens.Spacing.md) {
                 RRAvatar.initials("AB", borderColor: .blue, borderWidth: 2)
                 RRAvatar.initials("CD", borderColor: .green, borderWidth: 2)
                 RRAvatar.initials("EF", borderColor: .orange, borderWidth: 2)
             }
             
             // Placeholder avatars
-            HStack(spacing: 16) {
+            HStack(spacing: DesignTokens.Spacing.md) {
                 RRAvatar.placeholder()
                 RRAvatar.placeholder(size: .lg)
                 RRAvatar.placeholder(style: .rounded)
