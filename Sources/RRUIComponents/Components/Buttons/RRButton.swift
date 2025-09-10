@@ -80,13 +80,14 @@ public struct RRButton<Label: View>: View {
         _ title: String,
         style: RRButtonStyle = .primary,
         size: RRButtonSize = .md,
+        textColor: SwiftUI.Color? = nil,
         isEnabled: Bool = true,
         isLoading: Bool = false,
         enableLogging: Bool = false,
         action: @escaping () -> Void
-    ) where Label == Text {
+    ) where Label == RRLabel {
         self.action = action
-        self.label = { Text(title) }
+        self.label = { RRLabel(title, style: .body, weight: .medium, customColor: textColor ?? .white) }
         self.style = style
         self.size = size
         self.isEnabled = isEnabled
@@ -121,21 +122,18 @@ public struct RRButton<Label: View>: View {
                     ProgressView()
                         .scaleEffect(0.8)
                         .tint(foregroundColor)
-                } else {
-                    label()
-                        .font(size.font)
-                        .dynamicTypeSize(.large) // Support Dynamic Type
-                }
+                        } else {
+                            label()
+                        }
             }
             .padding(.horizontal, size.horizontalPadding)
             .frame(height: size.height)
             .frame(maxWidth: .infinity)
-            .background(backgroundColor)
-            .foregroundColor(foregroundColor)
-            .overlay(
-                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.button)
-                    .stroke(borderColor, lineWidth: borderWidth)
-            )
+                    .background(backgroundColor)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.button)
+                            .stroke(borderColor, lineWidth: borderWidth)
+                    )
             .cornerRadius(DesignTokens.BorderRadius.button)
         }
         .disabled(!isEnabled || isLoading)
@@ -157,20 +155,20 @@ public struct RRButton<Label: View>: View {
         let theme = themeProvider.currentTheme
         
         if !isEnabled {
-            return theme.colors.neutral300
+            return theme.colors.disabled
         }
         
         switch style {
         case .primary:
             return theme.colors.primary
         case .secondary:
-            return theme.colors.surfaceVariant
+            return theme.colors.secondary
         case .destructive:
             return theme.colors.error
         case .outline:
-            return Color.clear
+            return theme.colors.surface
         case .ghost:
-            return Color.clear
+            return theme.colors.surface
         }
     }
     
@@ -178,7 +176,7 @@ public struct RRButton<Label: View>: View {
         let theme = themeProvider.currentTheme
         
         if !isEnabled {
-            return theme.colors.neutral500
+            return theme.colors.onSurface
         }
         
         switch style {
@@ -199,22 +197,26 @@ public struct RRButton<Label: View>: View {
         let theme = themeProvider.currentTheme
         
         if !isEnabled {
-            return theme.colors.outlineVariant
+            return theme.colors.disabled
         }
         
         switch style {
-        case .primary, .secondary, .destructive, .ghost:
+        case .primary, .secondary, .destructive:
             return Color.clear
         case .outline:
             return theme.colors.outline
+        case .ghost:
+            return theme.colors.outlineVariant
         }
     }
     
     private var borderWidth: CGFloat {
         switch style {
-        case .primary, .secondary, .destructive, .ghost:
+        case .primary, .secondary, .destructive:
             return 0
         case .outline:
+            return 1
+        case .ghost:
             return 1
         }
     }
@@ -291,39 +293,58 @@ public struct RRButton<Label: View>: View {
 #if DEBUG
 struct RRButton_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Button Styles")
-                .font(.headline)
-            
-            VStack(spacing: 10) {
-                RRButton("Primary Button", style: .primary, action: { })
-                RRButton("Secondary Button", style: .secondary, action: { })
-                RRButton("Destructive Button", style: .destructive, action: { })
-                RRButton("Outline Button", style: .outline, action: { })
-                RRButton("Ghost Button", style: .ghost, action: { })
+        Group {
+            // Light Mode
+            ScrollView(.vertical, showsIndicators: true) {
+                LazyVStack(spacing: 8) {
+                    Text("Button Styles - Light Mode")
+                        .font(.headline)
+                    
+                    VStack(spacing: 4) {
+                        RRButton("Primary Button", style: .primary, action: { })
+                        RRButton("Secondary Button", style: .secondary, action: { })
+                        RRButton("Destructive Button", style: .destructive, action: { })
+                        RRButton("Outline Button", style: .outline, action: { })
+                        RRButton("Ghost Button", style: .ghost, action: { })
+                    }
+                    
+                    Text("Button Sizes")
+                        .font(.headline)
+                    
+                    VStack(spacing: 4) {
+                        RRButton("XS Button", size: .xs, action: { })
+                        RRButton("SM Button", size: .sm, action: { })
+                        RRButton("MD Button", size: .md, action: { })
+                        RRButton("LG Button", size: .lg, action: { })
+                        RRButton("XL Button", size: .xl, action: { })
+                    }
+                    
+                    Text("Button States")
+                        .font(.headline)
+                    
+                    VStack(spacing: 4) {
+                        RRButton("Enabled Button", action: { })
+                        RRButton("Disabled Button", isEnabled: false, action: { })
+                        RRButton("Loading Button", isLoading: true, action: { })
+                    }
+                    
+                    Text("Custom Text Colors")
+                        .font(.headline)
+                    
+                    VStack(spacing: 4) {
+                        RRButton("Blue Text", textColor: .blue, action: { })
+                        RRButton("Green Text", textColor: .green, action: { })
+                        RRButton("Purple Text", textColor: .purple, action: { })
+                        RRButton("Design System White", textColor: .white, action: { })
+                    }
+                    
+                    Spacer(minLength: 20)
+                }
+                .padding(.vertical, 20)
+                .padding(.horizontal, 16)
             }
-            
-            Text("Button Sizes")
-                .font(.headline)
-            
-            VStack(spacing: 10) {
-                RRButton("XS Button", size: .xs, action: { })
-                RRButton("SM Button", size: .sm, action: { })
-                RRButton("MD Button", size: .md, action: { })
-                RRButton("LG Button", size: .lg, action: { })
-                RRButton("XL Button", size: .xl, action: { })
-            }
-            
-            Text("Button States")
-                .font(.headline)
-            
-            VStack(spacing: 10) {
-                RRButton("Enabled Button", action: { })
-                RRButton("Disabled Button", isEnabled: false, action: { })
-                RRButton("Loading Button", isLoading: true, action: { })
-            }
+            .adaptiveThemeProvider(ThemeProvider())
         }
-        .padding()
     }
 }
 #endif

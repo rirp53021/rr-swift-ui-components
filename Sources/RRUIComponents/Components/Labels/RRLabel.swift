@@ -33,6 +33,7 @@ public struct RRLabel: View {
     private let style: Style
     private let weight: Weight
     private let color: Color
+    private let customColor: SwiftUI.Color?
     private let alignment: TextAlignment
     private let lineLimit: Int?
     
@@ -41,6 +42,7 @@ public struct RRLabel: View {
         style: Style = .body,
         weight: Weight = .regular,
         color: Color = .primary,
+        customColor: SwiftUI.Color? = nil,
         alignment: TextAlignment = .leading,
         lineLimit: Int? = nil
     ) {
@@ -48,6 +50,7 @@ public struct RRLabel: View {
         self.style = style
         self.weight = weight
         self.color = color
+        self.customColor = customColor
         self.alignment = alignment
         self.lineLimit = lineLimit
     }
@@ -57,7 +60,6 @@ public struct RRLabel: View {
             .font(font)
             .fontWeight(fontWeight)
             .foregroundColor(textColor)
-            .dynamicTypeSize(.large) // Support Dynamic Type
             .multilineTextAlignment(alignment)
             .lineLimit(lineLimit)
     }
@@ -86,16 +88,22 @@ public struct RRLabel: View {
     }
     
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.themeProvider) private var themeProvider
     
     private var textColor: SwiftUI.Color {
+        // Use custom color if provided, otherwise use the predefined color
+        if let customColor = customColor {
+            return customColor
+        }
+        
         switch color {
-        case .primary: return colorScheme == .dark ? SwiftUI.Color.white : SwiftUI.Color.black
-        case .secondary: return colorScheme == .dark ? SwiftUI.Color.gray : SwiftUI.Color.gray
-        case .tertiary: return colorScheme == .dark ? SwiftUI.Color.gray : SwiftUI.Color.gray
-        case .success: return SwiftUI.Color.green
-        case .warning: return SwiftUI.Color.orange
-        case .error: return SwiftUI.Color.red
-        case .info: return SwiftUI.Color.blue
+        case .primary: return .primaryText
+        case .secondary: return .secondary
+        case .tertiary: return .tertiary
+        case .success: return .success
+        case .warning: return .warning
+        case .error: return .error
+        case .info: return .info
         }
     }
 }
@@ -108,9 +116,10 @@ public extension RRLabel {
         _ text: String,
         weight: Weight = .bold,
         color: Color = .primary,
+        customColor: SwiftUI.Color? = nil,
         alignment: TextAlignment = .leading
     ) -> RRLabel {
-        RRLabel(text, style: .title, weight: weight, color: color, alignment: alignment)
+        RRLabel(text, style: .title, weight: weight, color: color, customColor: customColor, alignment: alignment)
     }
     
     /// Creates a subtitle label
@@ -118,9 +127,10 @@ public extension RRLabel {
         _ text: String,
         weight: Weight = .semibold,
         color: Color = .primary,
+        customColor: SwiftUI.Color? = nil,
         alignment: TextAlignment = .leading
     ) -> RRLabel {
-        RRLabel(text, style: .subtitle, weight: weight, color: color, alignment: alignment)
+        RRLabel(text, style: .subtitle, weight: weight, color: color, customColor: customColor, alignment: alignment)
     }
     
     /// Creates a body label
@@ -128,9 +138,10 @@ public extension RRLabel {
         _ text: String,
         weight: Weight = .regular,
         color: Color = .primary,
+        customColor: SwiftUI.Color? = nil,
         alignment: TextAlignment = .leading
     ) -> RRLabel {
-        RRLabel(text, style: .body, weight: weight, color: color, alignment: alignment)
+        RRLabel(text, style: .body, weight: weight, color: color, customColor: customColor, alignment: alignment)
     }
     
     /// Creates a caption label
@@ -138,9 +149,10 @@ public extension RRLabel {
         _ text: String,
         weight: Weight = .regular,
         color: Color = .secondary,
+        customColor: SwiftUI.Color? = nil,
         alignment: TextAlignment = .leading
     ) -> RRLabel {
-        RRLabel(text, style: .caption, weight: weight, color: color, alignment: alignment)
+        RRLabel(text, style: .caption, weight: weight, color: color, customColor: customColor, alignment: alignment)
     }
     
     /// Creates an overline label
@@ -148,9 +160,10 @@ public extension RRLabel {
         _ text: String,
         weight: Weight = .medium,
         color: Color = .secondary,
+        customColor: SwiftUI.Color? = nil,
         alignment: TextAlignment = .leading
     ) -> RRLabel {
-        RRLabel(text, style: .overline, weight: weight, color: color, alignment: alignment)
+        RRLabel(text, style: .overline, weight: weight, color: color, customColor: customColor, alignment: alignment)
     }
 }
 
@@ -191,8 +204,21 @@ struct RRLabel_Previews: PreviewProvider {
                 RRLabel.body("Error", color: .error)
                 RRLabel.body("Info", color: .info)
             }
+            
+            Divider()
+            
+            // Custom colors
+            VStack(alignment: .leading, spacing: 8) {
+                RRLabel.body("Custom Blue", customColor: .blue)
+                RRLabel.body("Custom Green", customColor: .green)
+                RRLabel.body("Custom Purple", customColor: .purple)
+                RRLabel.body("Custom Orange", customColor: .orange)
+                RRLabel.body("Custom Pink", customColor: .pink)
+                RRLabel.body("Disabled Gray", customColor: .disabled)
+            }
         }
         .padding()
+        .themeProvider(ThemeProvider())
         .previewDisplayName("RRLabel")
     }
 }

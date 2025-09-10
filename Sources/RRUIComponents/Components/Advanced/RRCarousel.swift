@@ -6,6 +6,9 @@ import Foundation
 /// A customizable carousel/image slider component with pagination and autoplay
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @State private var currentIndex: Int = 0
     @State private var dragOffset: CGFloat = 0
     @State private var isAutoPlaying = false
@@ -18,6 +21,7 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
     private let autoplayInterval: TimeInterval
     private let showIndicators: Bool
     private let showArrows: Bool
+    private let indicatorStyle: PageIndicatorStyle
     private let onPageChanged: ((Int) -> Void)?
     
     public init(
@@ -27,6 +31,7 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
         autoplayInterval: TimeInterval = 3.0,
         showIndicators: Bool = true,
         showArrows: Bool = true,
+        indicatorStyle: PageIndicatorStyle = .dots,
         onPageChanged: ((Int) -> Void)? = nil,
         @ViewBuilder content: @escaping (Data.Element) -> Content
     ) {
@@ -37,6 +42,7 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
         self.autoplayInterval = autoplayInterval
         self.showIndicators = showIndicators
         self.showArrows = showArrows
+        self.indicatorStyle = indicatorStyle
         self.onPageChanged = onPageChanged
     }
     
@@ -128,9 +134,9 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
                         Button(action: goToPrevious) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: style.arrowSize, weight: .medium))
-                                .foregroundColor(style.arrowColor)
+                                .foregroundColor(style.arrowColor(theme))
                                 .padding(style.arrowPadding)
-                                .background(style.arrowBackgroundColor)
+                                .background(style.arrowBackgroundColor(theme))
                                 .clipShape(Circle())
                         }
                         .opacity(currentIndex > 0 ? 1 : 0.5)
@@ -141,9 +147,9 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
                         Button(action: goToNext) {
                             Image(systemName: "chevron.right")
                                 .font(.system(size: style.arrowSize, weight: .medium))
-                                .foregroundColor(style.arrowColor)
+                                .foregroundColor(style.arrowColor(theme))
                                 .padding(style.arrowPadding)
-                                .background(style.arrowBackgroundColor)
+                                .background(style.arrowBackgroundColor(theme))
                                 .clipShape(Circle())
                         }
                         .opacity(currentIndex < itemCount - 1 ? 1 : 0.5)
@@ -157,18 +163,12 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
                     VStack {
                         Spacer()
                         
-                        HStack(spacing: style.indicatorSpacing) {
-                            ForEach(0..<itemCount, id: \.self) { index in
-                                Button(action: {
-                                    goToPage(index)
-                                }) {
-                                    Circle()
-                                        .fill(index == currentIndex ? style.activeIndicatorColor : style.inactiveIndicatorColor)
-                                        .frame(width: style.indicatorSize, height: style.indicatorSize)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                        }
+                        RRPageIndicator(
+                            currentPage: currentIndex,
+                            totalPages: itemCount,
+                            style: indicatorStyle,
+                            onPageSelected: goToPage
+                        )
                         .padding(.bottom, style.indicatorBottomPadding)
                     }
                 }
@@ -199,56 +199,40 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
 public struct CarouselStyle {
     public let animation: Animation
     public let arrowSize: CGFloat
-    public let arrowColor: Color
-    public let arrowBackgroundColor: Color
+    public let arrowColor: (Theme) -> Color
+    public let arrowBackgroundColor: (Theme) -> Color
     public let arrowPadding: CGFloat
     public let arrowHorizontalPadding: CGFloat
-    public let indicatorSize: CGFloat
-    public let indicatorSpacing: CGFloat
-    public let activeIndicatorColor: Color
-    public let inactiveIndicatorColor: Color
     public let indicatorBottomPadding: CGFloat
     
     public static let `default` = CarouselStyle(
-        animation: .easeInOut(duration: 0.3),
-        arrowSize: 20,
-        arrowColor: .white,
-        arrowBackgroundColor: Color.black.opacity(0.5),
-        arrowPadding: 8,
-        arrowHorizontalPadding: 16,
-        indicatorSize: 8,
-        indicatorSpacing: 8,
-        activeIndicatorColor: .white,
-        inactiveIndicatorColor: Color.white.opacity(0.5),
-        indicatorBottomPadding: 16
+        animation: DesignTokens.Animation.easeInOut,
+        arrowSize: DesignTokens.ComponentSize.iconSizeLG,
+        arrowColor: { theme in theme.colors.onPrimary },
+        arrowBackgroundColor: { theme in theme.colors.primary },
+        arrowPadding: DesignTokens.Spacing.sm,
+        arrowHorizontalPadding: DesignTokens.Spacing.md,
+        indicatorBottomPadding: DesignTokens.Spacing.md
     )
     
     public static let minimal = CarouselStyle(
-        animation: .easeInOut(duration: 0.2),
-        arrowSize: 16,
-        arrowColor: .primary,
-        arrowBackgroundColor: Color.primary.opacity(0.8),
-        arrowPadding: 6,
-        arrowHorizontalPadding: 12,
-        indicatorSize: 6,
-        indicatorSpacing: 6,
-        activeIndicatorColor: .blue,
-        inactiveIndicatorColor: Color.gray.opacity(0.3),
-        indicatorBottomPadding: 12
+        animation: DesignTokens.Animation.easeInOut,
+        arrowSize: DesignTokens.ComponentSize.iconSizeMD,
+        arrowColor: { theme in theme.colors.onSurface },
+        arrowBackgroundColor: { theme in theme.colors.surfaceVariant },
+        arrowPadding: DesignTokens.Spacing.xs,
+        arrowHorizontalPadding: DesignTokens.Spacing.sm,
+        indicatorBottomPadding: DesignTokens.Spacing.sm
     )
     
     public static let bold = CarouselStyle(
-        animation: .spring(response: 0.5, dampingFraction: 0.8),
-        arrowSize: 24,
-        arrowColor: .white,
-        arrowBackgroundColor: .blue,
-        arrowPadding: 12,
-        arrowHorizontalPadding: 20,
-        indicatorSize: 10,
-        indicatorSpacing: 10,
-        activeIndicatorColor: .blue,
-        inactiveIndicatorColor: Color.gray.opacity(0.2),
-        indicatorBottomPadding: 20
+        animation: DesignTokens.Animation.spring,
+        arrowSize: DesignTokens.ComponentSize.iconSizeXL,
+        arrowColor: { theme in theme.colors.onPrimary },
+        arrowBackgroundColor: { theme in theme.colors.primary },
+        arrowPadding: DesignTokens.Spacing.sm,
+        arrowHorizontalPadding: DesignTokens.Spacing.md,
+        indicatorBottomPadding: DesignTokens.Spacing.md
     )
 }
 
@@ -303,17 +287,10 @@ public struct RRImageCarousel: View {
             showArrows: showArrows,
             onPageChanged: onPageChanged
         ) { item in
-            AsyncImage(url: URL(string: item.imageName)) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: contentMode)
-            } placeholder: {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.1))
-                    .overlay(
-                        ProgressView()
-                    )
-            }
+            RRAsyncImage(
+                url: URL(string: item.imageName),
+                contentMode: contentMode
+            )
         }
     }
 }
@@ -349,46 +326,74 @@ struct RRCarousel_Previews: PreviewProvider {
     ]
     
     static var previews: some View {
-        VStack(spacing: 30) {
-            // Basic carousel
+        VStack(spacing: DesignTokens.Spacing.sectionSpacing) {
+            // Basic carousel with theme colors
             VStack {
-                Text("Basic Carousel")
-                    .font(.headline)
+                RRLabel.title("Basic Carousel")
                 
                 RRCarousel(
                     data: sampleItems,
-                    style: .default,
+                    style: .minimal,
                     showIndicators: true,
-                    showArrows: true
+                    showArrows: true,
+                    indicatorStyle: .dots
                 ) { item in
-                    Rectangle()
-                        .fill(item.color)
-                        .overlay(
-                            Text(item.title)
-                                .font(.title)
-                                .foregroundColor(.white)
-                        )
-                        .frame(height: 200)
+                    RRCard(
+                        style: .elevated,
+                        content: {
+                            VStack {
+                                RRLabel.subtitle(item.title, weight: .semibold)
+                                RRLabel.caption("Carousel Item")
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                    )
+                    .frame(height: 200)
                 }
                 .frame(height: 200)
             }
             
-            // Image carousel
+            // Image carousel with different indicator style
             VStack {
-                Text("Image Carousel")
-                    .font(.headline)
+                RRLabel.title("Image Carousel")
                 
                 RRImageCarousel(
                     images: sampleImages,
-                    style: .minimal,
+                    style: .bold,
                     autoplay: true,
                     showIndicators: true,
                     showArrows: true
                 )
                 .frame(height: 200)
             }
+            
+            // Carousel with lines indicator
+            VStack {
+                RRLabel.title("Lines Indicator")
+                
+                RRCarousel(
+                    data: sampleItems.prefix(3),
+                    style: .default,
+                    showIndicators: true,
+                    showArrows: false,
+                    indicatorStyle: .lines
+                ) { item in
+                    Rectangle()
+                        .fill(item.color.opacity(0.7))
+                        .overlay(
+                            VStack {
+                                Image(systemName: "star.fill")
+                                    .font(.largeTitle)
+                                RRLabel.subtitle(item.title, weight: .semibold)
+                            }
+                            .foregroundColor(.white)
+                        )
+                        .frame(height: 150)
+                }
+                .frame(height: 150)
+            }
         }
-        .padding()
+        .padding(DesignTokens.Spacing.md)
         .previewDisplayName("RRCarousel")
     }
 }

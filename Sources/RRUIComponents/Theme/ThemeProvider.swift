@@ -5,6 +5,10 @@ import SwiftUI
 import Foundation
 import Combine
 
+// MARK: - Bundle Helper
+
+private final class BundleToken {}
+
 // MARK: - Theme Provider
 
 /// SwiftUI environment-based theme provider for consistent theming across the app
@@ -143,6 +147,11 @@ public struct ThemeColors: Equatable {
     public let onError: Color
     public let info: Color
     public let onInfo: Color
+    public let disabled: Color
+    
+    // Text Colors
+    public let primaryText: Color
+    public let secondaryText: Color
     
     // Neutral Colors
     public let neutral50: Color
@@ -181,6 +190,9 @@ public struct ThemeColors: Equatable {
         onError: Color,
         info: Color,
         onInfo: Color,
+        disabled: Color,
+        primaryText: Color,
+        secondaryText: Color,
         neutral50: Color,
         neutral100: Color,
         neutral200: Color,
@@ -216,6 +228,9 @@ public struct ThemeColors: Equatable {
         self.onError = onError
         self.info = info
         self.onInfo = onInfo
+        self.disabled = disabled
+        self.primaryText = primaryText
+        self.secondaryText = secondaryText
         self.neutral50 = neutral50
         self.neutral100 = neutral100
         self.neutral200 = neutral200
@@ -231,114 +246,123 @@ public struct ThemeColors: Equatable {
     // MARK: - Predefined Color Schemes
     
     public static let light = ThemeColors(
-        primary: .primary,
-        primaryVariant: .primary,
-        onPrimary: .onPrimary,
-        secondary: .primary,
-        secondaryVariant: .primary,
-        onSecondary: .white,
-        background: .background,
-        surface: .surface,
-        surfaceVariant: .surfaceVariant,
-        onBackground: .onBackground,
-        onSurface: .onSurface,
-        onSurfaceVariant: .onSurfaceVariant,
-        outline: .outline,
-        outlineVariant: .outlineVariant,
-        onOutline: .onOutline,
-        onOutlineVariant: .onOutlineVariant,
-        success: .success,
-        onSuccess: .white,
-        warning: .warning,
-        onWarning: .white,
-        error: .error,
-        onError: .white,
-        info: .info,
-        onInfo: .white,
-        neutral50: .surfaceVariant,
-        neutral100: .surfaceVariant,
-        neutral200: .outlineVariant,
-        neutral300: .outlineVariant,
-        neutral400: .outline,
-        neutral500: .outline,
-        neutral600: .onSurfaceVariant,
-        neutral700: .onSurfaceVariant,
-        neutral800: .onSurface,
-        neutral900: .onSurface
+        primary: Color("Primary", bundle: Bundle(for: BundleToken.self)),
+        primaryVariant: Color("Primary", bundle: Bundle(for: BundleToken.self)),
+        onPrimary: Color("OnPrimary", bundle: Bundle(for: BundleToken.self)),
+        secondary: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
+        secondaryVariant: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
+        onSecondary: Color("White", bundle: Bundle(for: BundleToken.self)),
+        background: Color("Background", bundle: Bundle(for: BundleToken.self)),
+        surface: Color("Surface", bundle: Bundle(for: BundleToken.self)),
+        surfaceVariant: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        onBackground: Color("OnBackground", bundle: Bundle(for: BundleToken.self)),
+        onSurface: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        onSurfaceVariant: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        outline: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        outlineVariant: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        onOutline: Color("OnOutline", bundle: Bundle(for: BundleToken.self)),
+        onOutlineVariant: Color("OnOutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        success: Color("Success", bundle: Bundle(for: BundleToken.self)),
+        onSuccess: Color("White", bundle: Bundle(for: BundleToken.self)),
+        warning: Color("Warning", bundle: Bundle(for: BundleToken.self)),
+        onWarning: Color("White", bundle: Bundle(for: BundleToken.self)),
+        error: Color("Error", bundle: Bundle(for: BundleToken.self)),
+        onError: Color("OnError", bundle: Bundle(for: BundleToken.self)),
+        info: Color("Info", bundle: Bundle(for: BundleToken.self)),
+        onInfo: Color("White", bundle: Bundle(for: BundleToken.self)),
+        disabled: Color("Disabled", bundle: Bundle(for: BundleToken.self)),
+        primaryText: Color("PrimaryText", bundle: Bundle(for: BundleToken.self)),
+        secondaryText: Color("SecondaryText", bundle: Bundle(for: BundleToken.self)),
+        neutral50: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral100: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral200: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral300: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral400: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        neutral500: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        neutral600: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral700: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral800: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        neutral900: Color("OnSurface", bundle: Bundle(for: BundleToken.self))
     )
     
     public static let dark = ThemeColors(
-        primary: .primary,
-        primaryVariant: .primary,
-        onPrimary: .onPrimary,
-        secondary: .primary,
-        secondaryVariant: .primary,
-        onSecondary: .onSurface,
-        background: .background,
-        surface: .surface,
-        surfaceVariant: .surfaceVariant,
-        onBackground: .onBackground,
-        onSurface: .onSurface,
-        onSurfaceVariant: .onSurfaceVariant,
-        outline: .outline,
-        outlineVariant: .outlineVariant,
-        onOutline: .onOutline,
-        onOutlineVariant: .onOutlineVariant,
-        success: .success,
-        onSuccess: .onSurface,
-        warning: .warning,
-        onWarning: .onSurface,
-        error: .error,
-        onError: .onSurface,
-        info: .info,
-        onInfo: .onSurface,
-        neutral50: .background,
-        neutral100: .surface,
-        neutral200: .surfaceVariant,
-        neutral300: .outlineVariant,
-        neutral400: .outline,
-        neutral500: .outline,
-        neutral600: .onSurfaceVariant,
-        neutral700: .onSurfaceVariant,
-        neutral800: .onSurface,
-        neutral900: .onSurface
+        primary: Color("Primary", bundle: Bundle(for: BundleToken.self)),
+        primaryVariant: Color("Primary", bundle: Bundle(for: BundleToken.self)),
+        onPrimary: Color("OnPrimary", bundle: Bundle(for: BundleToken.self)),
+        secondary: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
+        secondaryVariant: Color("Secondary", bundle: Bundle(for: BundleToken.self)),
+        onSecondary: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        background: Color("Background", bundle: Bundle(for: BundleToken.self)),
+        surface: Color("Surface", bundle: Bundle(for: BundleToken.self)),
+        surfaceVariant: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        onBackground: Color("OnBackground", bundle: Bundle(for: BundleToken.self)),
+        onSurface: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        onSurfaceVariant: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        outline: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        outlineVariant: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        onOutline: Color("OnOutline", bundle: Bundle(for: BundleToken.self)),
+        onOutlineVariant: Color("OnOutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        success: Color("Success", bundle: Bundle(for: BundleToken.self)),
+        onSuccess: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        warning: Color("Warning", bundle: Bundle(for: BundleToken.self)),
+        onWarning: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        error: Color("Error", bundle: Bundle(for: BundleToken.self)),
+        onError: Color("OnError", bundle: Bundle(for: BundleToken.self)),
+        info: Color("Info", bundle: Bundle(for: BundleToken.self)),
+        onInfo: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        disabled: Color("Disabled", bundle: Bundle(for: BundleToken.self)),
+        primaryText: Color("PrimaryText", bundle: Bundle(for: BundleToken.self)),
+        secondaryText: Color("SecondaryText", bundle: Bundle(for: BundleToken.self)),
+        neutral50: Color("Background", bundle: Bundle(for: BundleToken.self)),
+        neutral100: Color("Surface", bundle: Bundle(for: BundleToken.self)),
+        neutral200: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral300: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral400: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        neutral500: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        neutral600: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral700: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral800: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        neutral900: Color("OnSurface", bundle: Bundle(for: BundleToken.self))
     )
     
     public static let highContrast = ThemeColors(
-        primary: .black,
-        primaryVariant: .black,
-        onPrimary: .white,
-        secondary: .black,
-        secondaryVariant: .black,
-        onSecondary: .white,
-        background: .white,
-        surface: .white,
-        surfaceVariant: Color(r: 240, g: 240, b: 240),
-        onBackground: .black,
-        onSurface: .black,
-        onSurfaceVariant: .black,
-        outline: .black,
-        outlineVariant: Color(r: 100, g: 100, b: 100),
-        onOutline: .white,
-        onOutlineVariant: .white,
-        success: .green,
-        onSuccess: .white,
-        warning: .orange,
-        onWarning: .black,
-        error: .red,
-        onError: .white,
-        info: .blue,
-        onInfo: .white,
-        neutral50: .white,
-        neutral100: Color(r: 240, g: 240, b: 240),
-        neutral200: Color(r: 200, g: 200, b: 200),
-        neutral300: Color(r: 160, g: 160, b: 160),
-        neutral400: Color(r: 120, g: 120, b: 120),
-        neutral500: Color(r: 80, g: 80, b: 80),
-        neutral600: Color(r: 60, g: 60, b: 60),
-        neutral700: Color(r: 40, g: 40, b: 40),
-        neutral800: Color(r: 20, g: 20, b: 20),
-        neutral900: .black
+        primary: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        primaryVariant: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        onPrimary: Color("White", bundle: Bundle(for: BundleToken.self)),
+        secondary: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        secondaryVariant: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        onSecondary: Color("White", bundle: Bundle(for: BundleToken.self)),
+        background: Color("White", bundle: Bundle(for: BundleToken.self)),
+        surface: Color("White", bundle: Bundle(for: BundleToken.self)),
+        surfaceVariant: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        onBackground: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        onSurface: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        onSurfaceVariant: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        outline: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        outlineVariant: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        onOutline: Color("White", bundle: Bundle(for: BundleToken.self)),
+        onOutlineVariant: Color("White", bundle: Bundle(for: BundleToken.self)),
+        success: Color("Success", bundle: Bundle(for: BundleToken.self)),
+        onSuccess: Color("White", bundle: Bundle(for: BundleToken.self)),
+        warning: Color("Warning", bundle: Bundle(for: BundleToken.self)),
+        onWarning: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        error: Color("Error", bundle: Bundle(for: BundleToken.self)),
+        onError: Color("White", bundle: Bundle(for: BundleToken.self)),
+        info: Color("Info", bundle: Bundle(for: BundleToken.self)),
+        onInfo: Color("White", bundle: Bundle(for: BundleToken.self)),
+        disabled: Color("Disabled", bundle: Bundle(for: BundleToken.self)),
+        primaryText: Color("Black", bundle: Bundle(for: BundleToken.self)),
+        secondaryText: Color("SecondaryText", bundle: Bundle(for: BundleToken.self)),
+        neutral50: Color("White", bundle: Bundle(for: BundleToken.self)),
+        neutral100: Color("SurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral200: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral300: Color("OutlineVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral400: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        neutral500: Color("Outline", bundle: Bundle(for: BundleToken.self)),
+        neutral600: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral700: Color("OnSurfaceVariant", bundle: Bundle(for: BundleToken.self)),
+        neutral800: Color("OnSurface", bundle: Bundle(for: BundleToken.self)),
+        neutral900: Color("Black", bundle: Bundle(for: BundleToken.self))
     )
 }
 
