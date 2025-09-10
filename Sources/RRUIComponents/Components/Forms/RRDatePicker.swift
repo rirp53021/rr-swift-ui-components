@@ -9,12 +9,12 @@ public enum ValidationState {
     case invalid
     case warning
     
-    var borderColor: Color {
+    func borderColor(theme: Theme) -> Color {
         switch self {
-        case .none: return .gray.opacity(0.3)
-        case .valid: return .green
-        case .invalid: return .red
-        case .warning: return .orange
+        case .none: return theme.colors.outline
+        case .valid: return theme.colors.success
+        case .invalid: return theme.colors.error
+        case .warning: return theme.colors.warning
         }
     }
     
@@ -31,12 +31,15 @@ public enum ValidationState {
 /// A customizable date and time picker component with various display modes
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRDatePicker: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var selection: Date
     @State private var isExpanded = false
     
     private let title: String
     private let mode: DatePickerMode
-    private let style: DatePickerStyle
+    private let style: DatePickerStyleType
     private let validationState: ValidationState
     private let dateRange: ClosedRange<Date>
     private let formatter: DateFormatter
@@ -45,7 +48,7 @@ public struct RRDatePicker: View {
         selection: Binding<Date>,
         title: String = "Select Date",
         mode: DatePickerMode = .date,
-        style: DatePickerStyle = .default,
+        style: DatePickerStyleType = .default,
         validationState: ValidationState = .none,
         in dateRange: ClosedRange<Date> = Date.distantPast...Date.distantFuture
     ) {
@@ -75,11 +78,17 @@ public struct RRDatePicker: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        let themeStyle: DatePickerStyle = {
+            switch style {
+            case .default: return DatePickerStyle.default(theme: theme)
+            case .filled: return DatePickerStyle.filled(theme: theme)
+            case .outlined: return DatePickerStyle.outlined(theme: theme)
+            }
+        }()
+        
+        return VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
             if !title.isEmpty {
-                Text(title)
-                    .font(style.titleFont)
-                    .foregroundColor(style.titleColor)
+                RRLabel(title, style: .caption, weight: .medium, color: .primary)
             }
             
             Button(action: {
@@ -89,29 +98,31 @@ public struct RRDatePicker: View {
             }) {
                 HStack {
                     Image(systemName: mode.iconName)
-                        .foregroundColor(style.iconColor)
-                        .font(.system(size: 16))
+                        .foregroundColor(themeStyle.iconColor)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeSM))
                     
-                    Text(displayText)
-                        .foregroundColor(style.textColor)
-                        .font(style.font)
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    RRLabel(
+                        displayText,
+                        style: .body,
+                        weight: .medium,
+                        customColor: themeStyle.textColor
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundColor(style.chevronColor)
-                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(themeStyle.chevronColor)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeXS, weight: .medium))
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                        .animation(.easeInOut(duration: 0.2), value: isExpanded)
+                        .animation(DesignTokens.Animation.dropdownToggle, value: isExpanded)
                 }
-                .padding(.horizontal, style.horizontalPadding)
-                .padding(.vertical, style.verticalPadding)
-                .background(style.backgroundColor)
+                .padding(.horizontal, themeStyle.horizontalPadding)
+                .padding(.vertical, themeStyle.verticalPadding)
+                .background(themeStyle.backgroundColor)
                 .overlay(
-                    RoundedRectangle(cornerRadius: style.cornerRadius)
-                        .stroke(validationState.borderColor, lineWidth: validationState.borderWidth)
+                    RoundedRectangle(cornerRadius: themeStyle.cornerRadius)
+                        .stroke(validationState.borderColor(theme: theme), lineWidth: validationState.borderWidth)
                 )
-                .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
+                .clipShape(RoundedRectangle(cornerRadius: themeStyle.cornerRadius))
             }
             .buttonStyle(PlainButtonStyle())
             
@@ -130,12 +141,12 @@ public struct RRDatePicker: View {
                     #endif
                     .labelsHidden()
                     .padding()
-                    .background(style.pickerBackgroundColor)
+                    .background(themeStyle.pickerBackgroundColor)
                     .overlay(
-                        RoundedRectangle(cornerRadius: style.cornerRadius)
-                            .stroke(style.pickerBorderColor, lineWidth: 1)
+                        RoundedRectangle(cornerRadius: themeStyle.cornerRadius)
+                            .stroke(themeStyle.pickerBorderColor, lineWidth: 1)
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
+                    .clipShape(RoundedRectangle(cornerRadius: themeStyle.cornerRadius))
                 }
                 .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
@@ -169,6 +180,12 @@ public enum DatePickerMode {
 
 // MARK: - Date Picker Style
 
+public enum DatePickerStyleType: CaseIterable {
+    case `default`
+    case filled
+    case outlined
+}
+
 public struct DatePickerStyle {
     public let backgroundColor: Color
     public let textColor: Color
@@ -183,50 +200,56 @@ public struct DatePickerStyle {
     public let pickerBackgroundColor: Color
     public let pickerBorderColor: Color
     
-    public static let `default` = DatePickerStyle(
-        backgroundColor: Color.primary,
-        textColor: .primary,
-        titleColor: .primary,
-        iconColor: .secondary,
-        chevronColor: .secondary,
-        font: .body,
-        titleFont: .caption,
-        horizontalPadding: 12,
-        verticalPadding: 12,
-        cornerRadius: 8,
-        pickerBackgroundColor: Color.primary,
-        pickerBorderColor: Color.gray.opacity(0.3)
-    )
+    public static func `default`(theme: Theme = .light) -> DatePickerStyle {
+        DatePickerStyle(
+            backgroundColor: theme.colors.surface,
+            textColor: theme.colors.primaryText,
+            titleColor: theme.colors.primaryText,
+            iconColor: theme.colors.onSurfaceVariant,
+            chevronColor: theme.colors.onSurfaceVariant,
+            font: DesignTokens.Typography.bodyMedium,
+            titleFont: DesignTokens.Typography.labelMedium,
+            horizontalPadding: DesignTokens.Spacing.inputPadding,
+            verticalPadding: DesignTokens.Spacing.inputPadding,
+            cornerRadius: DesignTokens.BorderRadius.input,
+            pickerBackgroundColor: theme.colors.surface,
+            pickerBorderColor: theme.colors.outline
+        )
+    }
     
-    public static let filled = DatePickerStyle(
-        backgroundColor: Color.gray.opacity(0.1),
-        textColor: .primary,
-        titleColor: .primary,
-        iconColor: .secondary,
-        chevronColor: .secondary,
-        font: .body,
-        titleFont: .caption,
-        horizontalPadding: 12,
-        verticalPadding: 12,
-        cornerRadius: 8,
-        pickerBackgroundColor: Color.primary,
-        pickerBorderColor: Color.gray.opacity(0.3)
-    )
+    public static func filled(theme: Theme = .light) -> DatePickerStyle {
+        DatePickerStyle(
+            backgroundColor: theme.colors.surfaceVariant,
+            textColor: theme.colors.primaryText,
+            titleColor: theme.colors.primaryText,
+            iconColor: theme.colors.onSurfaceVariant,
+            chevronColor: theme.colors.onSurfaceVariant,
+            font: DesignTokens.Typography.bodyMedium,
+            titleFont: DesignTokens.Typography.labelMedium,
+            horizontalPadding: DesignTokens.Spacing.inputPadding,
+            verticalPadding: DesignTokens.Spacing.inputPadding,
+            cornerRadius: DesignTokens.BorderRadius.input,
+            pickerBackgroundColor: theme.colors.surface,
+            pickerBorderColor: theme.colors.outline
+        )
+    }
     
-    public static let outlined = DatePickerStyle(
-        backgroundColor: Color.clear,
-        textColor: .primary,
-        titleColor: .primary,
-        iconColor: .secondary,
-        chevronColor: .secondary,
-        font: .body,
-        titleFont: .caption,
-        horizontalPadding: 12,
-        verticalPadding: 12,
-        cornerRadius: 8,
-        pickerBackgroundColor: Color.primary,
-        pickerBorderColor: Color.gray.opacity(0.3)
-    )
+    public static func outlined(theme: Theme = .light) -> DatePickerStyle {
+        DatePickerStyle(
+            backgroundColor: Color.clear,
+            textColor: theme.colors.primaryText,
+            titleColor: theme.colors.primaryText,
+            iconColor: theme.colors.onSurfaceVariant,
+            chevronColor: theme.colors.onSurfaceVariant,
+            font: DesignTokens.Typography.bodyMedium,
+            titleFont: DesignTokens.Typography.labelMedium,
+            horizontalPadding: DesignTokens.Spacing.inputPadding,
+            verticalPadding: DesignTokens.Spacing.inputPadding,
+            cornerRadius: DesignTokens.BorderRadius.input,
+            pickerBackgroundColor: theme.colors.surface,
+            pickerBorderColor: theme.colors.outline
+        )
+    }
 }
 
 // MARK: - Compact Date Picker
@@ -234,11 +257,14 @@ public struct DatePickerStyle {
 /// A compact date picker that shows inline without expansion
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRCompactDatePicker: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var selection: Date
     
     private let title: String
     private let mode: DatePickerMode
-    private let style: DatePickerStyle
+    private let style: DatePickerStyleType
     private let validationState: ValidationState
     private let dateRange: ClosedRange<Date>
     
@@ -246,7 +272,7 @@ public struct RRCompactDatePicker: View {
         selection: Binding<Date>,
         title: String = "Select Date",
         mode: DatePickerMode = .date,
-        style: DatePickerStyle = .default,
+        style: DatePickerStyleType = .default,
         validationState: ValidationState = .none,
         in dateRange: ClosedRange<Date> = Date.distantPast...Date.distantFuture
     ) {
@@ -259,11 +285,17 @@ public struct RRCompactDatePicker: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        let themeStyle: DatePickerStyle = {
+            switch style {
+            case .default: return DatePickerStyle.default(theme: theme)
+            case .filled: return DatePickerStyle.filled(theme: theme)
+            case .outlined: return DatePickerStyle.outlined(theme: theme)
+            }
+        }()
+        
+        return VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
             if !title.isEmpty {
-                Text(title)
-                    .font(style.titleFont)
-                    .foregroundColor(style.titleColor)
+                RRLabel(title, style: .caption, weight: .medium, color: .primary)
             }
             
             DatePicker(
@@ -274,14 +306,14 @@ public struct RRCompactDatePicker: View {
             )
             .datePickerStyle(.compact)
             .labelsHidden()
-            .padding(.horizontal, style.horizontalPadding)
-            .padding(.vertical, style.verticalPadding)
-            .background(style.backgroundColor)
+            .padding(.horizontal, themeStyle.horizontalPadding)
+            .padding(.vertical, themeStyle.verticalPadding)
+            .background(themeStyle.backgroundColor)
             .overlay(
-                RoundedRectangle(cornerRadius: style.cornerRadius)
-                    .stroke(validationState.borderColor, lineWidth: validationState.borderWidth)
+                RoundedRectangle(cornerRadius: themeStyle.cornerRadius)
+                    .stroke(validationState.borderColor(theme: theme), lineWidth: validationState.borderWidth)
             )
-            .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
+            .clipShape(RoundedRectangle(cornerRadius: themeStyle.cornerRadius))
         }
     }
 }
@@ -291,19 +323,22 @@ public struct RRCompactDatePicker: View {
 /// A time range picker for selecting start and end times
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRTimeRangePicker: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var startTime: Date
     @Binding private var endTime: Date
     @State private var isExpanded = false
     
     private let title: String
-    private let style: DatePickerStyle
+    private let style: DatePickerStyleType
     private let validationState: ValidationState
     
     public init(
         startTime: Binding<Date>,
         endTime: Binding<Date>,
         title: String = "Select Time Range",
-        style: DatePickerStyle = .default,
+        style: DatePickerStyleType = .default,
         validationState: ValidationState = .none
     ) {
         self._startTime = startTime
@@ -327,11 +362,17 @@ public struct RRTimeRangePicker: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        let themeStyle: DatePickerStyle = {
+            switch style {
+            case .default: return DatePickerStyle.default(theme: theme)
+            case .filled: return DatePickerStyle.filled(theme: theme)
+            case .outlined: return DatePickerStyle.outlined(theme: theme)
+            }
+        }()
+        
+        return VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
             if !title.isEmpty {
-                Text(title)
-                    .font(style.titleFont)
-                    .foregroundColor(style.titleColor)
+                RRLabel(title, style: .caption, weight: .medium, color: .primary)
             }
             
             Button(action: {
@@ -341,38 +382,38 @@ public struct RRTimeRangePicker: View {
             }) {
                 HStack {
                     Image(systemName: "clock")
-                        .foregroundColor(style.iconColor)
-                        .font(.system(size: 16))
+                        .foregroundColor(themeStyle.iconColor)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeSM))
                     
-                    Text(displayText)
-                        .foregroundColor(style.textColor)
-                        .font(style.font)
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    RRLabel(
+                        displayText,
+                        style: .body,
+                        weight: .medium,
+                        customColor: themeStyle.textColor
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundColor(style.chevronColor)
-                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(themeStyle.chevronColor)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeXS, weight: .medium))
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                        .animation(.easeInOut(duration: 0.2), value: isExpanded)
+                        .animation(DesignTokens.Animation.dropdownToggle, value: isExpanded)
                 }
-                .padding(.horizontal, style.horizontalPadding)
-                .padding(.vertical, style.verticalPadding)
-                .background(style.backgroundColor)
+                .padding(.horizontal, themeStyle.horizontalPadding)
+                .padding(.vertical, themeStyle.verticalPadding)
+                .background(themeStyle.backgroundColor)
                 .overlay(
-                    RoundedRectangle(cornerRadius: style.cornerRadius)
-                        .stroke(validationState.borderColor, lineWidth: validationState.borderWidth)
+                    RoundedRectangle(cornerRadius: themeStyle.cornerRadius)
+                        .stroke(validationState.borderColor(theme: theme), lineWidth: validationState.borderWidth)
                 )
-                .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
+                .clipShape(RoundedRectangle(cornerRadius: themeStyle.cornerRadius))
             }
             .buttonStyle(PlainButtonStyle())
             
             if isExpanded {
-                VStack(spacing: 16) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Start Time")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                        RRLabel("Start Time", style: .caption, color: .secondary)
                         
                         DatePicker(
                             "",
@@ -387,10 +428,8 @@ public struct RRTimeRangePicker: View {
                         .labelsHidden()
                     }
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("End Time")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                        RRLabel("End Time", style: .caption, color: .secondary)
                         
                         DatePicker(
                             "",
@@ -406,12 +445,12 @@ public struct RRTimeRangePicker: View {
                     }
                 }
                 .padding()
-                .background(style.pickerBackgroundColor)
+                .background(themeStyle.pickerBackgroundColor)
                 .overlay(
-                    RoundedRectangle(cornerRadius: style.cornerRadius)
-                        .stroke(style.pickerBorderColor, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: themeStyle.cornerRadius)
+                        .stroke(themeStyle.pickerBorderColor, lineWidth: 1)
                 )
-                .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
+                .clipShape(RoundedRectangle(cornerRadius: themeStyle.cornerRadius))
                 .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
         }
@@ -428,7 +467,7 @@ struct RRDatePicker_Previews: PreviewProvider {
     @State static var endTime = Calendar.current.date(bySettingHour: 17, minute: 0, second: 0, of: Date()) ?? Date()
     
     static var previews: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: DesignTokens.Spacing.lg) {
             RRDatePicker(
                 selection: $selectedDate,
                 title: "Select Date",
@@ -459,7 +498,8 @@ struct RRDatePicker_Previews: PreviewProvider {
                 validationState: .none
             )
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
+        .themeProvider(ThemeProvider())
         .previewDisplayName("RRDatePicker")
     }
 }

@@ -6,6 +6,9 @@ import Foundation
 /// A customizable segmented control component with various styles and animations
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRSegmentedControl<SelectionValue: Hashable>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var selection: SelectionValue
     @State private var selectedIndex: Int = 0
     
@@ -41,13 +44,11 @@ public struct RRSegmentedControl<SelectionValue: Hashable>: View {
                         if let icon = item.icon {
                             icon
                                 .font(style.iconFont)
-                                .foregroundColor(selectedItemIndex == index ? style.selectedIconColor : style.iconColor)
+                                .foregroundColor(selectedItemIndex == index ? style.selectedIconColor(theme) : style.iconColor(theme))
                         }
                         
                         if let title = item.title {
-                            Text(title)
-                                .font(style.font)
-                                .foregroundColor(selectedItemIndex == index ? style.selectedTextColor : style.textColor)
+                            RRLabel(title, style: style.labelStyle, weight: .medium, customColor: selectedItemIndex == index ? style.selectedTextColor(theme) : style.textColor(theme))
                                 .multilineTextAlignment(.center)
                         }
                     }
@@ -58,19 +59,19 @@ public struct RRSegmentedControl<SelectionValue: Hashable>: View {
                         ZStack {
                             if style.showSelectionIndicator {
                                 RoundedRectangle(cornerRadius: style.selectionIndicatorCornerRadius)
-                                    .fill(style.selectionIndicatorColor)
+                                    .fill(style.selectionIndicatorColor(theme))
                                     .opacity(selectedItemIndex == index ? 1 : 0)
                             }
                             
                             if style.showBackground {
                                 RoundedRectangle(cornerRadius: style.cornerRadius)
-                                    .fill(selectedItemIndex == index ? style.selectedBackgroundColor : style.backgroundColor)
+                                    .fill(selectedItemIndex == index ? style.selectedBackgroundColor(theme) : style.backgroundColor(theme))
                             }
                         }
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: style.cornerRadius)
-                            .stroke(selectedItemIndex == index ? style.selectedBorderColor : style.borderColor, lineWidth: style.borderWidth)
+                            .stroke(selectedItemIndex == index ? style.selectedBorderColor(theme) : style.borderColor(theme), lineWidth: style.borderWidth)
                     )
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -78,10 +79,10 @@ public struct RRSegmentedControl<SelectionValue: Hashable>: View {
         }
         .background(
             RoundedRectangle(cornerRadius: style.cornerRadius)
-                .fill(style.containerBackgroundColor)
+                .fill(style.containerBackgroundColor(theme))
                 .overlay(
                     RoundedRectangle(cornerRadius: style.cornerRadius)
-                        .stroke(style.containerBorderColor, lineWidth: style.containerBorderWidth)
+                        .stroke(style.containerBorderColor(theme), lineWidth: style.containerBorderWidth)
                 )
         )
         .onAppear {
@@ -122,19 +123,19 @@ public struct SegmentedItem<Value: Hashable> {
 // MARK: - Segmented Control Style
 
 public struct SegmentedControlStyle {
-    public let containerBackgroundColor: Color
-    public let containerBorderColor: Color
+    public let containerBackgroundColor: (Theme) -> Color
+    public let containerBorderColor: (Theme) -> Color
     public let containerBorderWidth: CGFloat
-    public let backgroundColor: Color
-    public let selectedBackgroundColor: Color
-    public let textColor: Color
-    public let selectedTextColor: Color
-    public let iconColor: Color
-    public let selectedIconColor: Color
-    public let borderColor: Color
-    public let selectedBorderColor: Color
+    public let backgroundColor: (Theme) -> Color
+    public let selectedBackgroundColor: (Theme) -> Color
+    public let textColor: (Theme) -> Color
+    public let selectedTextColor: (Theme) -> Color
+    public let iconColor: (Theme) -> Color
+    public let selectedIconColor: (Theme) -> Color
+    public let borderColor: (Theme) -> Color
+    public let selectedBorderColor: (Theme) -> Color
     public let borderWidth: CGFloat
-    public let font: Font
+    public let labelStyle: RRLabel.Style
     public let iconFont: Font
     public let horizontalPadding: CGFloat
     public let verticalPadding: CGFloat
@@ -142,107 +143,107 @@ public struct SegmentedControlStyle {
     public let cornerRadius: CGFloat
     public let showBackground: Bool
     public let showSelectionIndicator: Bool
-    public let selectionIndicatorColor: Color
+    public let selectionIndicatorColor: (Theme) -> Color
     public let selectionIndicatorCornerRadius: CGFloat
     
     public static let `default` = SegmentedControlStyle(
-        containerBackgroundColor: Color.gray.opacity(0.1),
-        containerBorderColor: Color.clear,
+        containerBackgroundColor: { theme in theme.colors.surfaceVariant },
+        containerBorderColor: { theme in Color.clear },
         containerBorderWidth: 0,
-        backgroundColor: Color.clear,
-        selectedBackgroundColor: Color.primary,
-        textColor: .primary,
-        selectedTextColor: .primary,
-        iconColor: .secondary,
-        selectedIconColor: .primary,
-        borderColor: Color.clear,
-        selectedBorderColor: Color.clear,
+        backgroundColor: { theme in Color.clear },
+        selectedBackgroundColor: { theme in theme.colors.primary },
+        textColor: { theme in theme.colors.primaryText },
+        selectedTextColor: { theme in theme.colors.onPrimary },
+        iconColor: { theme in theme.colors.secondaryText },
+        selectedIconColor: { theme in theme.colors.onPrimary },
+        borderColor: { theme in Color.clear },
+        selectedBorderColor: { theme in Color.clear },
         borderWidth: 0,
-        font: .body,
+        labelStyle: .body,
         iconFont: .body,
-        horizontalPadding: 16,
-        verticalPadding: 8,
-        itemSpacing: 4,
-        cornerRadius: 8,
+        horizontalPadding: DesignTokens.Spacing.md,
+        verticalPadding: DesignTokens.Spacing.sm,
+        itemSpacing: DesignTokens.Spacing.xs,
+        cornerRadius: DesignTokens.BorderRadius.md,
         showBackground: true,
         showSelectionIndicator: false,
-        selectionIndicatorColor: Color.blue,
-        selectionIndicatorCornerRadius: 6
+        selectionIndicatorColor: { theme in theme.colors.primary },
+        selectionIndicatorCornerRadius: DesignTokens.BorderRadius.sm
     )
     
     public static let pill = SegmentedControlStyle(
-        containerBackgroundColor: Color.gray.opacity(0.1),
-        containerBorderColor: Color.clear,
+        containerBackgroundColor: { theme in theme.colors.surfaceVariant },
+        containerBorderColor: { theme in Color.clear },
         containerBorderWidth: 0,
-        backgroundColor: Color.clear,
-        selectedBackgroundColor: Color.blue,
-        textColor: .primary,
-        selectedTextColor: .white,
-        iconColor: .secondary,
-        selectedIconColor: .white,
-        borderColor: Color.clear,
-        selectedBorderColor: Color.clear,
+        backgroundColor: { theme in Color.clear },
+        selectedBackgroundColor: { theme in theme.colors.primary },
+        textColor: { theme in theme.colors.primaryText },
+        selectedTextColor: { theme in theme.colors.onPrimary },
+        iconColor: { theme in theme.colors.secondaryText },
+        selectedIconColor: { theme in theme.colors.onPrimary },
+        borderColor: { theme in Color.clear },
+        selectedBorderColor: { theme in Color.clear },
         borderWidth: 0,
-        font: .body,
+        labelStyle: .body,
         iconFont: .body,
-        horizontalPadding: 20,
-        verticalPadding: 10,
-        itemSpacing: 6,
-        cornerRadius: 20,
+        horizontalPadding: DesignTokens.Spacing.lg,
+        verticalPadding: DesignTokens.Spacing.md,
+        itemSpacing: DesignTokens.Spacing.sm,
+        cornerRadius: DesignTokens.BorderRadius.xl,
         showBackground: true,
         showSelectionIndicator: false,
-        selectionIndicatorColor: Color.clear,
+        selectionIndicatorColor: { theme in Color.clear },
         selectionIndicatorCornerRadius: 0
     )
     
     public static let outlined = SegmentedControlStyle(
-        containerBackgroundColor: Color.clear,
-        containerBorderColor: Color.gray.opacity(0.3),
+        containerBackgroundColor: { theme in Color.clear },
+        containerBorderColor: { theme in theme.colors.outline },
         containerBorderWidth: 1,
-        backgroundColor: Color.clear,
-        selectedBackgroundColor: Color.blue.opacity(0.1),
-        textColor: .primary,
-        selectedTextColor: .blue,
-        iconColor: .secondary,
-        selectedIconColor: .blue,
-        borderColor: Color.clear,
-        selectedBorderColor: Color(.systemBlue),
+        backgroundColor: { theme in Color.clear },
+        selectedBackgroundColor: { theme in theme.colors.primary.opacity(0.1) },
+        textColor: { theme in theme.colors.primaryText },
+        selectedTextColor: { theme in theme.colors.primary },
+        iconColor: { theme in theme.colors.secondaryText },
+        selectedIconColor: { theme in theme.colors.primary },
+        borderColor: { theme in Color.clear },
+        selectedBorderColor: { theme in theme.colors.primary },
         borderWidth: 1,
-        font: .body,
+        labelStyle: .body,
         iconFont: .body,
-        horizontalPadding: 16,
-        verticalPadding: 8,
-        itemSpacing: 4,
-        cornerRadius: 8,
+        horizontalPadding: DesignTokens.Spacing.md,
+        verticalPadding: DesignTokens.Spacing.sm,
+        itemSpacing: DesignTokens.Spacing.xs,
+        cornerRadius: DesignTokens.BorderRadius.md,
         showBackground: true,
         showSelectionIndicator: false,
-        selectionIndicatorColor: Color.clear,
+        selectionIndicatorColor: { theme in Color.clear },
         selectionIndicatorCornerRadius: 0
     )
     
     public static let indicator = SegmentedControlStyle(
-        containerBackgroundColor: Color.gray.opacity(0.1),
-        containerBorderColor: Color.clear,
+        containerBackgroundColor: { theme in theme.colors.surfaceVariant },
+        containerBorderColor: { theme in Color.clear },
         containerBorderWidth: 0,
-        backgroundColor: Color.clear,
-        selectedBackgroundColor: Color.clear,
-        textColor: .primary,
-        selectedTextColor: .white,
-        iconColor: .secondary,
-        selectedIconColor: .white,
-        borderColor: Color.clear,
-        selectedBorderColor: Color.clear,
+        backgroundColor: { theme in Color.clear },
+        selectedBackgroundColor: { theme in Color.clear },
+        textColor: { theme in theme.colors.primaryText },
+        selectedTextColor: { theme in theme.colors.onPrimary },
+        iconColor: { theme in theme.colors.secondaryText },
+        selectedIconColor: { theme in theme.colors.onPrimary },
+        borderColor: { theme in Color.clear },
+        selectedBorderColor: { theme in Color.clear },
         borderWidth: 0,
-        font: .body,
+        labelStyle: .body,
         iconFont: .body,
-        horizontalPadding: 16,
-        verticalPadding: 8,
-        itemSpacing: 4,
-        cornerRadius: 8,
+        horizontalPadding: DesignTokens.Spacing.md,
+        verticalPadding: DesignTokens.Spacing.sm,
+        itemSpacing: DesignTokens.Spacing.xs,
+        cornerRadius: DesignTokens.BorderRadius.md,
         showBackground: false,
         showSelectionIndicator: true,
-        selectionIndicatorColor: Color(.systemBlue),
-        selectionIndicatorCornerRadius: 6
+        selectionIndicatorColor: { theme in theme.colors.primary },
+        selectionIndicatorCornerRadius: DesignTokens.BorderRadius.sm
     )
 }
 
@@ -285,7 +286,22 @@ struct RRSegmentedControl_Previews: PreviewProvider {
     @State static var selectedOption = "Option 1"
     
     static var previews: some View {
-        VStack(spacing: 30) {
+        RRSegmentedControlPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRSegmentedControl Examples")
+    }
+}
+
+private struct RRSegmentedControlPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    @State private var selectedTab = "Home"
+    @State private var selectedIndex = 0
+    @State private var selectedOption = "Option 1"
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.xl) {
             // Default style
             RRSegmentedControl(
                 selection: $selectedTab,
@@ -329,7 +345,6 @@ struct RRSegmentedControl_Previews: PreviewProvider {
                 style: .pill
             )
         }
-        .padding()
-        .previewDisplayName("RRSegmentedControl")
+        .padding(DesignTokens.Spacing.componentPadding)
     }
 }

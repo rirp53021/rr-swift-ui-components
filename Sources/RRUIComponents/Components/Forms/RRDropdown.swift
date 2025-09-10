@@ -2,6 +2,9 @@ import SwiftUI
 
 /// A customizable dropdown/picker component
 public struct RRDropdown<Item: Hashable>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var selectedItem: Item?
     @State private var isExpanded = false
     @State private var searchText = ""
@@ -66,30 +69,32 @@ public struct RRDropdown<Item: Hashable>: View {
             HStack {
                 if let selected = selectedItem, let icon = itemIcon {
                     icon(selected)
-                        .foregroundColor(style.textColor)
-                        .font(.system(size: 16))
+                        .foregroundColor(theme.colors.primaryText)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeSM))
                 }
                 
-                Text(displayText)
-                    .foregroundColor(selectedItem != nil ? style.textColor : style.placeholderColor)
-                    .font(style.font)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                RRLabel(
+                    displayText,
+                    style: .body,
+                    weight: .medium,
+                    customColor: selectedItem != nil ? theme.colors.primaryText : theme.colors.secondaryText
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                    .foregroundColor(style.iconColor)
-                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(theme.colors.onSurfaceVariant)
+                    .font(.system(size: DesignTokens.ComponentSize.iconSizeXS, weight: .medium))
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                    .animation(.easeInOut(duration: 0.2), value: isExpanded)
+                    .animation(DesignTokens.Animation.dropdownToggle, value: isExpanded)
             }
-            .padding(.horizontal, style.horizontalPadding)
-            .padding(.vertical, style.verticalPadding)
-            .background(style.backgroundColor)
+            .padding(.horizontal, DesignTokens.Spacing.inputPadding)
+            .padding(.vertical, DesignTokens.Spacing.sm)
+            .background(theme.colors.surface)
             .overlay(
-                RoundedRectangle(cornerRadius: style.cornerRadius)
-                    .stroke(style.borderColor, lineWidth: style.borderWidth)
+                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.input)
+                    .stroke(theme.colors.outline, lineWidth: 1)
             )
-            .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
+            .clipShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.input))
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -107,35 +112,40 @@ public struct RRDropdown<Item: Hashable>: View {
                         
                         if item != filteredItems.last {
                             Divider()
-                                .background(style.borderColor)
+                                .background(theme.colors.outline)
                         }
                     }
                 }
             }
             .frame(maxHeight: style.maxListHeight)
         }
-        .background(style.backgroundColor)
+        .background(theme.colors.surface)
         .overlay(
-            RoundedRectangle(cornerRadius: style.cornerRadius)
-                .stroke(style.borderColor, lineWidth: style.borderWidth)
+            RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.input)
+                .stroke(theme.colors.outline, lineWidth: 1)
         )
-        .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
-        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.input))
+        .shadow(
+            color: DesignTokens.Elevation.dropdown.color,
+            radius: DesignTokens.Elevation.dropdown.radius,
+            x: DesignTokens.Elevation.dropdown.x,
+            y: DesignTokens.Elevation.dropdown.y
+        )
     }
     
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(style.searchIconColor)
-                .font(.system(size: 14))
+                .foregroundColor(theme.colors.onSurfaceVariant)
+                .font(.system(size: DesignTokens.ComponentSize.iconSizeXS))
             
             TextField("Search...", text: $searchText)
                 .textFieldStyle(PlainTextFieldStyle())
                 .font(style.font)
         }
-        .padding(.horizontal, style.horizontalPadding)
-        .padding(.vertical, 8)
-        .background(style.searchBackgroundColor)
+        .padding(.horizontal, DesignTokens.Spacing.inputPadding)
+        .padding(.vertical, DesignTokens.Spacing.sm)
+        .background(theme.colors.surfaceVariant)
     }
     
     private func dropdownItem(_ item: Item) -> some View {
@@ -149,25 +159,27 @@ public struct RRDropdown<Item: Hashable>: View {
             HStack {
                 if let icon = itemIcon {
                     icon(item)
-                        .foregroundColor(style.textColor)
-                        .font(.system(size: 16))
+                        .foregroundColor(theme.colors.primaryText)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeSM))
                 }
                 
-                Text(itemLabel(item))
-                    .foregroundColor(style.textColor)
-                    .font(style.font)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                RRLabel(
+                    itemLabel(item),
+                    style: .body,
+                    weight: .medium,
+                    customColor: theme.colors.primaryText
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 if selectedItem == item {
                     Image(systemName: "checkmark")
-                        .foregroundColor(style.accentColor)
-                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(theme.colors.primary)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeXS, weight: .medium))
                 }
             }
-            .padding(.horizontal, style.horizontalPadding)
-            .padding(.vertical, style.verticalPadding)
-            .background(selectedItem == item ? style.selectedBackgroundColor : Color.clear)
+            .padding(.horizontal, DesignTokens.Spacing.inputPadding)
+            .padding(.vertical, DesignTokens.Spacing.sm)
+            .background(selectedItem == item ? theme.colors.primary.opacity(0.1) : Color.clear)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -193,31 +205,34 @@ public struct DropdownStyle {
     public let maxListHeight: CGFloat
     
     public init(
-        backgroundColor: Color = .white,
-        textColor: Color = .primary,
-        placeholderColor: Color = .secondary,
-        borderColor: Color = .gray.opacity(0.3),
-        accentColor: Color = .blue,
-        iconColor: Color = .secondary,
-        searchIconColor: Color = .secondary,
-        searchBackgroundColor: Color = .gray.opacity(0.1),
-        selectedBackgroundColor: Color = .blue.opacity(0.1),
-        font: Font = .body,
-        cornerRadius: CGFloat = 8,
+        backgroundColor: Color? = nil,
+        textColor: Color? = nil,
+        placeholderColor: Color? = nil,
+        borderColor: Color? = nil,
+        accentColor: Color? = nil,
+        iconColor: Color? = nil,
+        searchIconColor: Color? = nil,
+        searchBackgroundColor: Color? = nil,
+        selectedBackgroundColor: Color? = nil,
+        font: Font = DesignTokens.Typography.bodyMedium,
+        cornerRadius: CGFloat = DesignTokens.BorderRadius.input,
         borderWidth: CGFloat = 1,
-        horizontalPadding: CGFloat = 12,
-        verticalPadding: CGFloat = 10,
-        maxListHeight: CGFloat = 200
+        horizontalPadding: CGFloat = DesignTokens.Spacing.inputPadding,
+        verticalPadding: CGFloat = DesignTokens.Spacing.sm,
+        maxListHeight: CGFloat = 200,
+        theme: Theme? = nil
     ) {
-        self.backgroundColor = backgroundColor
-        self.textColor = textColor
-        self.placeholderColor = placeholderColor
-        self.borderColor = borderColor
-        self.accentColor = accentColor
-        self.iconColor = iconColor
-        self.searchIconColor = searchIconColor
-        self.searchBackgroundColor = searchBackgroundColor
-        self.selectedBackgroundColor = selectedBackgroundColor
+        let theme = theme ?? Theme.light
+        
+        self.backgroundColor = backgroundColor ?? theme.colors.surface
+        self.textColor = textColor ?? theme.colors.primaryText
+        self.placeholderColor = placeholderColor ?? theme.colors.secondaryText
+        self.borderColor = borderColor ?? theme.colors.outline
+        self.accentColor = accentColor ?? theme.colors.primary
+        self.iconColor = iconColor ?? theme.colors.onSurfaceVariant
+        self.searchIconColor = searchIconColor ?? theme.colors.onSurfaceVariant
+        self.searchBackgroundColor = searchBackgroundColor ?? theme.colors.surfaceVariant
+        self.selectedBackgroundColor = selectedBackgroundColor ?? theme.colors.primary.opacity(0.1)
         self.font = font
         self.cornerRadius = cornerRadius
         self.borderWidth = borderWidth
@@ -233,7 +248,9 @@ public struct DropdownStyle {
 
 struct RRDropdown_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel("Dropdown Styles", style: .title, weight: .bold, color: .primary)
+            
             // Basic dropdown
             RRDropdown(
                 items: ["Option 1", "Option 2", "Option 3"],
@@ -262,7 +279,8 @@ struct RRDropdown_Previews: PreviewProvider {
                 searchable: true
             )
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
+        .themeProvider(ThemeProvider())
         .previewDisplayName("RRDropdown")
     }
 }

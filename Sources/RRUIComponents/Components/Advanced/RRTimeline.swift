@@ -138,11 +138,11 @@ struct TimelineItemView: View {
     
     private var connectorColor: Color {
         if isCompleted {
-            return style.completedConnectorColor
+            return style.completedConnectorColor == Color.clear ? theme.colors.success : style.completedConnectorColor
         } else if isCurrent {
-            return style.currentConnectorColor
+            return style.currentConnectorColor == Color.clear ? theme.colors.primary : style.currentConnectorColor
         } else {
-            return style.pendingConnectorColor
+            return style.pendingConnectorColor == Color.clear ? theme.colors.outlineVariant : style.pendingConnectorColor
         }
     }
     
@@ -158,13 +158,17 @@ struct TimelineItemView: View {
                 
                 ZStack {
                     Circle()
-                        .fill(style.iconBackgroundColor)
+                        .fill(style.iconBackgroundColor == Color.clear ? theme.colors.surface : style.iconBackgroundColor)
                         .frame(width: style.iconSize, height: style.iconSize)
+                        .overlay(
+                            Circle()
+                                .stroke(theme.colors.outline, lineWidth: 1)
+                        )
                     
                     if let customIcon = item.icon {
                         customIcon
                             .font(.system(size: style.iconSize * 0.6, weight: .medium))
-                            .foregroundColor(style.iconColor)
+                            .foregroundColor(style.iconColor == Color.clear ? item.status.color(theme: theme) : style.iconColor)
                     } else {
                         Image(systemName: item.status.iconName)
                             .font(.system(size: style.iconSize * 0.6, weight: .medium))
@@ -183,30 +187,22 @@ struct TimelineItemView: View {
             VStack(alignment: .leading, spacing: style.contentSpacing) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(item.title)
-                            .font(style.titleFont)
-                            .foregroundColor(style.titleColor)
+                        RRLabel(item.title, style: style.titleLabelStyle, weight: .medium, customColor: style.titleColor(theme))
                         
                         if let subtitle = item.subtitle {
-                            Text(subtitle)
-                                .font(style.subtitleFont)
-                                .foregroundColor(style.subtitleColor)
+                            RRLabel(subtitle, style: style.subtitleLabelStyle, weight: .regular, customColor: style.subtitleColor(theme))
                         }
                     }
                     
                     Spacer()
                     
                     if let date = item.date {
-                        Text(date, style: .date)
-                            .font(style.dateFont)
-                            .foregroundColor(style.dateColor)
+                        RRLabel(date.formatted(date: .abbreviated, time: .omitted), style: style.dateLabelStyle, weight: .regular, customColor: style.dateColor(theme))
                     }
                 }
                 
                 if let description = item.description {
-                    Text(description)
-                        .font(style.descriptionFont)
-                        .foregroundColor(style.descriptionColor)
+                    RRLabel(description, style: style.descriptionLabelStyle, weight: .regular, customColor: style.descriptionColor(theme))
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 
@@ -230,82 +226,82 @@ public struct TimelineStyle {
     public let itemSpacing: CGFloat
     public let contentSpacing: CGFloat
     public let contentLeadingPadding: CGFloat
-    public let titleFont: Font
-    public let titleColor: Color
-    public let subtitleFont: Font
-    public let subtitleColor: Color
-    public let descriptionFont: Font
-    public let descriptionColor: Color
-    public let dateFont: Font
-    public let dateColor: Color
+    public let titleLabelStyle: RRLabel.Style
+    public let titleColor: (Theme) -> Color
+    public let subtitleLabelStyle: RRLabel.Style
+    public let subtitleColor: (Theme) -> Color
+    public let descriptionLabelStyle: RRLabel.Style
+    public let descriptionColor: (Theme) -> Color
+    public let dateLabelStyle: RRLabel.Style
+    public let dateColor: (Theme) -> Color
     public let pendingConnectorColor: Color
     public let currentConnectorColor: Color
     public let completedConnectorColor: Color
     
     public static let `default` = TimelineStyle(
         lineWidth: 2,
-        lineHeight: 20,
-        iconSize: 24,
-        iconBackgroundColor: Color.primary,
-        iconColor: .primary,
-        itemSpacing: 12,
-        contentSpacing: 8,
-        contentLeadingPadding: 0,
-        titleFont: .headline,
-        titleColor: .primary,
-        subtitleFont: .subheadline,
-        subtitleColor: .secondary,
-        descriptionFont: .body,
-        descriptionColor: .secondary,
-        dateFont: .caption,
-        dateColor: .secondary,
-        pendingConnectorColor: Color.gray.opacity(0.3),
-        currentConnectorColor: .blue,
-        completedConnectorColor: .green
+        lineHeight: DesignTokens.Spacing.lg,
+        iconSize: DesignTokens.ComponentSize.iconSizeMD,
+        iconBackgroundColor: Color.clear, // Will be set dynamically
+        iconColor: Color.clear, // Will be set dynamically
+        itemSpacing: DesignTokens.Spacing.md,
+        contentSpacing: DesignTokens.Spacing.sm,
+        contentLeadingPadding: DesignTokens.Spacing.sm,
+        titleLabelStyle: .subtitle,
+        titleColor: { theme in theme.colors.primaryText },
+        subtitleLabelStyle: .body,
+        subtitleColor: { theme in theme.colors.secondaryText },
+        descriptionLabelStyle: .body,
+        descriptionColor: { theme in theme.colors.secondaryText },
+        dateLabelStyle: .caption,
+        dateColor: { theme in theme.colors.onSurfaceVariant },
+        pendingConnectorColor: Color.clear, // Will be set dynamically
+        currentConnectorColor: Color.clear, // Will be set dynamically
+        completedConnectorColor: Color.clear // Will be set dynamically
     )
     
     public static let minimal = TimelineStyle(
         lineWidth: 1,
-        lineHeight: 16,
-        iconSize: 16,
-        iconBackgroundColor: Color.primary,
-        iconColor: .primary,
-        itemSpacing: 8,
-        contentSpacing: 4,
-        contentLeadingPadding: 0,
-        titleFont: .subheadline,
-        titleColor: .primary,
-        subtitleFont: .caption,
-        subtitleColor: .secondary,
-        descriptionFont: .caption,
-        descriptionColor: .secondary,
-        dateFont: .caption2,
-        dateColor: .secondary,
-        pendingConnectorColor: Color.gray.opacity(0.2),
-        currentConnectorColor: .blue,
-        completedConnectorColor: .green
+        lineHeight: DesignTokens.Spacing.md,
+        iconSize: DesignTokens.ComponentSize.iconSizeSM,
+        iconBackgroundColor: Color.clear, // Will be set dynamically
+        iconColor: Color.clear, // Will be set dynamically
+        itemSpacing: DesignTokens.Spacing.sm,
+        contentSpacing: DesignTokens.Spacing.xs,
+        contentLeadingPadding: DesignTokens.Spacing.xs,
+        titleLabelStyle: .body,
+        titleColor: { theme in theme.colors.primaryText },
+        subtitleLabelStyle: .caption,
+        subtitleColor: { theme in theme.colors.secondaryText },
+        descriptionLabelStyle: .caption,
+        descriptionColor: { theme in theme.colors.secondaryText },
+        dateLabelStyle: .caption,
+        dateColor: { theme in theme.colors.onSurfaceVariant },
+        pendingConnectorColor: Color.clear, // Will be set dynamically
+        currentConnectorColor: Color.clear, // Will be set dynamically
+        completedConnectorColor: Color.clear // Will be set dynamically
     )
     
     public static let bold = TimelineStyle(
         lineWidth: 3,
-        lineHeight: 24,
-        iconSize: 32,
-        iconBackgroundColor: Color.primary,
-        iconColor: .primary,
-        itemSpacing: 16,
-        contentSpacing: 12,
-        contentLeadingPadding: 0,
-        titleFont: .title2,
-        titleColor: .primary,
-        subtitleFont: .headline,
-        subtitleColor: .secondary,
-        descriptionFont: .body,
-        descriptionColor: .secondary,
-        dateFont: .subheadline,
-        dateColor: .secondary,
-        pendingConnectorColor: Color.gray.opacity(0.3),
-        currentConnectorColor: .blue,
-        completedConnectorColor: .green
+        lineHeight: DesignTokens.Spacing.xl,
+        iconSize: DesignTokens.ComponentSize.iconSizeLG,
+        iconBackgroundColor: Color.clear, // Will be set dynamically
+        iconColor: Color.clear, // Will be set dynamically
+        itemSpacing: DesignTokens.Spacing.lg,
+        contentSpacing: DesignTokens.Spacing.md,
+        contentLeadingPadding: DesignTokens.Spacing.md,
+        titleLabelStyle: .title,
+        titleColor: { theme in theme.colors.primaryText },
+        subtitleLabelStyle: .subtitle,
+        subtitleColor: { theme in theme.colors.secondaryText },
+        descriptionLabelStyle: .body,
+        descriptionColor: { theme in theme.colors.secondaryText },
+        dateLabelStyle: .body,
+        dateColor: { theme in theme.colors.onSurfaceVariant },
+        pendingConnectorColor: Color.clear, // Will be set dynamically
+        currentConnectorColor: Color.clear, // Will be set dynamically
+        completedConnectorColor: Color.clear // Will be set dynamically
     )
 }
 
@@ -407,25 +403,34 @@ struct RRTimeline_Previews: PreviewProvider {
     ]
     
     static var previews: some View {
-        VStack(spacing: 30) {
+        RRTimelinePreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRTimeline Examples")
+    }
+}
+
+private struct RRTimelinePreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.xl) {
             // Basic timeline
             VStack {
-                Text("Order Timeline")
-                    .font(.headline)
+                RRLabel("Order Timeline", style: .subtitle, weight: .bold, color: .primary)
                 
                 RRTimeline(
-                    items: sampleItems,
+                    items: RRTimeline_Previews.sampleItems,
                     style: .default
                 )
             }
             
             // Progress tracker
             VStack {
-                Text("Progress Tracker")
-                    .font(.headline)
+                RRLabel("Progress Tracker", style: .subtitle, weight: .bold, color: .primary)
                 
                 RRProgressTracker(
-                    steps: progressSteps,
+                    steps: RRTimeline_Previews.progressSteps,
                     currentStep: 2,
                     style: .minimal
                 )
@@ -433,17 +438,15 @@ struct RRTimeline_Previews: PreviewProvider {
             
             // Horizontal timeline
             VStack {
-                Text("Horizontal Timeline")
-                    .font(.headline)
+                RRLabel("Horizontal Timeline", style: .subtitle, weight: .bold, color: .primary)
                 
                 RRTimeline(
-                    items: Array(sampleItems.prefix(3)),
+                    items: Array(RRTimeline_Previews.sampleItems.prefix(3)),
                     style: .minimal,
                     orientation: .horizontal
                 )
             }
         }
-        .padding()
-        .previewDisplayName("RRTimeline")
+        .padding(DesignTokens.Spacing.componentPadding)
     }
 }

@@ -6,6 +6,9 @@ import Foundation
 /// A tag input component similar to iOS Mail app chips for managing tags
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRTagInput: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var tags: [String]
     @State private var inputText = ""
     @State private var isEditing = false
@@ -80,14 +83,14 @@ public struct RRTagInput: View {
                     TextField(placeholder, text: $inputText)
                         .focused($isTextFieldFocused)
                         .textFieldStyle(PlainTextFieldStyle())
-                        .font(style.inputFont)
-                        .foregroundColor(style.inputTextColor)
+                        .font(.body)
+                        .foregroundColor(style.inputTextColor(theme))
                         .padding(.horizontal, style.inputHorizontalPadding)
                         .padding(.vertical, style.inputVerticalPadding)
-                        .background(style.inputBackgroundColor)
+                        .background(style.inputBackgroundColor(theme))
                         .overlay(
                             RoundedRectangle(cornerRadius: style.inputCornerRadius)
-                                .stroke(style.inputBorderColor, lineWidth: 1)
+                                .stroke(style.inputBorderColor(theme), lineWidth: 1)
                         )
                         .clipShape(RoundedRectangle(cornerRadius: style.inputCornerRadius))
                         .onSubmit {
@@ -104,10 +107,10 @@ public struct RRTagInput: View {
             }
             .padding(.horizontal, style.containerHorizontalPadding)
             .padding(.vertical, style.containerVerticalPadding)
-            .background(style.containerBackgroundColor)
+            .background(style.containerBackgroundColor(theme))
             .overlay(
                 RoundedRectangle(cornerRadius: style.containerCornerRadius)
-                    .stroke(style.containerBorderColor, lineWidth: 1)
+                    .stroke(style.containerBorderColor(theme), lineWidth: 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: style.containerCornerRadius))
             .onTapGesture {
@@ -119,9 +122,7 @@ public struct RRTagInput: View {
             
             // Helper text
             if let maxTags = maxTags {
-                Text("\(tags.count)/\(maxTags) tags")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                RRLabel("\(tags.count)/\(maxTags) tags", style: .caption, weight: .regular, color: .secondary)
                     .padding(.horizontal, style.containerHorizontalPadding)
             }
         }
@@ -137,30 +138,31 @@ public struct RRTagInput: View {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 struct TagView: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     let text: String
     let style: TagStyle
     let onRemove: () -> Void
     
     var body: some View {
         HStack(spacing: 4) {
-            Text(text)
-                .font(style.font)
-                .foregroundColor(style.textColor)
+            RRLabel(text, style: style.labelStyle, weight: .regular, customColor: style.textColor(theme))
                 .lineLimit(1)
             
             Button(action: onRemove) {
                 Image(systemName: "xmark")
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(style.removeIconColor)
+                    .foregroundColor(style.removeIconColor(theme))
             }
             .buttonStyle(PlainButtonStyle())
         }
         .padding(.horizontal, style.horizontalPadding)
         .padding(.vertical, style.verticalPadding)
-        .background(style.backgroundColor)
+        .background(style.backgroundColor(theme))
         .overlay(
             RoundedRectangle(cornerRadius: style.cornerRadius)
-                .stroke(style.borderColor, lineWidth: style.borderWidth)
+                .stroke(style.borderColor(theme), lineWidth: style.borderWidth)
         )
         .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
     }
@@ -169,65 +171,65 @@ struct TagView: View {
 // MARK: - Tag Input Style
 
 public struct TagInputStyle {
-    public let containerBackgroundColor: Color
-    public let containerBorderColor: Color
+    public let containerBackgroundColor: (Theme) -> Color
+    public let containerBorderColor: (Theme) -> Color
     public let containerCornerRadius: CGFloat
     public let containerHorizontalPadding: CGFloat
     public let containerVerticalPadding: CGFloat
-    public let inputBackgroundColor: Color
-    public let inputBorderColor: Color
-    public let inputTextColor: Color
-    public let inputFont: Font
+    public let inputBackgroundColor: (Theme) -> Color
+    public let inputBorderColor: (Theme) -> Color
+    public let inputTextColor: (Theme) -> Color
+    public let inputLabelStyle: RRLabel.Style
     public let inputCornerRadius: CGFloat
     public let inputHorizontalPadding: CGFloat
     public let inputVerticalPadding: CGFloat
     public let tagStyle: TagStyle
     
     public static let `default` = TagInputStyle(
-        containerBackgroundColor: Color.primary,
-        containerBorderColor: Color.gray.opacity(0.3),
-        containerCornerRadius: 8,
-        containerHorizontalPadding: 12,
-        containerVerticalPadding: 12,
-        inputBackgroundColor: Color.clear,
-        inputBorderColor: Color.clear,
-        inputTextColor: .primary,
-        inputFont: .body,
-        inputCornerRadius: 4,
-        inputHorizontalPadding: 8,
-        inputVerticalPadding: 8,
+        containerBackgroundColor: { theme in theme.colors.surface },
+        containerBorderColor: { theme in theme.colors.outline },
+        containerCornerRadius: DesignTokens.BorderRadius.md,
+        containerHorizontalPadding: DesignTokens.Spacing.md,
+        containerVerticalPadding: DesignTokens.Spacing.md,
+        inputBackgroundColor: { theme in Color.clear },
+        inputBorderColor: { theme in Color.clear },
+        inputTextColor: { theme in theme.colors.primaryText },
+        inputLabelStyle: .body,
+        inputCornerRadius: DesignTokens.BorderRadius.sm,
+        inputHorizontalPadding: DesignTokens.Spacing.sm,
+        inputVerticalPadding: DesignTokens.Spacing.sm,
         tagStyle: .default
     )
     
     public static let filled = TagInputStyle(
-        containerBackgroundColor: Color.gray.opacity(0.1),
-        containerBorderColor: Color.gray.opacity(0.3),
-        containerCornerRadius: 8,
-        containerHorizontalPadding: 12,
-        containerVerticalPadding: 12,
-        inputBackgroundColor: Color.primary,
-        inputBorderColor: Color.gray.opacity(0.4),
-        inputTextColor: .primary,
-        inputFont: .body,
-        inputCornerRadius: 4,
-        inputHorizontalPadding: 8,
-        inputVerticalPadding: 8,
+        containerBackgroundColor: { theme in theme.colors.surfaceVariant },
+        containerBorderColor: { theme in theme.colors.outline },
+        containerCornerRadius: DesignTokens.BorderRadius.md,
+        containerHorizontalPadding: DesignTokens.Spacing.md,
+        containerVerticalPadding: DesignTokens.Spacing.md,
+        inputBackgroundColor: { theme in theme.colors.surface },
+        inputBorderColor: { theme in theme.colors.outline },
+        inputTextColor: { theme in theme.colors.primaryText },
+        inputLabelStyle: .body,
+        inputCornerRadius: DesignTokens.BorderRadius.sm,
+        inputHorizontalPadding: DesignTokens.Spacing.sm,
+        inputVerticalPadding: DesignTokens.Spacing.sm,
         tagStyle: .filled
     )
     
     public static let outlined = TagInputStyle(
-        containerBackgroundColor: Color.clear,
-        containerBorderColor: Color.gray.opacity(0.3),
-        containerCornerRadius: 8,
-        containerHorizontalPadding: 12,
-        containerVerticalPadding: 12,
-        inputBackgroundColor: Color.clear,
-        inputBorderColor: Color.gray.opacity(0.4),
-        inputTextColor: .primary,
-        inputFont: .body,
-        inputCornerRadius: 4,
-        inputHorizontalPadding: 8,
-        inputVerticalPadding: 8,
+        containerBackgroundColor: { theme in Color.clear },
+        containerBorderColor: { theme in theme.colors.outline },
+        containerCornerRadius: DesignTokens.BorderRadius.md,
+        containerHorizontalPadding: DesignTokens.Spacing.md,
+        containerVerticalPadding: DesignTokens.Spacing.md,
+        inputBackgroundColor: { theme in Color.clear },
+        inputBorderColor: { theme in theme.colors.outline },
+        inputTextColor: { theme in theme.colors.primaryText },
+        inputLabelStyle: .body,
+        inputCornerRadius: DesignTokens.BorderRadius.sm,
+        inputHorizontalPadding: DesignTokens.Spacing.sm,
+        inputVerticalPadding: DesignTokens.Spacing.sm,
         tagStyle: .outlined
     )
 }
@@ -235,50 +237,50 @@ public struct TagInputStyle {
 // MARK: - Tag Style
 
 public struct TagStyle {
-    public let backgroundColor: Color
-    public let textColor: Color
-    public let borderColor: Color
+    public let backgroundColor: (Theme) -> Color
+    public let textColor: (Theme) -> Color
+    public let borderColor: (Theme) -> Color
     public let borderWidth: CGFloat
-    public let font: Font
+    public let labelStyle: RRLabel.Style
     public let horizontalPadding: CGFloat
     public let verticalPadding: CGFloat
     public let cornerRadius: CGFloat
-    public let removeIconColor: Color
+    public let removeIconColor: (Theme) -> Color
     
     public static let `default` = TagStyle(
-        backgroundColor: Color(.systemBlue).opacity(0.1),
-        textColor: .blue,
-        borderColor: Color(.systemBlue).opacity(0.3),
+        backgroundColor: { theme in theme.colors.primary.opacity(0.1) },
+        textColor: { theme in theme.colors.primary },
+        borderColor: { theme in theme.colors.primary.opacity(0.3) },
         borderWidth: 1,
-        font: .caption,
-        horizontalPadding: 8,
-        verticalPadding: 4,
-        cornerRadius: 12,
-        removeIconColor: .blue
+        labelStyle: .caption,
+        horizontalPadding: DesignTokens.Spacing.sm,
+        verticalPadding: DesignTokens.Spacing.xs,
+        cornerRadius: DesignTokens.BorderRadius.lg,
+        removeIconColor: { theme in theme.colors.primary }
     )
     
     public static let filled = TagStyle(
-        backgroundColor: Color(.systemBlue),
-        textColor: .white,
-        borderColor: Color.clear,
+        backgroundColor: { theme in theme.colors.primary },
+        textColor: { theme in theme.colors.onPrimary },
+        borderColor: { theme in Color.clear },
         borderWidth: 0,
-        font: .caption,
-        horizontalPadding: 8,
-        verticalPadding: 4,
-        cornerRadius: 12,
-        removeIconColor: .white
+        labelStyle: .caption,
+        horizontalPadding: DesignTokens.Spacing.sm,
+        verticalPadding: DesignTokens.Spacing.xs,
+        cornerRadius: DesignTokens.BorderRadius.lg,
+        removeIconColor: { theme in theme.colors.onPrimary }
     )
     
     public static let outlined = TagStyle(
-        backgroundColor: Color.clear,
-        textColor: .blue,
-        borderColor: Color(.systemBlue),
+        backgroundColor: { theme in Color.clear },
+        textColor: { theme in theme.colors.primary },
+        borderColor: { theme in theme.colors.primary },
         borderWidth: 1,
-        font: .caption,
-        horizontalPadding: 8,
-        verticalPadding: 4,
-        cornerRadius: 12,
-        removeIconColor: .blue
+        labelStyle: .caption,
+        horizontalPadding: DesignTokens.Spacing.sm,
+        verticalPadding: DesignTokens.Spacing.xs,
+        cornerRadius: DesignTokens.BorderRadius.lg,
+        removeIconColor: { theme in theme.colors.primary }
     )
 }
 
@@ -290,7 +292,21 @@ struct RRTagInput_Previews: PreviewProvider {
     @State static var emptyTags: [String] = []
     
     static var previews: some View {
-        VStack(spacing: 20) {
+        RRTagInputPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRTagInput Examples")
+    }
+}
+
+private struct RRTagInputPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    @State private var tags = ["Swift", "iOS", "SwiftUI"]
+    @State private var emptyTags: [String] = []
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.lg) {
             RRTagInput(
                 tags: $tags,
                 placeholder: "Add skills...",
@@ -311,7 +327,6 @@ struct RRTagInput_Previews: PreviewProvider {
                 maxTags: 5
             )
         }
-        .padding()
-        .previewDisplayName("RRTagInput")
+        .padding(DesignTokens.Spacing.componentPadding)
     }
 }

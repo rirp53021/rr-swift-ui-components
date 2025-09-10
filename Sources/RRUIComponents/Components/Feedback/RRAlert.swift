@@ -51,13 +51,13 @@ public struct RRAlert<Content: View>: View {
     }
     
     public var body: some View {
-        VStack(spacing: RRSpacing.md) {
+        VStack(spacing: DesignTokens.Spacing.md) {
             HStack {
                 Image(systemName: style.icon)
                     .foregroundColor(style.color(theme: theme))
-                    .font(.title2)
+                    .font(.system(size: DesignTokens.ComponentSize.iconSizeLG))
                 
-                VStack(alignment: .leading, spacing: RRSpacing.xs) {
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
                     content
                 }
                 
@@ -67,16 +67,21 @@ public struct RRAlert<Content: View>: View {
                     isPresented.wrappedValue = false
                 }) {
                     Image(systemName: "xmark")
-                        .foregroundColor(.secondary)
-                        .font(.caption)
+                        .foregroundColor(theme.colors.onSurfaceVariant)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeXS))
                 }
             }
-            .padding(RRSpacing.md)
-            .background(Color.primary)
-            .cornerRadius(12)
-            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+            .padding(DesignTokens.Spacing.md)
+            .background(theme.colors.surface)
+            .cornerRadius(DesignTokens.BorderRadius.lg)
+            .shadow(
+                color: DesignTokens.Elevation.level2.color,
+                radius: DesignTokens.Elevation.level2.radius,
+                x: DesignTokens.Elevation.level2.x,
+                y: DesignTokens.Elevation.level2.y
+            )
         }
-        .padding(RRSpacing.md)
+        .padding(DesignTokens.Spacing.md)
     }
 }
 
@@ -99,16 +104,12 @@ public struct RRSuccessAlert: View {
     
     public var body: some View {
         RRAlert(.success, isPresented: isPresented) {
-            VStack(alignment: .leading, spacing: RRSpacing.xs) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                RRLabel(title, style: .subtitle, weight: .bold, color: .primary)
                     .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
-                    Text(message)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                    RRLabel(message, style: .body, weight: .regular, color: .secondary)
                         .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
@@ -133,16 +134,12 @@ public struct RRErrorAlert: View {
     
     public var body: some View {
         RRAlert(.error, isPresented: isPresented) {
-            VStack(alignment: .leading, spacing: RRSpacing.xs) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                RRLabel(title, style: .subtitle, weight: .bold, color: .primary)
                     .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
-                    Text(message)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                    RRLabel(message, style: .body, weight: .regular, color: .secondary)
                         .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
@@ -167,16 +164,12 @@ public struct RRWarningAlert: View {
     
     public var body: some View {
         RRAlert(.warning, isPresented: isPresented) {
-            VStack(alignment: .leading, spacing: RRSpacing.xs) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                RRLabel(title, style: .subtitle, weight: .bold, color: .primary)
                     .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
-                    Text(message)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                    RRLabel(message, style: .body, weight: .regular, color: .primary)
                         .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
@@ -201,16 +194,12 @@ public struct RRInfoAlert: View {
     
     public var body: some View {
         RRAlert(.info, isPresented: isPresented) {
-            VStack(alignment: .leading, spacing: RRSpacing.xs) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                RRLabel(title, style: .subtitle, weight: .bold, color: .primary)
                     .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let message = message {
-                    Text(message)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                    RRLabel(message, style: .body, weight: .regular, color: .secondary)
                         .dynamicTypeSize(.large) // Support Dynamic Type
                 }
             }
@@ -223,11 +212,10 @@ public struct RRInfoAlert: View {
 #if DEBUG
 struct RRAlert_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Alert Styles")
-                .font(.headline)
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel("Alert Styles", style: .subtitle, weight: .bold, color: .primary)
             
-            VStack(spacing: 10) {
+            VStack(spacing: DesignTokens.Spacing.sm) {
                 RRSuccessAlert(
                     title: "Success!",
                     message: "Your action was completed successfully.",
@@ -253,7 +241,8 @@ struct RRAlert_Previews: PreviewProvider {
                 )
             }
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
+        .themeProvider(ThemeProvider())
     }
 }
 #endif

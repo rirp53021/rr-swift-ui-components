@@ -5,6 +5,9 @@ import SwiftUI
 public struct RRStackedView<Content: View>: View {
     // MARK: - Properties
     
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let content: Content
     private let axis: Axis
     private let alignment: Alignment
@@ -60,8 +63,8 @@ public extension RRStackedView {
     /// Creates a vertical stack with standard spacing
     static func vertical(
         alignment: HorizontalAlignment = .center,
-        spacing: CGFloat? = RRSpacing.md,
-        contentPadding: EdgeInsets = RRSpacing.paddingMD,
+        spacing: CGFloat? = DesignTokens.Spacing.md,
+        contentPadding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.md, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.md, trailing: DesignTokens.Spacing.md),
         backgroundColor: Color? = nil,
         cornerRadius: CGFloat? = nil,
         @ViewBuilder content: () -> Content
@@ -80,8 +83,8 @@ public extension RRStackedView {
     /// Creates a horizontal stack with standard spacing
     static func horizontal(
         alignment: VerticalAlignment = .center,
-        spacing: CGFloat? = RRSpacing.sm,
-        contentPadding: EdgeInsets = RRSpacing.paddingSM,
+        spacing: CGFloat? = DesignTokens.Spacing.sm,
+        contentPadding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.sm, leading: DesignTokens.Spacing.sm, bottom: DesignTokens.Spacing.sm, trailing: DesignTokens.Spacing.sm),
         backgroundColor: Color? = nil,
         cornerRadius: CGFloat? = nil,
         @ViewBuilder content: () -> Content
@@ -98,37 +101,58 @@ public extension RRStackedView {
     }
 }
 
-// MARK: - Spacing Utilities
+// MARK: - Spacing Utilities (Legacy Support)
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRSpacing {
-    /// Standard spacing values
+    /// Standard spacing values - Use DesignTokens.Spacing instead
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let xs: CGFloat = 4
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let sm: CGFloat = 8
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let md: CGFloat = 16
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let lg: CGFloat = 24
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let xl: CGFloat = 32
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let xxl: CGFloat = 48
     
-    /// Padding presets
+    /// Padding presets - Use DesignTokens.Spacing instead
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingXS = EdgeInsets(top: xs, leading: xs, bottom: xs, trailing: xs)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingSM = EdgeInsets(top: sm, leading: sm, bottom: sm, trailing: sm)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingMD = EdgeInsets(top: md, leading: md, bottom: md, trailing: md)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingLG = EdgeInsets(top: lg, leading: lg, bottom: lg, trailing: lg)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingXL = EdgeInsets(top: xl, leading: xl, bottom: xl, trailing: xl)
     
-    /// Horizontal padding presets
+    /// Horizontal padding presets - Use DesignTokens.Spacing instead
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingHorizontalXS = EdgeInsets(top: 0, leading: xs, bottom: 0, trailing: xs)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingHorizontalSM = EdgeInsets(top: 0, leading: sm, bottom: 0, trailing: sm)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingHorizontalMD = EdgeInsets(top: 0, leading: md, bottom: 0, trailing: md)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingHorizontalLG = EdgeInsets(top: 0, leading: lg, bottom: 0, trailing: lg)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingHorizontalXL = EdgeInsets(top: 0, leading: xl, bottom: 0, trailing: xl)
     
-    /// Vertical padding presets
+    /// Vertical padding presets - Use DesignTokens.Spacing instead
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingVerticalXS = EdgeInsets(top: xs, leading: 0, bottom: xs, trailing: 0)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingVerticalSM = EdgeInsets(top: sm, leading: 0, bottom: sm, trailing: 0)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingVerticalMD = EdgeInsets(top: md, leading: 0, bottom: md, trailing: 0)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingVerticalLG = EdgeInsets(top: lg, leading: 0, bottom: lg, trailing: 0)
+    @available(*, deprecated, message: "Use DesignTokens.Spacing instead")
     public static let paddingVerticalXL = EdgeInsets(top: xl, leading: 0, bottom: xl, trailing: 0)
 }
 
@@ -159,26 +183,59 @@ public struct RRSpacer {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRDivider {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     /// Creates a horizontal divider with custom styling
     public static func horizontal(
-        color: Color = Color.gray.opacity(0.3),
-        thickness: CGFloat = 0.5,
-        contentPadding: EdgeInsets = EdgeInsets(top: RRSpacing.sm, leading: 0, bottom: RRSpacing.sm, trailing: 0)
+        color: Color? = nil,
+        thickness: CGFloat = 1,
+        contentPadding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.sm, leading: 0, bottom: DesignTokens.Spacing.sm, trailing: 0)
     ) -> some View {
-        Rectangle()
-            .fill(color)
-            .frame(height: thickness)
+        RRDividerView(
+            color: color,
+            thickness: thickness,
+            contentPadding: contentPadding,
+            isHorizontal: true
+        )
     }
     
     /// Creates a vertical divider with custom styling
     public static func vertical(
-        color: Color = Color.gray.opacity(0.3),
-        thickness: CGFloat = 0.5,
-        contentPadding: EdgeInsets = EdgeInsets(top: 0, leading: RRSpacing.sm, bottom: 0, trailing: RRSpacing.sm)
+        color: Color? = nil,
+        thickness: CGFloat = 1,
+        contentPadding: EdgeInsets = EdgeInsets(top: 0, leading: DesignTokens.Spacing.sm, bottom: 0, trailing: DesignTokens.Spacing.sm)
     ) -> some View {
+        RRDividerView(
+            color: color,
+            thickness: thickness,
+            contentPadding: contentPadding,
+            isHorizontal: false
+        )
+    }
+}
+
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+private struct RRDividerView: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    let color: Color?
+    let thickness: CGFloat
+    let contentPadding: EdgeInsets
+    let isHorizontal: Bool
+    
+    private var effectiveColor: Color {
+        color ?? theme.colors.outline
+    }
+    
+    var body: some View {
         Rectangle()
-            .fill(color)
-            .frame(width: thickness)
+            .fill(effectiveColor)
+            .frame(
+                width: isHorizontal ? nil : thickness,
+                height: isHorizontal ? thickness : nil
+            )
     }
 }
 
@@ -188,68 +245,73 @@ public struct RRDivider {
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 struct RRStackedView_Previews: PreviewProvider {
     static var previews: some View {
+        RRStackedViewPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRStackedView Examples")
+    }
+}
+
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+private struct RRStackedViewPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
         ScrollView {
-            VStack(spacing: RRSpacing.lg) {
+            VStack(spacing: DesignTokens.Spacing.lg) {
                 // Vertical stacks
-                VStack(spacing: RRSpacing.md) {
-                    Text("Vertical Stacks")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Vertical Stacks", style: .subtitle, weight: .bold, color: .primary)
                     
                     RRStackedView.vertical(
                         alignment: .leading,
-                        spacing: RRSpacing.sm,
-                        contentPadding: RRSpacing.paddingMD,
-                        backgroundColor: Color.gray.opacity(0.1),
-                        cornerRadius: 8
+                        spacing: DesignTokens.Spacing.sm,
+                        contentPadding: EdgeInsets(top: DesignTokens.Spacing.md, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.md, trailing: DesignTokens.Spacing.md),
+                        backgroundColor: theme.colors.surfaceVariant,
+                        cornerRadius: DesignTokens.BorderRadius.md
                     ) {
-                        Text("Item 1")
-                        Text("Item 2")
-                        Text("Item 3")
+                        RRLabel("Item 1", style: .body, weight: .regular, color: .primary)
+                        RRLabel("Item 2", style: .body, weight: .regular, color: .primary)
+                        RRLabel("Item 3", style: .body, weight: .regular, color: .primary)
                     }
                     
                     RRStackedView.vertical(
                         alignment: .center,
-                        spacing: RRSpacing.md,
-                        contentPadding: RRSpacing.paddingLG
+                        spacing: DesignTokens.Spacing.md,
+                        contentPadding: EdgeInsets(top: DesignTokens.Spacing.lg, leading: DesignTokens.Spacing.lg, bottom: DesignTokens.Spacing.lg, trailing: DesignTokens.Spacing.lg)
                     ) {
                         Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                        Text("Centered Content")
-                            .font(.headline)
-                        Text("With proper spacing")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(theme.colors.warning)
+                        RRLabel("Centered Content", style: .subtitle, weight: .bold, color: .primary)
+                        RRLabel("With proper spacing", style: .body, weight: .regular, color: .secondary)
                     }
                 }
                 
                 // Horizontal stacks
-                VStack(spacing: RRSpacing.md) {
-                    Text("Horizontal Stacks")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Horizontal Stacks", style: .subtitle, weight: .bold, color: .primary)
                     
                     RRStackedView.horizontal(
                         alignment: .center,
-                        spacing: RRSpacing.sm,
-                        contentPadding: RRSpacing.paddingMD,
-                        backgroundColor: Color.gray.opacity(0.1),
-                        cornerRadius: 8
+                        spacing: DesignTokens.Spacing.sm,
+                        contentPadding: EdgeInsets(top: DesignTokens.Spacing.md, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.md, trailing: DesignTokens.Spacing.md),
+                        backgroundColor: theme.colors.surfaceVariant,
+                        cornerRadius: DesignTokens.BorderRadius.md
                     ) {
                         Image(systemName: "person.circle")
-                        Text("User Name")
+                        RRLabel("User Name", style: .body, weight: .regular, color: .primary)
                         Spacer()
                         Image(systemName: "chevron.right")
                     }
                     
                     RRStackedView.horizontal(
                         alignment: .top,
-                        spacing: RRSpacing.sm,
-                        contentPadding: RRSpacing.paddingSM
+                        spacing: DesignTokens.Spacing.sm,
+                        contentPadding: EdgeInsets(top: DesignTokens.Spacing.sm, leading: DesignTokens.Spacing.sm, bottom: DesignTokens.Spacing.sm, trailing: DesignTokens.Spacing.sm)
                     ) {
                         VStack(alignment: .leading) {
-                            Text("Title")
-                                .font(.headline)
-                            Text("Subtitle")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            RRLabel("Title", style: .subtitle, weight: .bold, color: .primary)
+                            RRLabel("Subtitle", style: .caption, weight: .regular, color: .secondary)
                         }
                         Spacer()
                         Button("Action") { }
@@ -257,65 +319,62 @@ struct RRStackedView_Previews: PreviewProvider {
                 }
                 
                 // Spacing examples
-                VStack(spacing: RRSpacing.md) {
-                    Text("Spacing Utilities")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Spacing Utilities", style: .subtitle, weight: .bold, color: .primary)
                     
-                    VStack(alignment: .leading, spacing: RRSpacing.sm) {
-                        Text("Different spacing values:")
+                    VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                        RRLabel("Different spacing values:", style: .body, weight: .regular, color: .primary)
                         HStack {
-                            Text("XS")
-                            RRSpacer.width(RRSpacing.xs)
+                            RRLabel("XS", style: .caption, weight: .regular, color: .primary)
+                            RRSpacer.width(DesignTokens.Spacing.xs)
                             Rectangle()
-                                .fill(Color.blue)
-                                .frame(width: 20, height: 20)
+                                .fill(theme.colors.primary)
+                                .frame(width: DesignTokens.ComponentSize.iconSizeMD, height: DesignTokens.ComponentSize.iconSizeMD)
                         }
                         HStack {
-                            Text("SM")
-                            RRSpacer.width(RRSpacing.sm)
+                            RRLabel("SM", style: .caption, weight: .regular, color: .primary)
+                            RRSpacer.width(DesignTokens.Spacing.sm)
                             Rectangle()
-                                .fill(Color.blue)
-                                .frame(width: 20, height: 20)
+                                .fill(theme.colors.primary)
+                                .frame(width: DesignTokens.ComponentSize.iconSizeMD, height: DesignTokens.ComponentSize.iconSizeMD)
                         }
                         HStack {
-                            Text("MD")
-                            RRSpacer.width(RRSpacing.md)
+                            RRLabel("MD", style: .caption, weight: .regular, color: .primary)
+                            RRSpacer.width(DesignTokens.Spacing.md)
                             Rectangle()
-                                .fill(Color.blue)
-                                .frame(width: 20, height: 20)
+                                .fill(theme.colors.primary)
+                                .frame(width: DesignTokens.ComponentSize.iconSizeMD, height: DesignTokens.ComponentSize.iconSizeMD)
                         }
                         HStack {
-                            Text("LG")
-                            RRSpacer.width(RRSpacing.lg)
+                            RRLabel("LG", style: .caption, weight: .regular, color: .primary)
+                            RRSpacer.width(DesignTokens.Spacing.lg)
                             Rectangle()
-                                .fill(Color.blue)
-                                .frame(width: 20, height: 20)
+                                .fill(theme.colors.primary)
+                                .frame(width: DesignTokens.ComponentSize.iconSizeMD, height: DesignTokens.ComponentSize.iconSizeMD)
                         }
                     }
-                    .padding(RRSpacing.paddingMD)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
+                    .padding(EdgeInsets(top: DesignTokens.Spacing.md, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.md, trailing: DesignTokens.Spacing.md))
+                    .background(theme.colors.surfaceVariant)
+                    .cornerRadius(DesignTokens.BorderRadius.md)
                 }
                 
                 // Divider examples
-                VStack(spacing: RRSpacing.md) {
-                    Text("Divider Utilities")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Divider Utilities", style: .subtitle, weight: .bold, color: .primary)
                     
                     VStack {
-                        Text("Section 1")
+                        RRLabel("Section 1", style: .body, weight: .regular, color: .primary)
                         RRDivider.horizontal()
-                        Text("Section 2")
-                        RRDivider.horizontal(color: .red, thickness: 2)
-                        Text("Section 3")
+                        RRLabel("Section 2", style: .body, weight: .regular, color: .primary)
+                        RRDivider.horizontal(color: theme.colors.error, thickness: 2)
+                        RRLabel("Section 3", style: .body, weight: .regular, color: .primary)
                     }
-                    .padding(RRSpacing.paddingMD)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
+                    .padding(EdgeInsets(top: DesignTokens.Spacing.md, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.md, trailing: DesignTokens.Spacing.md))
+                    .background(theme.colors.surfaceVariant)
+                    .cornerRadius(DesignTokens.BorderRadius.md)
                 }
             }
         }
-        .previewDisplayName("RRStackedView Examples")
     }
 }
 #endif

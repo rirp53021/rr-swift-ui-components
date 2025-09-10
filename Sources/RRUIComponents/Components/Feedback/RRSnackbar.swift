@@ -66,10 +66,10 @@ public struct RRSnackbar<Content: View>: View {
             VStack {
                 Spacer()
                 
-                HStack(spacing: RRSpacing.sm) {
+                HStack(spacing: DesignTokens.Spacing.sm) {
                     Image(systemName: style.icon)
                         .foregroundColor(style.color(theme: theme))
-                        .font(.title3)
+                        .font(.system(size: DesignTokens.ComponentSize.iconSizeLG))
                     
                     content
                     
@@ -79,14 +79,19 @@ public struct RRSnackbar<Content: View>: View {
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
-                            .foregroundColor(.secondary)
-                            .font(.caption)
+                            .foregroundColor(theme.colors.onSurfaceVariant)
+                            .font(.system(size: DesignTokens.ComponentSize.iconSizeXS))
                     }
                 }
-                .padding(RRSpacing.md)
-                .background(Color.primary)
-                .cornerRadius(12)
-                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                .padding(DesignTokens.Spacing.md)
+                .background(theme.colors.surface)
+                .cornerRadius(DesignTokens.BorderRadius.lg)
+                .shadow(
+                    color: DesignTokens.Elevation.level3.color,
+                    radius: DesignTokens.Elevation.level3.radius,
+                    x: DesignTokens.Elevation.level3.x,
+                    y: DesignTokens.Elevation.level3.y
+                )
                 .offset(y: dragOffset)
                 .gesture(
                     DragGesture()
@@ -96,10 +101,10 @@ public struct RRSnackbar<Content: View>: View {
                         }
                         .onEnded { value in
                             isDragging = false
-                            if value.translation.height > 50 {
+                            if value.translation.height > DesignTokens.ComponentSize.buttonHeightLG {
                                 dismiss()
                             } else {
-                                withAnimation(.spring()) {
+                                withAnimation(DesignTokens.Animation.spring) {
                                     dragOffset = 0
                                 }
                             }
@@ -115,14 +120,14 @@ public struct RRSnackbar<Content: View>: View {
                     }
                 }
             }
-            .padding(RRSpacing.md)
+            .padding(DesignTokens.Spacing.md)
             .transition(.move(edge: .bottom).combined(with: .opacity))
-            .animation(.spring(), value: isPresented.wrappedValue)
+            .animation(DesignTokens.Animation.spring, value: isPresented.wrappedValue)
         }
     }
     
     private func dismiss() {
-        withAnimation(.spring()) {
+        withAnimation(DesignTokens.Animation.spring) {
             isPresented.wrappedValue = false
         }
         onDismiss?()
@@ -154,29 +159,25 @@ public class RRSnackbarManager: ObservableObject {
     
     public func showSuccess(_ message: String, duration: TimeInterval = 3.0) {
         show(.success, duration: duration) {
-            Text(message)
-                .foregroundColor(.primary)
+            RRLabel(message, style: .body, weight: .medium, color: .primary)
         }
     }
     
     public func showError(_ message: String, duration: TimeInterval = 3.0) {
         show(.error, duration: duration) {
-            Text(message)
-                .foregroundColor(.primary)
+            RRLabel(message, style: .body, weight: .medium, color: .primary)
         }
     }
     
     public func showWarning(_ message: String, duration: TimeInterval = 3.0) {
         show(.warning, duration: duration) {
-            Text(message)
-                .foregroundColor(.primary)
+            RRLabel(message, style: .body, weight: .medium, color: .primary)
         }
     }
     
     public func showInfo(_ message: String, duration: TimeInterval = 3.0) {
         show(.info, duration: duration) {
-            Text(message)
-                .foregroundColor(.primary)
+            RRLabel(message, style: .body, weight: .medium, color: .primary)
         }
     }
     
@@ -190,33 +191,29 @@ public class RRSnackbarManager: ObservableObject {
 #if DEBUG
 struct RRSnackbar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Snackbar Styles")
-                .font(.headline)
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel("Snackbar Styles", style: .title, weight: .bold, color: .primary)
             
-            VStack(spacing: 10) {
+            VStack(spacing: DesignTokens.Spacing.sm) {
                 RRSnackbar(.success, isPresented: .constant(true)) {
-                    Text("Success message")
-                        .foregroundColor(.primary)
+                    RRLabel("Success message", style: .body, weight: .medium, color: .primary)
                 }
                 
                 RRSnackbar(.error, isPresented: .constant(true)) {
-                    Text("Error message")
-                        .foregroundColor(.primary)
+                    RRLabel("Error message", style: .body, weight: .medium, color: .primary)
                 }
                 
                 RRSnackbar(.warning, isPresented: .constant(true)) {
-                    Text("Warning message")
-                        .foregroundColor(.primary)
+                    RRLabel("Warning message", style: .body, weight: .medium, color: .primary)
                 }
                 
                 RRSnackbar(.info, isPresented: .constant(true)) {
-                    Text("Info message")
-                        .foregroundColor(.primary)
+                    RRLabel("Info message", style: .body, weight: .medium, color: .primary)
                 }
             }
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
+        .themeProvider(ThemeProvider())
     }
 }
 #endif

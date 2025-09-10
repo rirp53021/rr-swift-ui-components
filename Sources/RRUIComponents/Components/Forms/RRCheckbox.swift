@@ -15,6 +15,9 @@ public enum CheckboxStyle {
 // MARK: - RRCheckbox
 
 public struct RRCheckbox: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var isChecked: Bool
     private let title: String?
     private let style: CheckboxStyle
@@ -43,12 +46,12 @@ public struct RRCheckbox: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(isChecked ? Color.blue : Color.gray, lineWidth: 2)
+                        .stroke(isChecked ? theme.colors.primary : theme.colors.outline, lineWidth: 2)
                         .frame(width: size, height: size)
                     
                     if isChecked {
                         Image(systemName: "checkmark")
-                            .foregroundColor(.blue)
+                            .foregroundColor(theme.colors.primary)
                             .font(.system(size: size * 0.6, weight: DesignTokens.Typography.weightBold))
                     }
                 }
@@ -56,9 +59,7 @@ public struct RRCheckbox: View {
             .buttonStyle(PlainButtonStyle())
             
             if let title = title {
-                Text(title)
-                    .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(.primary)
+                RRLabel(title, style: .body, weight: .medium, color: .primary)
                     .onTapGesture {
                         isChecked.toggle()
                         onToggle(isChecked)
@@ -87,6 +88,9 @@ public struct RRCheckbox: View {
 // MARK: - Checkbox Group
 
 public struct RRCheckboxGroup<Item: Identifiable & Hashable>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let items: [Item]
     private let selection: Binding<Set<Item>>
     private let titleKeyPath: KeyPath<Item, String>
@@ -139,18 +143,16 @@ public struct RRCheckboxGroup<Item: Identifiable & Hashable>: View {
 #if DEBUG
 struct RRCheckbox_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Checkbox Styles")
-                .font(.headline)
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel("Checkbox Styles", style: .title, weight: .bold, color: .primary)
             
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
                 RRCheckbox(isChecked: .constant(true), title: "Square Checkbox", style: .square)
                 RRCheckbox(isChecked: .constant(false), title: "Circle Checkbox", style: .circle)
                 RRCheckbox(isChecked: .constant(true), title: "Rounded Checkbox", style: .rounded)
             }
             
-            Text("Checkbox Group")
-                .font(.headline)
+            RRLabel("Checkbox Group", style: .title, weight: .bold, color: .primary)
             
             RRCheckboxGroup(
                 [
@@ -162,7 +164,8 @@ struct RRCheckbox_Previews: PreviewProvider {
                 titleKeyPath: \.title
             )
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
+        .themeProvider(ThemeProvider())
     }
 }
 

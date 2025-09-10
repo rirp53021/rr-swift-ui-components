@@ -5,6 +5,9 @@ import SwiftUI
 public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
     // MARK: - Properties
     
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let title: String
     private let subtitle: String?
     private let leftIcon: LeftIcon?
@@ -22,7 +25,7 @@ public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
         title: String,
         subtitle: String? = nil,
         style: RowStyle = .standard,
-        padding: EdgeInsets = EdgeInsets(top: RRSpacing.sm, leading: RRSpacing.md, bottom: RRSpacing.sm, trailing: RRSpacing.md),
+        padding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.sm, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.sm, trailing: DesignTokens.Spacing.md),
         backgroundColor: Color? = nil,
         separatorColor: Color? = nil,
         showSeparator: Bool = true,
@@ -34,8 +37,8 @@ public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
         self.subtitle = subtitle
         self.style = style
         self.padding = padding
-        self.backgroundColor = backgroundColor ?? style.backgroundColor
-        self.separatorColor = separatorColor ?? style.separatorColor
+        self.backgroundColor = backgroundColor ?? Color.clear // Will be set in body using theme
+        self.separatorColor = separatorColor ?? Color.clear // Will be set in body using theme
         self.showSeparator = showSeparator
         self.action = action
         self.leftIcon = leftIcon?()
@@ -46,25 +49,21 @@ public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
     
     public var body: some View {
         Button(action: action ?? {}) {
-            HStack(spacing: RRSpacing.sm) {
+            HStack(spacing: DesignTokens.Spacing.sm) {
                 // Left icon
                 if let leftIcon = leftIcon {
                     leftIcon
-                        .foregroundColor(style.leftIconColor)
-                        .frame(width: 24, height: 24)
+                        .foregroundColor(style.leftIconColor(theme: theme))
+                        .frame(width: DesignTokens.ComponentSize.iconSizeMD, height: DesignTokens.ComponentSize.iconSizeMD)
                 }
                 
                 // Content
-                VStack(alignment: .leading, spacing: RRSpacing.xs) {
-                    Text(title)
-                        .font(style.titleFont)
-                        .foregroundColor(style.titleColor)
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                    RRLabel(title, style: style.titleLabelStyle, weight: .medium, customColor: style.titleColor(theme: theme))
                         .multilineTextAlignment(.leading)
                     
                     if let subtitle = subtitle {
-                        Text(subtitle)
-                            .font(style.subtitleFont)
-                            .foregroundColor(style.subtitleColor)
+                        RRLabel(subtitle, style: style.subtitleLabelStyle, weight: .regular, customColor: style.subtitleColor(theme: theme))
                             .multilineTextAlignment(.leading)
                     }
                 }
@@ -74,11 +73,11 @@ public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
                 // Right accessory
                 if let rightAccessory = rightAccessory {
                     rightAccessory
-                        .foregroundColor(style.rightAccessoryColor)
+                        .foregroundColor(style.rightAccessoryColor(theme: theme))
                 }
             }
             .padding(padding)
-            .background(backgroundColor)
+            .background(backgroundColor == Color.clear ? style.backgroundColor(theme: theme) : backgroundColor)
         }
         .buttonStyle(PlainButtonStyle())
         .overlay(
@@ -86,9 +85,9 @@ public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
                 Spacer()
                 if showSeparator {
                     Rectangle()
-                        .fill(separatorColor)
-                        .frame(height: 0.5)
-                        .padding(.leading, leftIcon != nil ? 52 : padding.leading)
+                        .fill(separatorColor == Color.clear ? style.separatorColor(theme: theme) : separatorColor)
+                        .frame(height: 1)
+                        .padding(.leading, leftIcon != nil ? DesignTokens.ComponentSize.iconSizeMD + DesignTokens.Spacing.md : padding.leading)
                 }
             }
         )
@@ -105,18 +104,18 @@ public extension RRRowItem {
         case prominent
         case destructive
         
-        var titleFont: Font {
+        var titleLabelStyle: RRLabel.Style {
             switch self {
             case .standard, .compact:
                 return .body
             case .prominent:
-                return .headline
+                return .subtitle
             case .destructive:
                 return .body
             }
         }
         
-        var subtitleFont: Font {
+        var subtitleLabelStyle: RRLabel.Style {
             switch self {
             case .standard, .compact, .prominent:
                 return .caption
@@ -125,48 +124,48 @@ public extension RRRowItem {
             }
         }
         
-        var titleColor: Color {
+        func titleColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent:
-                return .primary
+                return theme.colors.primaryText
             case .destructive:
-                return .red
+                return theme.colors.error
             }
         }
         
-        var subtitleColor: Color {
+        func subtitleColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent:
-                return .secondary
+                return theme.colors.secondaryText
             case .destructive:
-                return .red.opacity(0.8)
+                return theme.colors.error.opacity(0.8)
             }
         }
         
-        var leftIconColor: Color {
+        func leftIconColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent:
-                return .blue
+                return theme.colors.primary
             case .destructive:
-                return .red
+                return theme.colors.error
             }
         }
         
-        var rightAccessoryColor: Color {
+        func rightAccessoryColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent:
-                return .secondary
+                return theme.colors.onSurfaceVariant
             case .destructive:
-                return .red
+                return theme.colors.error
             }
         }
         
-        var backgroundColor: Color {
-            return Color.primary
+        func backgroundColor(theme: Theme) -> Color {
+            return theme.colors.surface
         }
         
-        var separatorColor: Color {
-            return Color.gray.opacity(0.3)
+        func separatorColor(theme: Theme) -> Color {
+            return theme.colors.outline
         }
     }
 }
@@ -179,7 +178,7 @@ public extension RRRowItem where LeftIcon == EmptyView, RightAccessory == EmptyV
         title: String,
         subtitle: String? = nil,
         style: RowStyle = .standard,
-        padding: EdgeInsets = EdgeInsets(top: RRSpacing.sm, leading: RRSpacing.md, bottom: RRSpacing.sm, trailing: RRSpacing.md),
+        padding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.sm, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.sm, trailing: DesignTokens.Spacing.md),
         backgroundColor: Color? = nil,
         separatorColor: Color? = nil,
         showSeparator: Bool = true,
@@ -206,7 +205,7 @@ public extension RRRowItem where RightAccessory == EmptyView {
         title: String,
         subtitle: String? = nil,
         style: RowStyle = .standard,
-        padding: EdgeInsets = EdgeInsets(top: RRSpacing.sm, leading: RRSpacing.md, bottom: RRSpacing.sm, trailing: RRSpacing.md),
+        padding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.sm, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.sm, trailing: DesignTokens.Spacing.md),
         backgroundColor: Color? = nil,
         separatorColor: Color? = nil,
         showSeparator: Bool = true,
@@ -234,7 +233,7 @@ public extension RRRowItem where LeftIcon == EmptyView {
         title: String,
         subtitle: String? = nil,
         style: RowStyle = .standard,
-        padding: EdgeInsets = EdgeInsets(top: RRSpacing.sm, leading: RRSpacing.md, bottom: RRSpacing.sm, trailing: RRSpacing.md),
+        padding: EdgeInsets = EdgeInsets(top: DesignTokens.Spacing.sm, leading: DesignTokens.Spacing.md, bottom: DesignTokens.Spacing.sm, trailing: DesignTokens.Spacing.md),
         backgroundColor: Color? = nil,
         separatorColor: Color? = nil,
         showSeparator: Bool = true,
@@ -342,6 +341,7 @@ struct RRRowItem_Previews: PreviewProvider {
                 )
             }
         }
+        .themeProvider(ThemeProvider())
         .previewDisplayName("RRRowItem Examples")
     }
 }

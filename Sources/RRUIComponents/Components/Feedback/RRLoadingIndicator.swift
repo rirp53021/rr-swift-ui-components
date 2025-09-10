@@ -5,6 +5,9 @@ import SwiftUI
 public struct RRLoadingIndicator: View {
     // MARK: - Properties
     
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let style: LoadingStyle
     private let size: CGFloat
     private let color: Color
@@ -13,18 +16,24 @@ public struct RRLoadingIndicator: View {
     
     @State private var isAnimating = false
     
+    // MARK: - Computed Properties
+    
+    private var effectiveColor: Color {
+        color == Color.blue ? theme.colors.primary : color
+    }
+    
     // MARK: - Initialization
     
     public init(
         style: LoadingStyle = .spinner,
         size: CGFloat = DesignTokens.ComponentSize.iconSizeLG,
-        color: Color = .blue,
+        color: Color? = nil,
         lineWidth: CGFloat = 3,
         animationSpeed: Double = DesignTokens.Animation.durationNormal
     ) {
         self.style = style
         self.size = size
-        self.color = color
+        self.color = color ?? Color.blue // Will be overridden by theme in body
         self.lineWidth = lineWidth
         self.animationSpeed = animationSpeed
     }
@@ -58,7 +67,7 @@ public struct RRLoadingIndicator: View {
     private var spinnerView: some View {
         Circle()
             .trim(from: 0, to: 0.7)
-            .stroke(color, lineWidth: lineWidth)
+            .stroke(effectiveColor, lineWidth: lineWidth)
             .frame(width: size, height: size)
             .rotationEffect(.degrees(isAnimating ? 360 : 0))
             .animation(
@@ -71,10 +80,10 @@ public struct RRLoadingIndicator: View {
     // MARK: - Dots View
     
     private var dotsView: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: DesignTokens.Spacing.xs) {
             ForEach(0..<3) { index in
                 Circle()
-                    .fill(color)
+                    .fill(effectiveColor)
                     .frame(width: size / 4, height: size / 4)
                     .scaleEffect(isAnimating ? 1.0 : 0.5)
                     .animation(
@@ -91,7 +100,7 @@ public struct RRLoadingIndicator: View {
     
     private var pulseView: some View {
         Circle()
-            .fill(color)
+            .fill(effectiveColor)
             .frame(width: size, height: size)
             .scaleEffect(isAnimating ? 1.2 : 0.8)
             .opacity(isAnimating ? 0.3 : 1.0)
@@ -105,11 +114,11 @@ public struct RRLoadingIndicator: View {
     // MARK: - Wave View
     
     private var waveView: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: DesignTokens.Spacing.xs) {
             ForEach(0..<5) { index in
-                RoundedRectangle(cornerRadius: 1)
-                    .fill(color)
-                    .frame(width: 3, height: size)
+                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.xs)
+                    .fill(effectiveColor)
+                    .frame(width: DesignTokens.ComponentSize.iconSizeXS, height: size)
                     .scaleEffect(y: isAnimating ? 1.0 : 0.3)
                     .animation(
                         .easeInOut(duration: 0.8 / animationSpeed)
@@ -126,12 +135,12 @@ public struct RRLoadingIndicator: View {
     private var progressView: some View {
         ZStack {
             Circle()
-                .stroke(color.opacity(0.3), lineWidth: lineWidth)
+                .stroke(effectiveColor.opacity(0.3), lineWidth: lineWidth)
                 .frame(width: size, height: size)
             
             Circle()
                 .trim(from: 0, to: 0.3)
-                .stroke(color, lineWidth: lineWidth)
+                .stroke(effectiveColor, lineWidth: lineWidth)
                 .frame(width: size, height: size)
                 .rotationEffect(.degrees(isAnimating ? 360 : 0))
                 .animation(
@@ -145,12 +154,12 @@ public struct RRLoadingIndicator: View {
     // MARK: - Skeleton View
     
     private var skeletonView: some View {
-        RoundedRectangle(cornerRadius: 4)
-            .fill(color.opacity(0.3))
+        RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.xs)
+            .fill(effectiveColor.opacity(0.3))
             .frame(width: size, height: size / 3)
             .overlay(
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(color.opacity(0.6))
+                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.xs)
+                    .fill(effectiveColor.opacity(0.6))
                     .frame(width: size, height: size / 3)
                     .offset(x: isAnimating ? size : -size)
                     .animation(
@@ -181,6 +190,9 @@ public extension RRLoadingIndicator {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRLoadingOverlay<Content: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let content: Content
     private let isLoading: Bool
     private let message: String?
@@ -189,22 +201,36 @@ public struct RRLoadingOverlay<Content: View>: View {
     private let indicatorColor: Color
     private let textColor: Color
     
+    // MARK: - Computed Properties
+    
+    private var effectiveBackgroundColor: Color {
+        backgroundColor == Color.black.opacity(0.3) ? theme.colors.surface.opacity(0.8) : backgroundColor
+    }
+    
+    private var effectiveIndicatorColor: Color {
+        indicatorColor == Color.white ? theme.colors.primary : indicatorColor
+    }
+    
+    private var effectiveTextColor: Color {
+        textColor == Color.white ? theme.colors.primaryText : textColor
+    }
+    
     public init(
         isLoading: Bool,
         message: String? = nil,
         style: RRLoadingIndicator.LoadingStyle = .spinner,
-        backgroundColor: Color = Color.black.opacity(0.3),
-        indicatorColor: Color = .white,
-        textColor: Color = .white,
+        backgroundColor: Color? = nil,
+        indicatorColor: Color? = nil,
+        textColor: Color? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.content = content()
         self.isLoading = isLoading
         self.message = message
         self.style = style
-        self.backgroundColor = backgroundColor
-        self.indicatorColor = indicatorColor
-        self.textColor = textColor
+        self.backgroundColor = backgroundColor ?? Color.black.opacity(0.3) // Will be overridden by theme
+        self.indicatorColor = indicatorColor ?? Color.white // Will be overridden by theme
+        self.textColor = textColor ?? Color.white // Will be overridden by theme
     }
     
     public var body: some View {
@@ -212,27 +238,25 @@ public struct RRLoadingOverlay<Content: View>: View {
             content
             
             if isLoading {
-                backgroundColor
+                effectiveBackgroundColor
                     .ignoresSafeArea()
                 
-                VStack(spacing: 16) {
+                VStack(spacing: DesignTokens.Spacing.md) {
                     RRLoadingIndicator(
                         style: style,
-                        size: 40,
-                        color: indicatorColor
+                        size: DesignTokens.ComponentSize.iconSizeXL,
+                        color: effectiveIndicatorColor
                     )
                     
                     if let message = message {
-                        Text(message)
-                            .foregroundColor(textColor)
-                            .font(.body)
+                        RRLabel(message, style: .body, weight: .medium, customColor: effectiveTextColor)
                             .multilineTextAlignment(.center)
                     }
                 }
-                .padding(24)
-                .background(Color.black.opacity(0.7))
-                .cornerRadius(12)
-                .padding(.horizontal, 32)
+                .padding(DesignTokens.Spacing.lg)
+                .background(theme.colors.surface.opacity(0.9))
+                .cornerRadius(DesignTokens.BorderRadius.lg)
+                .padding(.horizontal, DesignTokens.Spacing.xl)
             }
         }
     }
@@ -242,6 +266,9 @@ public struct RRLoadingOverlay<Content: View>: View {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRProgressBar: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let progress: Double
     private let height: CGFloat
     private let backgroundColor: Color
@@ -250,41 +277,49 @@ public struct RRProgressBar: View {
     private let showPercentage: Bool
     private let animation: Animation
     
+    // MARK: - Computed Properties
+    
+    private var effectiveBackgroundColor: Color {
+        backgroundColor == Color.gray.opacity(0.2) ? theme.colors.surfaceVariant : backgroundColor
+    }
+    
+    private var effectiveProgressColor: Color {
+        progressColor == Color.blue ? theme.colors.primary : progressColor
+    }
+    
     public init(
         progress: Double,
         height: CGFloat = 8,
-        backgroundColor: Color = Color.gray.opacity(0.2),
-        progressColor: Color = .blue,
+        backgroundColor: Color? = nil,
+        progressColor: Color? = nil,
         cornerRadius: CGFloat = 4,
         showPercentage: Bool = false,
         animation: Animation = .easeInOut(duration: 0.3)
     ) {
         self.progress = max(0, min(1, progress))
         self.height = height
-        self.backgroundColor = backgroundColor
-        self.progressColor = progressColor
+        self.backgroundColor = backgroundColor ?? Color.gray.opacity(0.2) // Will be overridden by theme
+        self.progressColor = progressColor ?? Color.blue // Will be overridden by theme
         self.cornerRadius = cornerRadius
         self.showPercentage = showPercentage
         self.animation = animation
     }
     
     public var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: DesignTokens.Spacing.xs) {
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(backgroundColor)
+                    .fill(effectiveBackgroundColor)
                     .frame(height: height)
                 
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(progressColor)
+                    .fill(effectiveProgressColor)
                     .frame(width: CGFloat(progress) * 300, height: height)
                     .animation(animation, value: progress)
             }
             
             if showPercentage {
-                Text("\(Int(progress * 100))%")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                RRLabel("\(Int(progress * 100))%", style: .caption, weight: .medium, color: .secondary)
             }
         }
     }
@@ -297,57 +332,49 @@ public struct RRProgressBar: View {
 struct RRLoadingIndicator_Previews: PreviewProvider {
     static var previews: some View {
         ScrollView {
-            VStack(spacing: 30) {
+            VStack(spacing: DesignTokens.Spacing.xl) {
                 // Loading indicators
-                VStack(spacing: 20) {
-                    Text("Loading Indicators")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.lg) {
+                    RRLabel("Loading Indicators", style: .title, weight: .bold, color: .primary)
                     
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 20) {
-                        VStack(spacing: 8) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: DesignTokens.Spacing.lg) {
+                        VStack(spacing: DesignTokens.Spacing.xs) {
                             RRLoadingIndicator(style: .spinner, size: 30, color: .blue)
-                            Text("Spinner")
-                                .font(.caption)
+                            RRLabel("Spinner", style: .caption, weight: .medium, color: .secondary)
                         }
                         
-                        VStack(spacing: 8) {
+                        VStack(spacing: DesignTokens.Spacing.xs) {
                             RRLoadingIndicator(style: .dots, size: 30, color: .green)
-                            Text("Dots")
-                                .font(.caption)
+                            RRLabel("Dots", style: .caption, weight: .medium, color: .secondary)
                         }
                         
-                        VStack(spacing: 8) {
+                        VStack(spacing: DesignTokens.Spacing.xs) {
                             RRLoadingIndicator(style: .pulse, size: 30, color: .orange)
-                            Text("Pulse")
-                                .font(.caption)
+                            RRLabel("Pulse", style: .caption, weight: .medium, color: .secondary)
                         }
                         
-                        VStack(spacing: 8) {
+                        VStack(spacing: DesignTokens.Spacing.xs) {
                             RRLoadingIndicator(style: .wave, size: 30, color: .purple)
-                            Text("Wave")
-                                .font(.caption)
+                            RRLabel("Wave", style: .caption, weight: .medium, color: .secondary)
                         }
                         
-                        VStack(spacing: 8) {
+                        VStack(spacing: DesignTokens.Spacing.xs) {
                             RRLoadingIndicator(style: .progress, size: 30, color: .red)
-                            Text("Progress")
-                                .font(.caption)
+                            RRLabel("Progress", style: .caption, weight: .medium, color: .secondary)
                         }
                         
-                        VStack(spacing: 8) {
+                        VStack(spacing: DesignTokens.Spacing.xs) {
                             RRLoadingIndicator(style: .skeleton, size: 30, color: .gray)
-                            Text("Skeleton")
-                                .font(.caption)
+                            RRLabel("Skeleton", style: .caption, weight: .medium, color: .secondary)
                         }
                     }
                 }
                 
                 // Progress bars
-                VStack(spacing: 16) {
-                    Text("Progress Bars")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Progress Bars", style: .title, weight: .bold, color: .primary)
                     
-                    VStack(spacing: 12) {
+                    VStack(spacing: DesignTokens.Spacing.sm) {
                         RRProgressBar(progress: 0.3, showPercentage: true)
                         RRProgressBar(progress: 0.6, progressColor: .green, showPercentage: true)
                         RRProgressBar(progress: 0.9, progressColor: .red, showPercentage: true)
@@ -355,30 +382,29 @@ struct RRLoadingIndicator_Previews: PreviewProvider {
                 }
                 
                 // Loading overlay
-                VStack(spacing: 16) {
-                    Text("Loading Overlay")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Loading Overlay", style: .title, weight: .bold, color: .primary)
                     
                     RRLoadingOverlay(
                         isLoading: true,
                         message: "Loading content...",
                         style: .spinner
                     ) {
-                        VStack(spacing: 16) {
+                        VStack(spacing: DesignTokens.Spacing.md) {
                             RoundedRectangle(cornerRadius: 8)
                                 .fill(Color.gray.opacity(0.1))
                                 .frame(height: 100)
                             
-                            VStack(alignment: .leading, spacing: 8) {
-                                RoundedRectangle(cornerRadius: 4)
+                            VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.xs)
                                     .fill(Color.gray.opacity(0.2))
                                     .frame(height: 20)
                                 
-                                RoundedRectangle(cornerRadius: 4)
+                                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.xs)
                                     .fill(Color.gray.opacity(0.2))
                                     .frame(height: 16)
                                 
-                                RoundedRectangle(cornerRadius: 4)
+                                RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.xs)
                                     .fill(Color.gray.opacity(0.2))
                                     .frame(height: 16)
                             }
@@ -388,8 +414,9 @@ struct RRLoadingIndicator_Previews: PreviewProvider {
                     .frame(height: 200)
                 }
             }
-            .padding()
+            .padding(DesignTokens.Spacing.componentPadding)
         }
+        .themeProvider(ThemeProvider())
         .previewDisplayName("RRLoadingIndicator Examples")
     }
 }

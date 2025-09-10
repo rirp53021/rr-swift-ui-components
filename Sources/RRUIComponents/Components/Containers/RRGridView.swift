@@ -6,6 +6,9 @@ import SwiftUI
 // MARK: - Grid View
 
 public struct RRGridView<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let data: Data
     private let columns: Int
     private let spacing: CGFloat
@@ -14,7 +17,7 @@ public struct RRGridView<Data: RandomAccessCollection, Content: View>: View wher
     public init(
         _ data: Data,
         columns: Int,
-        spacing: CGFloat = RRSpacing.md,
+        spacing: CGFloat = DesignTokens.Spacing.md,
         @ViewBuilder content: @escaping (Data.Element) -> Content
     ) {
         self.data = data
@@ -52,14 +55,17 @@ public struct RRGridPresets {
     public static let fourColumn = 4
     public static let fiveColumn = 5
     
-    public static let compactSpacing: CGFloat = RRSpacing.xs
-    public static let standardSpacing: CGFloat = RRSpacing.md
-    public static let relaxedSpacing: CGFloat = RRSpacing.lg
+    public static let compactSpacing: CGFloat = DesignTokens.Spacing.xs
+    public static let standardSpacing: CGFloat = DesignTokens.Spacing.md
+    public static let relaxedSpacing: CGFloat = DesignTokens.Spacing.lg
 }
 
 // MARK: - Grid View with Padding
 
 public struct RRGridViewWithPadding<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let data: Data
     private let columns: Int
     private let spacing: CGFloat
@@ -69,8 +75,8 @@ public struct RRGridViewWithPadding<Data: RandomAccessCollection, Content: View>
     public init(
         _ data: Data,
         columns: Int,
-        spacing: CGFloat = RRSpacing.md,
-        padding: CGFloat = RRSpacing.md,
+        spacing: CGFloat = DesignTokens.Spacing.md,
+        padding: CGFloat = DesignTokens.Spacing.md,
         @ViewBuilder content: @escaping (Data.Element) -> Content
     ) {
         self.data = data
@@ -91,44 +97,51 @@ public struct RRGridViewWithPadding<Data: RandomAccessCollection, Content: View>
 #if DEBUG
 struct RRGridView_Previews: PreviewProvider {
     static var previews: some View {
+        RRGridViewPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRGridView Examples")
+    }
+}
+
+private struct RRGridViewPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
         let sampleData = (0..<10).map { id in
             SampleItem(id: id, title: "Item \(id)")
         }
         
-        VStack(spacing: 20) {
-            Text("2 Column Grid")
-                .font(.headline)
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel("2 Column Grid", style: .subtitle, weight: .bold, color: .primary)
             
             RRGridView(sampleData, columns: 2) { item in
                 VStack {
-                    Text(item.title)
-                        .font(.caption)
+                    RRLabel(item.title, style: .caption, weight: .regular, color: .primary)
                     Rectangle()
-                        .fill(Color.blue.opacity(0.3))
-                        .frame(height: 50)
+                        .fill(theme.colors.primary.opacity(0.3))
+                        .frame(height: DesignTokens.ComponentSize.iconSizeXL)
                 }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
+                .padding(DesignTokens.Spacing.md)
+                .background(theme.colors.surfaceVariant)
+                .cornerRadius(DesignTokens.BorderRadius.md)
             }
             
-            Text("3 Column Grid")
-                .font(.headline)
+            RRLabel("3 Column Grid", style: .subtitle, weight: .bold, color: .primary)
             
             RRGridView(sampleData, columns: 3) { item in
                 VStack {
-                    Text(item.title)
-                        .font(.caption)
+                    RRLabel(item.title, style: .caption, weight: .regular, color: .primary)
                     Rectangle()
-                        .fill(Color.green.opacity(0.3))
-                        .frame(height: 40)
+                        .fill(theme.colors.success.opacity(0.3))
+                        .frame(height: DesignTokens.ComponentSize.iconSizeLG)
                 }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
+                .padding(DesignTokens.Spacing.md)
+                .background(theme.colors.surfaceVariant)
+                .cornerRadius(DesignTokens.BorderRadius.md)
             }
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
     }
 }
 

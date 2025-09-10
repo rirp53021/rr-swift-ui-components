@@ -326,6 +326,36 @@ struct RRCarousel_Previews: PreviewProvider {
     ]
     
     static var previews: some View {
+        RRCarouselPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRCarousel Examples")
+    }
+}
+
+private struct RRCarouselPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    struct SampleItem: Identifiable {
+        let id = UUID()
+        let title: String
+        let color: Color
+    }
+    
+    let sampleItems = [
+        SampleItem(title: "First", color: .blue),
+        SampleItem(title: "Second", color: .green),
+        SampleItem(title: "Third", color: .orange),
+        SampleItem(title: "Fourth", color: .purple)
+    ]
+    
+    let sampleImages = [
+        "https://picsum.photos/400/300?random=1",
+        "https://picsum.photos/400/300?random=2",
+        "https://picsum.photos/400/300?random=3"
+    ]
+    
+    var body: some View {
         VStack(spacing: DesignTokens.Spacing.sectionSpacing) {
             // Basic carousel with theme colors
             VStack {
@@ -394,6 +424,5 @@ struct RRCarousel_Previews: PreviewProvider {
             }
         }
         .padding(DesignTokens.Spacing.md)
-        .previewDisplayName("RRCarousel")
     }
 }

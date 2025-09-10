@@ -7,6 +7,9 @@ import Foundation
 // MARK: - Search Bar
 
 public struct RRSearchBar: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var text: String
     private let placeholder: String
     private let onSearch: (String) -> Void
@@ -38,10 +41,11 @@ public struct RRSearchBar: View {
             HStack {
                 HStack {
                     Image(systemName: "magnifyingglass")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(theme.colors.secondaryText)
                     
                     TextField(placeholder, text: $text)
                         .textFieldStyle(PlainTextFieldStyle())
+                        .foregroundColor(theme.colors.primaryText)
                         .onSubmit {
                             onSearch(text)
                         }
@@ -51,13 +55,13 @@ public struct RRSearchBar: View {
                             text = ""
                         }) {
                             Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.secondary)
+                                .foregroundColor(theme.colors.secondaryText)
                         }
                     }
                 }
-                .padding(RRSpacing.sm)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
+                .padding(DesignTokens.Spacing.sm)
+                .background(theme.colors.surfaceVariant)
+                .cornerRadius(DesignTokens.BorderRadius.md)
                 
                 if isSearching {
                     Button("Cancel", action: {
@@ -68,7 +72,7 @@ public struct RRSearchBar: View {
                         }
                         onCancel()
                     })
-                    .foregroundColor(.blue)
+                    .foregroundColor(theme.colors.primary)
                 }
             }
             
@@ -81,10 +85,10 @@ public struct RRSearchBar: View {
                         }
                     }
                 }
-                .background(Color.primary)
-                .cornerRadius(8)
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                .padding(.top, RRSpacing.xs)
+                .background(theme.colors.surface)
+                .cornerRadius(DesignTokens.BorderRadius.md)
+                .shadow(color: theme.colors.outline.opacity(0.1), radius: DesignTokens.Elevation.level1.radius, x: 0, y: 2)
+                .padding(.top, DesignTokens.Spacing.xs)
             }
         }
         .onChange(of: text) { newValue in
@@ -116,33 +120,32 @@ public struct Suggestion {
 // MARK: - Suggestion Row
 
 private struct SuggestionRow: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     let suggestion: Suggestion
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: RRSpacing.sm) {
+            HStack(spacing: DesignTokens.Spacing.sm) {
                 if let icon = suggestion.icon {
                     Image(systemName: icon)
-                        .foregroundColor(.secondary)
-                        .frame(width: 20)
+                        .foregroundColor(theme.colors.secondaryText)
+                        .frame(width: DesignTokens.ComponentSize.iconSizeMD)
                 }
                 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(suggestion.title)
-                        .foregroundColor(.primary)
-                        .font(.body)
+                VStack(alignment: .leading, spacing: DesignTokens.Spacing.xs) {
+                    RRLabel(suggestion.title, style: .body, weight: .medium, color: .primary)
                     
                     if let subtitle = suggestion.subtitle {
-                        Text(subtitle)
-                            .foregroundColor(.secondary)
-                            .font(.caption)
+                        RRLabel(subtitle, style: .caption, weight: .regular, color: .secondary)
                     }
                 }
                 
                 Spacer()
             }
-            .padding(RRSpacing.sm)
+            .padding(DesignTokens.Spacing.sm)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -153,12 +156,24 @@ private struct SuggestionRow: View {
 #if DEBUG
 struct RRSearchBar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            Text("Search Bar")
-                .font(.headline)
+        RRSearchBarPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRSearchBar Examples")
+    }
+}
+
+private struct RRSearchBarPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    @State private var searchText = ""
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel("Search Bar", style: .title, weight: .bold, color: .primary)
             
             RRSearchBar(
-                text: .constant(""),
+                text: $searchText,
                 placeholder: "Search for something...",
                 suggestions: [
                     Suggestion(title: "First Result", subtitle: "This is a subtitle", icon: "magnifyingglass"),
@@ -173,7 +188,7 @@ struct RRSearchBar_Previews: PreviewProvider {
                 }
             )
         }
-        .padding()
+        .padding(DesignTokens.Spacing.componentPadding)
     }
 }
 #endif

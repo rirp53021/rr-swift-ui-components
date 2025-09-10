@@ -362,7 +362,8 @@ struct RRModal_Previews: PreviewProvider {
     
     static var previews: some View {
         PreviewWrapper()
-            .previewDisplayName("RRModal")
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRModal Examples")
     }
 }
 #endif

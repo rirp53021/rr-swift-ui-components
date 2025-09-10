@@ -100,7 +100,7 @@ public struct RRLabel: View {
         
         switch color {
         case .primary: return theme.colors.primaryText
-        case .secondary: return theme.colors.secondary
+        case .secondary: return theme.colors.secondaryText
         case .tertiary: return theme.colors.tertiary
         case .success: return theme.colors.success
         case .warning: return theme.colors.warning

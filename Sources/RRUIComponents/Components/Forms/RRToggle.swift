@@ -19,6 +19,8 @@ public struct RRToggle: View {
     private let style: ToggleStyle
     private let onToggle: (Bool) -> Void
     
+    @Environment(\.themeProvider) private var themeProvider
+    
     public init(
         isOn: Binding<Bool>,
         title: String? = nil,
@@ -32,11 +34,11 @@ public struct RRToggle: View {
     }
     
     public var body: some View {
+        let theme = themeProvider.currentTheme
+        
         HStack(spacing: DesignTokens.Spacing.sm) {
             if let title = title {
-                Text(title)
-                    .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(.primary)
+                RRLabel(title, style: .body, weight: .medium, color: .primary)
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -51,11 +53,11 @@ public struct RRToggle: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.lg)
-                        .fill(isOn ? .blue : .gray)
+                        .fill(isOn ? theme.colors.primary : theme.colors.disabled)
                         .frame(width: DesignTokens.ComponentSize.toggleWidth, height: DesignTokens.ComponentSize.toggleHeight)
                     
                     Circle()
-                        .fill(.white)
+                        .fill(theme.colors.white)
                         .frame(width: DesignTokens.ComponentSize.toggleThumbSize, height: DesignTokens.ComponentSize.toggleThumbSize)
                         .offset(x: isOn ? 10 : -10)
                         .animation(.spring(response: DesignTokens.Animation.durationNormal), value: isOn)
@@ -73,6 +75,8 @@ public struct RRCustomToggle: View {
     private let title: String?
     private let onToggle: (Bool) -> Void
     
+    @Environment(\.themeProvider) private var themeProvider
+    
     public init(
         isOn: Binding<Bool>,
         title: String? = nil,
@@ -84,11 +88,11 @@ public struct RRCustomToggle: View {
     }
     
     public var body: some View {
+        let theme = themeProvider.currentTheme
+        
         HStack(spacing: DesignTokens.Spacing.sm) {
             if let title = title {
-                Text(title)
-                    .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(.primary)
+                RRLabel(title, style: .body, weight: .medium, color: .primary)
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -103,11 +107,11 @@ public struct RRCustomToggle: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm)
-                        .fill(isOn ? .blue : .gray)
+                        .fill(isOn ? theme.colors.primary : theme.colors.disabled)
                         .frame(width: DesignTokens.ComponentSize.toggleWidthSmall, height: DesignTokens.ComponentSize.toggleHeightSmall)
                     
                     Circle()
-                        .fill(.white)
+                        .fill(theme.colors.white)
                         .frame(width: DesignTokens.ComponentSize.toggleThumbSizeSmall, height: DesignTokens.ComponentSize.toggleThumbSizeSmall)
                         .offset(x: isOn ? 10 : -10)
                         .animation(.spring(response: DesignTokens.Animation.durationNormal), value: isOn)
@@ -133,6 +137,8 @@ public struct RRSwitchToggle: View {
     private let title: String?
     private let onToggle: (Bool) -> Void
     
+    @Environment(\.themeProvider) private var themeProvider
+    
     public init(
         isOn: Binding<Bool>,
         title: String? = nil,
@@ -146,9 +152,7 @@ public struct RRSwitchToggle: View {
     public var body: some View {
         HStack(spacing: DesignTokens.Spacing.sm) {
             if let title = title {
-                Text(title)
-                    .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(.primary)
+                RRLabel(title, style: .body, weight: .medium, color: .primary)
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -178,17 +182,28 @@ public struct RRSwitchToggle: View {
 #if DEBUG
 struct RRToggle_Previews: PreviewProvider {
     static var previews: some View {
+        InteractiveTogglePreview()
+    }
+}
+
+struct InteractiveTogglePreview: View {
+    @State private var standardToggle = true
+    @State private var customToggle = false
+    @State private var switchToggle = true
+    
+    var body: some View {
         VStack(spacing: 20) {
-            Text("Toggle Styles")
-                .font(.headline)
+            RRLabel("Toggle Styles", style: .title, weight: .bold, color: .primary)
             
             VStack(alignment: .leading, spacing: 15) {
-                RRToggle(isOn: .constant(true), title: "Standard Toggle")
-                RRCustomToggle(isOn: .constant(false), title: "Custom Toggle")
-                RRSwitchToggle(isOn: .constant(true), title: "Switch Toggle")
+                RRToggle(isOn: $standardToggle, title: "Standard Toggle")
+                RRCustomToggle(isOn: $customToggle, title: "Custom Toggle")
+                RRSwitchToggle(isOn: $switchToggle, title: "Switch Toggle")
             }
         }
         .padding()
+        .themeProvider(ThemeProvider())
+        .previewDisplayName("RRToggle")
     }
 }
 #endif

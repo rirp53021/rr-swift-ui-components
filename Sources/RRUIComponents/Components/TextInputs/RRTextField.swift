@@ -222,11 +222,7 @@ public struct RRTextField: View {
         }
     }
     
-    @Environment(\.colorScheme) private var colorScheme
-    
     private var backgroundColor: Color {
-        
-        
         if isDisabled {
             return theme.colors.surface
         } else {
@@ -235,8 +231,6 @@ public struct RRTextField: View {
     }
     
     private var textColor: Color {
-        
-        
         if isDisabled {
             return theme.colors.onSurfaceVariant
         } else {
@@ -245,8 +239,6 @@ public struct RRTextField: View {
     }
     
     private var iconColor: Color {
-        
-        
         if isDisabled {
             return theme.colors.onSurfaceVariant
         } else {
@@ -255,8 +247,6 @@ public struct RRTextField: View {
     }
     
     private var borderColor: Color {
-        
-        
         if isDisabled {
             return theme.colors.outline
         }
@@ -270,12 +260,10 @@ public struct RRTextField: View {
     }
     
     private var helperTextColor: Color {
-        
         return theme.colors.onSurfaceVariant
     }
     
     private var errorColor: Color {
-        
         return theme.colors.error
     }
     

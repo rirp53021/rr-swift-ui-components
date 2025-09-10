@@ -5,6 +5,9 @@ import SwiftUI
 public struct RRCard<Content: View>: View {
     // MARK: - Properties
     
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let content: Content
     private let style: CardStyle
     private let padding: EdgeInsets
@@ -41,9 +44,9 @@ public struct RRCard<Content: View>: View {
         self.cornerRadius = cornerRadius ?? style.cornerRadius
         self.shadowRadius = shadowRadius ?? style.shadowRadius
         self.shadowOffset = shadowOffset ?? style.shadowOffset
-        self.shadowColor = shadowColor ?? style.shadowColor
-        self.backgroundColor = backgroundColor ?? style.backgroundColor
-        self.borderColor = borderColor ?? style.borderColor
+        self.shadowColor = shadowColor ?? Color.clear // Will be set in body using theme
+        self.backgroundColor = backgroundColor ?? Color.clear // Will be set in body using theme
+        self.borderColor = borderColor ?? Color.clear // Will be set in body using theme
         self.borderWidth = borderWidth ?? style.borderWidth
     }
     
@@ -52,14 +55,14 @@ public struct RRCard<Content: View>: View {
     public var body: some View {
         content
             .padding(padding)
-            .background(backgroundColor)
+            .background(backgroundColor == Color.clear ? style.backgroundColor(theme: theme) : backgroundColor)
             .cornerRadius(cornerRadius)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(borderColor, lineWidth: borderWidth)
+                    .stroke(borderColor == Color.clear ? style.borderColor(theme: theme) : borderColor, lineWidth: borderWidth)
             )
             .shadow(
-                color: shadowColor,
+                color: shadowColor == Color.clear ? style.shadowColor(theme: theme) : shadowColor,
                 radius: shadowRadius,
                 x: shadowOffset.width,
                 y: shadowOffset.height
@@ -109,32 +112,32 @@ public extension RRCard {
             }
         }
         
-        var shadowColor: Color {
+        func shadowColor(theme: Theme) -> Color {
             switch self {
             case .standard, .elevated:
-                return Color.black.opacity(0.1)
+                return DesignTokens.Elevation.level2.color
             case .outlined, .filled, .flat:
                 return Color.clear
             }
         }
         
-        var backgroundColor: Color {
+        func backgroundColor(theme: Theme) -> Color {
             switch self {
             case .standard, .elevated, .flat:
-                return .white
+                return theme.colors.surface
             case .outlined:
                 return Color.clear
             case .filled:
-                return .gray
+                return theme.colors.surfaceVariant
             }
         }
         
-        var borderColor: Color {
+        func borderColor(theme: Theme) -> Color {
             switch self {
             case .standard, .elevated, .filled, .flat:
                 return Color.clear
             case .outlined:
-                return .gray
+                return theme.colors.outline
             }
         }
         
@@ -153,6 +156,9 @@ public extension RRCard {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRCardWithSlots<Header: View, Content: View, Footer: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let header: Header?
     private let content: Content
     private let footer: Footer?
@@ -168,7 +174,12 @@ public struct RRCardWithSlots<Header: View, Content: View, Footer: View>: View {
     
     public init(
         style: RRCard<Content>.CardStyle = .standard,
-        padding: EdgeInsets = RRSpacing.paddingMD,
+        padding: EdgeInsets = EdgeInsets(
+            top: DesignTokens.Spacing.md,
+            leading: DesignTokens.Spacing.md,
+            bottom: DesignTokens.Spacing.md,
+            trailing: DesignTokens.Spacing.md
+        ),
         cornerRadius: CGFloat? = nil,
         shadowRadius: CGFloat? = nil,
         shadowOffset: CGSize? = nil,
@@ -188,9 +199,9 @@ public struct RRCardWithSlots<Header: View, Content: View, Footer: View>: View {
         self.cornerRadius = cornerRadius ?? style.cornerRadius
         self.shadowRadius = shadowRadius ?? style.shadowRadius
         self.shadowOffset = shadowOffset ?? style.shadowOffset
-        self.shadowColor = shadowColor ?? style.shadowColor
-        self.backgroundColor = backgroundColor ?? style.backgroundColor
-        self.borderColor = borderColor ?? style.borderColor
+        self.shadowColor = shadowColor ?? Color.clear // Will be set in body using theme
+        self.backgroundColor = backgroundColor ?? Color.clear // Will be set in body using theme
+        self.borderColor = borderColor ?? Color.clear // Will be set in body using theme
         self.borderWidth = borderWidth ?? style.borderWidth
     }
     
@@ -204,7 +215,7 @@ public struct RRCardWithSlots<Header: View, Content: View, Footer: View>: View {
             
             content
                 .padding(.horizontal, padding.leading)
-                .padding(.vertical, header != nil || footer != nil ? RRSpacing.sm : padding.top)
+                .padding(.vertical, header != nil || footer != nil ? DesignTokens.Spacing.sm : padding.top)
             
             if let footer = footer {
                 footer
@@ -212,14 +223,14 @@ public struct RRCardWithSlots<Header: View, Content: View, Footer: View>: View {
                     .padding(.bottom, padding.bottom)
             }
         }
-        .background(backgroundColor)
+        .background(backgroundColor == Color.clear ? style.backgroundColor(theme: theme) : backgroundColor)
         .cornerRadius(cornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .stroke(borderColor, lineWidth: borderWidth)
+                .stroke(borderColor == Color.clear ? style.borderColor(theme: theme) : borderColor, lineWidth: borderWidth)
         )
         .shadow(
-            color: shadowColor,
+            color: shadowColor == Color.clear ? style.shadowColor(theme: theme) : shadowColor,
             radius: shadowRadius,
             x: shadowOffset.width,
             y: shadowOffset.height
@@ -233,83 +244,78 @@ public struct RRCardWithSlots<Header: View, Content: View, Footer: View>: View {
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 struct RRCard_Previews: PreviewProvider {
     static var previews: some View {
+        RRCardPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRCard Examples")
+    }
+}
+
+private struct RRCardPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
         ScrollView {
-            VStack(spacing: RRSpacing.lg) {
+            VStack(spacing: DesignTokens.Spacing.lg) {
                 // Basic cards
-                VStack(spacing: RRSpacing.md) {
-                    Text("Basic Cards")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Basic Cards", style: .subtitle, weight: .bold, color: .primary)
                     
                     RRCard {
-                        VStack(alignment: .leading, spacing: RRSpacing.sm) {
-                            Text("Standard Card")
-                                .font(.headline)
-                            Text("This is a standard card with default styling.")
-                                .font(.body)
-                                .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                            RRLabel("Standard Card", style: .subtitle, weight: .bold, color: .primary)
+                            RRLabel("This is a standard card with default styling.", style: .body, weight: .regular, color: .secondary)
                         }
                     }
                     
                     RRCard(style: .elevated) {
-                        VStack(alignment: .leading, spacing: RRSpacing.sm) {
-                            Text("Elevated Card")
-                                .font(.headline)
-                            Text("This card has a more prominent shadow.")
-                                .font(.body)
-                                .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                            RRLabel("Elevated Card", style: .subtitle, weight: .bold, color: .primary)
+                            RRLabel("This card has a more prominent shadow.", style: .body, weight: .regular, color: .secondary)
                         }
                     }
                     
                     RRCard(style: .outlined) {
-                        VStack(alignment: .leading, spacing: RRSpacing.sm) {
-                            Text("Outlined Card")
-                                .font(.headline)
-                            Text("This card has a border instead of shadow.")
-                                .font(.body)
-                                .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                            RRLabel("Outlined Card", style: .subtitle, weight: .bold, color: .primary)
+                            RRLabel("This card has a border instead of shadow.", style: .body, weight: .regular, color: .secondary)
                         }
                     }
                 }
                 
                 // Card with slots
-                VStack(spacing: RRSpacing.md) {
-                    Text("Cards with Header/Footer")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Cards with Header/Footer", style: .subtitle, weight: .bold, color: .primary)
                     
                     RRCardWithSlots(
                         header: {
                             HStack {
-                                Text("Header")
-                                    .font(.headline)
+                                RRLabel("Header", style: .subtitle, weight: .bold, color: .primary)
                                 Spacer()
                                 Image(systemName: "ellipsis")
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(theme.colors.onSurfaceVariant)
                             }
                         },
                         content: {
-                            VStack(alignment: .leading, spacing: RRSpacing.sm) {
-                                Text("Card Content")
-                                    .font(.subheadline)
-                                Text("This card has both header and footer sections.")
-                                    .font(.body)
-                                    .foregroundColor(.secondary)
+                            VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+                                RRLabel("Card Content", style: .body, weight: .medium, color: .primary)
+                                RRLabel("This card has both header and footer sections.", style: .body, weight: .regular, color: .secondary)
                             }
                         },
                         footer: {
                             HStack {
                                 Button("Cancel") { }
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(theme.colors.onSurfaceVariant)
                                 Spacer()
                                 Button("Save") { }
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(theme.colors.primary)
                             }
                         }
                     )
                 }
             }
-            .padding(RRSpacing.paddingMD)
+            .padding(DesignTokens.Spacing.componentPadding)
         }
-        .previewDisplayName("RRCard Examples")
     }
 }
 #endif

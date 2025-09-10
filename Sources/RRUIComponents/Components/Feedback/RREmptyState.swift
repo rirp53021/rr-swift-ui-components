@@ -24,8 +24,13 @@ public struct RREmptyState<Action: View>: View {
         title: String,
         subtitle: String? = nil,
         style: EmptyStateStyle = .standard,
-        spacing: CGFloat = 24,
-        padding: EdgeInsets = EdgeInsets(top: 40, leading: 32, bottom: 40, trailing: 32),
+        spacing: CGFloat = DesignTokens.Spacing.lg,
+        padding: EdgeInsets = EdgeInsets(
+            top: DesignTokens.Spacing.xl,
+            leading: DesignTokens.Spacing.xl,
+            bottom: DesignTokens.Spacing.xl,
+            trailing: DesignTokens.Spacing.xl
+        ),
         backgroundColor: Color? = nil,
         action: (() -> Action)? = nil
     ) {
@@ -54,17 +59,13 @@ public struct RREmptyState<Action: View>: View {
             }
             
             // Content
-            VStack(spacing: 8) {
-                Text(title)
-                    .font(style.titleFont)
-                    .foregroundColor(style.titleColor(theme: theme))
+            VStack(spacing: DesignTokens.Spacing.xs) {
+                RRLabel(title, style: style.titleLabelStyle, weight: .medium, customColor: style.titleColor(theme: theme))
                     .multilineTextAlignment(.center)
                     .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let subtitle = subtitle {
-                    Text(subtitle)
-                        .font(style.subtitleFont)
-                        .foregroundColor(style.subtitleColor(theme: theme))
+                    RRLabel(subtitle, style: style.subtitleLabelStyle, weight: .regular, customColor: style.subtitleColor(theme: theme))
                         .multilineTextAlignment(.center)
                         .dynamicTypeSize(.large) // Support Dynamic Type
                 }
@@ -111,7 +112,27 @@ public extension RREmptyState {
             }
         }
         
+        var titleLabelStyle: RRLabel.Style {
+            switch self {
+            case .standard, .compact:
+                return .title
+            case .prominent:
+                return .title
+            case .minimal:
+                return .subtitle
+            }
+        }
+        
         var subtitleFont: Font {
+            switch self {
+            case .standard, .compact, .prominent:
+                return .body
+            case .minimal:
+                return .caption
+            }
+        }
+        
+        var subtitleLabelStyle: RRLabel.Style {
             switch self {
             case .standard, .compact, .prominent:
                 return .body
@@ -144,13 +165,13 @@ public extension RREmptyState {
         var illustrationSize: CGFloat {
             switch self {
             case .standard:
-                return 80
+                return DesignTokens.ComponentSize.iconSizeXL
             case .compact:
-                return 60
+                return DesignTokens.ComponentSize.iconSizeLG
             case .prominent:
-                return 120
+                return DesignTokens.ComponentSize.iconSizeXL * 2
             case .minimal:
-                return 40
+                return DesignTokens.ComponentSize.iconSizeMD
             }
         }
         
@@ -164,9 +185,9 @@ public extension RREmptyState {
         var cornerRadius: CGFloat {
             switch self {
             case .standard, .compact, .prominent:
-                return 12
+                return DesignTokens.BorderRadius.lg
             case .minimal:
-                return 8
+                return DesignTokens.BorderRadius.md
             }
         }
     }
@@ -181,8 +202,13 @@ public extension RREmptyState where Action == EmptyView {
         title: String,
         subtitle: String? = nil,
         style: EmptyStateStyle = .standard,
-        spacing: CGFloat = 24,
-        padding: EdgeInsets = EdgeInsets(top: 40, leading: 32, bottom: 40, trailing: 32),
+        spacing: CGFloat = DesignTokens.Spacing.lg,
+        padding: EdgeInsets = EdgeInsets(
+            top: DesignTokens.Spacing.xl,
+            leading: DesignTokens.Spacing.xl,
+            bottom: DesignTokens.Spacing.xl,
+            trailing: DesignTokens.Spacing.xl
+        ),
         backgroundColor: Color? = nil
     ) {
         self.init(
@@ -206,11 +232,10 @@ public extension RREmptyState where Action == EmptyView {
 struct RREmptyState_Previews: PreviewProvider {
     static var previews: some View {
         ScrollView {
-            VStack(spacing: 30) {
+            VStack(spacing: DesignTokens.Spacing.xl) {
                 // Standard empty state
-                VStack(spacing: 16) {
-                    Text("Standard Empty State")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Standard Empty State", style: .title, weight: .bold, color: .primary)
                     
                     RREmptyState(
                         illustration: Image(systemName: "tray"),
@@ -218,22 +243,15 @@ struct RREmptyState_Previews: PreviewProvider {
                         subtitle: "There are no items to display at the moment.",
                         style: .standard
                     ) {
-                        Button("Add Item") {
+                        RRButton("Add Item", style: .primary, size: .md) {
                             print("Add item tapped")
                         }
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.blue)
-                        .cornerRadius(8)
                     }
                 }
                 
                 // Predefined empty states
-                VStack(spacing: 16) {
-                    Text("Predefined Empty States")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Predefined Empty States", style: .title, weight: .bold, color: .primary)
                     
                     RREmptyState(
                         illustration: Image(systemName: "tray"),
@@ -241,15 +259,9 @@ struct RREmptyState_Previews: PreviewProvider {
                         subtitle: "There's nothing to show here yet.",
                         style: .standard
                     ) {
-                        Button("Refresh") {
+                        RRButton("Refresh", style: .primary, size: .md) {
                             print("Refresh tapped")
                         }
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.blue)
-                        .cornerRadius(8)
                     }
                     
                     RREmptyState(
@@ -258,15 +270,9 @@ struct RREmptyState_Previews: PreviewProvider {
                         subtitle: "Try adjusting your search terms.",
                         style: .standard
                     ) {
-                        Button("Clear Search") {
+                        RRButton("Clear Search", style: .secondary, size: .md) {
                             print("Clear search tapped")
                         }
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(8)
                     }
                     
                     RREmptyState(
@@ -275,22 +281,15 @@ struct RREmptyState_Previews: PreviewProvider {
                         subtitle: "Check your internet connection and try again.",
                         style: .standard
                     ) {
-                        Button("Retry") {
+                        RRButton("Retry", style: .destructive, size: .md) {
                             print("Retry tapped")
                         }
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.red)
-                        .cornerRadius(8)
                     }
                 }
                 
                 // Different styles
-                VStack(spacing: 16) {
-                    Text("Different Styles")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Different Styles", style: .title, weight: .bold, color: .primary)
                     
                     RREmptyState(
                         title: "Compact Style",
@@ -312,9 +311,8 @@ struct RREmptyState_Previews: PreviewProvider {
                 }
                 
                 // Custom empty state
-                VStack(spacing: 16) {
-                    Text("Custom Empty State")
-                        .font(.headline)
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Custom Empty State", style: .title, weight: .bold, color: .primary)
                     
                     RREmptyState(
                         illustration: Image(systemName: "star.fill"),
@@ -323,32 +321,21 @@ struct RREmptyState_Previews: PreviewProvider {
                         style: .standard,
                         backgroundColor: Color.gray.opacity(0.1)
                     ) {
-                        HStack(spacing: 12) {
-                            Button("Cancel") {
+                        HStack(spacing: DesignTokens.Spacing.sm) {
+                            RRButton("Cancel", style: .outline, size: .md) {
                                 print("Cancel tapped")
                             }
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(6)
                             
-                            Button("Continue") {
+                            RRButton("Continue", style: .primary, size: .md) {
                                 print("Continue tapped")
                             }
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
-                            .background(Color.blue)
-                            .cornerRadius(6)
                         }
                     }
                 }
             }
-            .padding()
+            .padding(DesignTokens.Spacing.componentPadding)
         }
+        .themeProvider(ThemeProvider())
         .previewDisplayName("RREmptyState Examples")
     }
 }

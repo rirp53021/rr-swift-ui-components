@@ -6,6 +6,9 @@ import Foundation
 /// A customizable rating component with various styles (stars, hearts, etc.)
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRRating: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var rating: Double
     @State private var hoverRating: Double = 0
     
@@ -20,8 +23,8 @@ public struct RRRating: View {
         rating: Binding<Double>,
         maxRating: Int = 5,
         style: RatingStyle = .stars,
-        size: CGFloat = 24,
-        spacing: CGFloat = 4,
+        size: CGFloat = DesignTokens.ComponentSize.iconSizeLG,
+        spacing: CGFloat = DesignTokens.Spacing.xs,
         isInteractive: Bool = true,
         onRatingChanged: ((Double) -> Void)? = nil
     ) {
@@ -54,7 +57,7 @@ public struct RRRating: View {
                 }) {
                     Image(systemName: style.iconName)
                         .font(.system(size: size, weight: .medium))
-                        .foregroundColor(style.color(for: Double(index + 1), displayRating: displayRating))
+                        .foregroundColor(style.color(for: Double(index + 1), displayRating: displayRating, theme: theme))
                         .scaleEffect(style.scaleEffect(for: Double(index + 1), displayRating: displayRating))
                         .animation(.easeInOut(duration: 0.1), value: displayRating)
                 }
@@ -99,11 +102,18 @@ public enum RatingStyle {
         }
     }
     
-    func color(for value: Double, displayRating: Double) -> Color {
+    func color(for value: Double, displayRating: Double, theme: Theme) -> Color {
         if value <= displayRating {
-            return .yellow
+            switch self {
+            case .stars: return theme.colors.warning
+            case .hearts: return theme.colors.error
+            case .thumbs: return theme.colors.success
+            case .circles: return theme.colors.primary
+            case .diamonds: return theme.colors.secondary
+            case .custom: return theme.colors.primary
+            }
         } else {
-            return Color.gray.opacity(0.3)
+            return theme.colors.outline
         }
     }
     
@@ -121,6 +131,9 @@ public enum RatingStyle {
 /// A read-only rating display component
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRReadOnlyRating: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let rating: Double
     private let maxRating: Int
     private let style: RatingStyle
@@ -133,8 +146,8 @@ public struct RRReadOnlyRating: View {
         rating: Double,
         maxRating: Int = 5,
         style: RatingStyle = .stars,
-        size: CGFloat = 16,
-        spacing: CGFloat = 2,
+        size: CGFloat = DesignTokens.ComponentSize.iconSizeMD,
+        spacing: CGFloat = DesignTokens.Spacing.xs,
         showText: Bool = false,
         textFormat: String = "%.1f/5"
     ) {
@@ -153,14 +166,12 @@ public struct RRReadOnlyRating: View {
                 ForEach(0..<maxRating, id: \.self) { index in
                     Image(systemName: style.iconName)
                         .font(.system(size: size, weight: .medium))
-                        .foregroundColor(style.color(for: Double(index + 1), displayRating: rating))
+                        .foregroundColor(style.color(for: Double(index + 1), displayRating: rating, theme: theme))
                 }
             }
             
             if showText {
-                Text(String(format: textFormat, rating))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                RRLabel(String(format: textFormat, rating), style: .caption, weight: .regular, color: .secondary)
             }
         }
     }
@@ -171,6 +182,9 @@ public struct RRReadOnlyRating: View {
 /// A rating input component with custom labels
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRRatingInput: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var rating: Double
     @State private var hoverRating: Double = 0
     
@@ -185,8 +199,8 @@ public struct RRRatingInput: View {
         rating: Binding<Double>,
         maxRating: Int = 5,
         style: RatingStyle = .stars,
-        size: CGFloat = 32,
-        spacing: CGFloat = 8,
+        size: CGFloat = DesignTokens.ComponentSize.iconSizeXL,
+        spacing: CGFloat = DesignTokens.Spacing.sm,
         labels: [String] = [],
         onRatingChanged: ((Double) -> Void)? = nil
     ) {
@@ -210,16 +224,16 @@ public struct RRRatingInput: View {
     }
     
     public var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: DesignTokens.Spacing.sm) {
             HStack(spacing: spacing) {
                 ForEach(0..<maxRating, id: \.self) { index in
-                    VStack(spacing: 4) {
+                    VStack(spacing: DesignTokens.Spacing.xs) {
                         Button(action: {
                             updateRating(at: index)
                         }) {
                             Image(systemName: style.iconName)
                                 .font(.system(size: size, weight: .medium))
-                                .foregroundColor(style.color(for: Double(index + 1), displayRating: displayRating))
+                                .foregroundColor(style.color(for: Double(index + 1), displayRating: displayRating, theme: theme))
                                 .scaleEffect(style.scaleEffect(for: Double(index + 1), displayRating: displayRating))
                                 .animation(.easeInOut(duration: 0.1), value: displayRating)
                         }
@@ -231,9 +245,7 @@ public struct RRRatingInput: View {
                         }
                         
                         if index < labels.count {
-                            Text(labels[index])
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
+                            RRLabel(labels[index], style: .caption, weight: .regular, color: .secondary)
                                 .multilineTextAlignment(.center)
                         }
                     }
@@ -241,9 +253,7 @@ public struct RRRatingInput: View {
             }
             
             if rating > 0 {
-                Text("Rating: \(String(format: "%.1f", rating))/\(maxRating)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                RRLabel("Rating: \(String(format: "%.1f", rating))/\(maxRating)", style: .caption, weight: .regular, color: .secondary)
             }
         }
         .onAppear {
@@ -264,28 +274,39 @@ struct RRRating_Previews: PreviewProvider {
     @State static var inputRating = 0.0
     
     static var previews: some View {
-        VStack(spacing: 30) {
+        RRRatingPreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRRating Examples")
+    }
+}
+
+private struct RRRatingPreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    @State private var rating = 3.5
+    @State private var readOnlyRating = 4.2
+    @State private var inputRating = 0.0
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.xl) {
             // Interactive star rating
             VStack {
-                Text("Interactive Star Rating")
-                    .font(.headline)
+                RRLabel("Interactive Star Rating", style: .title, weight: .bold, color: .primary)
                 RRRating(
                     rating: $rating,
                     maxRating: 5,
                     style: .stars,
-                    size: 32
+                    size: DesignTokens.ComponentSize.iconSizeXL
                 )
-                Text("Current: \(String(format: "%.1f", rating))")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                RRLabel("Current: \(String(format: "%.1f", rating))", style: .caption, weight: .regular, color: .secondary)
             }
             
             // Read-only ratings
             VStack {
-                Text("Read-Only Ratings")
-                    .font(.headline)
+                RRLabel("Read-Only Ratings", style: .title, weight: .bold, color: .primary)
                 
-                HStack(spacing: 20) {
+                HStack(spacing: DesignTokens.Spacing.lg) {
                     RRReadOnlyRating(
                         rating: readOnlyRating,
                         style: .stars,
@@ -295,21 +316,20 @@ struct RRRating_Previews: PreviewProvider {
                     RRReadOnlyRating(
                         rating: 4.0,
                         style: .hearts,
-                        size: 20
+                        size: DesignTokens.ComponentSize.iconSizeMD
                     )
                     
                     RRReadOnlyRating(
                         rating: 3.0,
                         style: .thumbs,
-                        size: 20
+                        size: DesignTokens.ComponentSize.iconSizeMD
                     )
                 }
             }
             
             // Rating input with labels
             VStack {
-                Text("Rating Input with Labels")
-                    .font(.headline)
+                RRLabel("Rating Input with Labels", style: .title, weight: .bold, color: .primary)
                 RRRatingInput(
                     rating: $inputRating,
                     maxRating: 5,
@@ -320,34 +340,32 @@ struct RRRating_Previews: PreviewProvider {
             
             // Different styles
             VStack {
-                Text("Different Styles")
-                    .font(.headline)
+                RRLabel("Different Styles", style: .title, weight: .bold, color: .primary)
                 
-                HStack(spacing: 20) {
+                HStack(spacing: DesignTokens.Spacing.lg) {
                     RRRating(
                         rating: .constant(4.0),
                         style: .hearts,
-                        size: 20,
+                        size: DesignTokens.ComponentSize.iconSizeMD,
                         isInteractive: false
                     )
                     
                     RRRating(
                         rating: .constant(3.0),
                         style: .thumbs,
-                        size: 20,
+                        size: DesignTokens.ComponentSize.iconSizeMD,
                         isInteractive: false
                     )
                     
                     RRRating(
                         rating: .constant(5.0),
                         style: .circles,
-                        size: 20,
+                        size: DesignTokens.ComponentSize.iconSizeMD,
                         isInteractive: false
                     )
                 }
             }
         }
-        .padding()
-        .previewDisplayName("RRRating")
+        .padding(DesignTokens.Spacing.componentPadding)
     }
 }

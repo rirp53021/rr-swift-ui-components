@@ -40,21 +40,15 @@ public struct RRSlider: View {
     public var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text("\(range.lowerBound, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurfaceVariant)
+                RRLabel(String(format: "%.1f", range.lowerBound), style: .caption, color: .secondary)
                 
                 Spacer()
                 
-                Text("\(value, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurface)
+                RRLabel(String(format: "%.1f", value), style: .caption, color: .primary)
                 
                 Spacer()
                 
-                Text("\(range.upperBound, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurfaceVariant)
+                RRLabel(String(format: "%.1f", range.upperBound), style: .caption, color: .secondary)
             }
             
             Slider(value: $value, in: range, step: step) { isEditing in
@@ -96,21 +90,15 @@ public struct RRRangeSlider: View {
     public var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text("\(range.lowerBound, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurfaceVariant)
+                RRLabel(String(format: "%.1f", range.lowerBound), style: .caption, color: .secondary)
                 
                 Spacer()
                 
-                Text("\(lowerValue, specifier: "%.1f") - \(upperValue, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurface)
+                RRLabel(String(format: "%.1f - %.1f", lowerValue, upperValue), style: .caption, color: .primary)
                 
                 Spacer()
                 
-                Text("\(range.upperBound, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurfaceVariant)
+                RRLabel(String(format: "%.1f", range.upperBound), style: .caption, color: .secondary)
             }
             
             HStack {
@@ -158,21 +146,15 @@ public struct RRSteppedSlider: View {
     public var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text("\(range.lowerBound, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurfaceVariant)
+                RRLabel(String(format: "%.1f", range.lowerBound), style: .caption, color: .secondary)
                 
                 Spacer()
                 
-                Text("\(value, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurface)
+                RRLabel(String(format: "%.1f", value), style: .caption, color: .primary)
                 
                 Spacer()
                 
-                Text("\(range.upperBound, specifier: "%.1f")")
-                    .font(.caption)
-                    .foregroundColor(theme.colors.onSurfaceVariant)
+                RRLabel(String(format: "%.1f", range.upperBound), style: .caption, color: .secondary)
             }
             
             Slider(value: $value, in: range, step: step) { isEditing in
@@ -190,28 +172,40 @@ public struct RRSteppedSlider: View {
 #if DEBUG
 struct RRSlider_Previews: PreviewProvider {
     static var previews: some View {
+        InteractiveSliderPreview()
+    }
+}
+
+struct InteractiveSliderPreview: View {
+    @State private var sliderValue = 0.5
+    @State private var lowerValue = 0.2
+    @State private var upperValue = 0.8
+    @State private var steppedValue = 0.5
+    
+    var body: some View {
         VStack(spacing: 20) {
-            Text("Slider Styles")
-                .font(.headline)
+            RRLabel("Slider Styles", style: .title, weight: .bold, color: .primary)
             
             VStack(spacing: 20) {
-                RRSlider(value: .constant(0.5), in: 0...1, step: 0.01)
+                RRSlider(value: $sliderValue, in: 0...1, step: 0.01)
                 
                 RRRangeSlider(
-                    lowerValue: .constant(0.2),
-                    upperValue: .constant(0.8),
+                    lowerValue: $lowerValue,
+                    upperValue: $upperValue,
                     in: 0...1,
                     step: 0.01
                 )
                 
                 RRSteppedSlider(
-                    value: .constant(0.5),
+                    value: $steppedValue,
                     in: 0...1,
                     step: 0.1
                 )
             }
         }
         .padding()
+        .themeProvider(ThemeProvider())
+        .previewDisplayName("RRSlider")
     }
 }
 #endif
