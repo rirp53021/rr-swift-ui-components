@@ -14,6 +14,9 @@ public enum SliderStyle {
 // MARK: - RRSlider
 
 public struct RRSlider: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var value: Double
     private let range: ClosedRange<Double>
     private let step: Double
@@ -35,23 +38,23 @@ public struct RRSlider: View {
     }
     
     public var body: some View {
-        VStack(spacing: RRSpacing.sm) {
+        VStack(spacing: 8) {
             HStack {
                 Text("\(range.lowerBound, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.colors.onSurfaceVariant)
                 
                 Spacer()
                 
                 Text("\(value, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(theme.colors.onSurface)
                 
                 Spacer()
                 
                 Text("\(range.upperBound, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.colors.onSurfaceVariant)
             }
             
             Slider(value: $value, in: range, step: step) { isEditing in
@@ -59,7 +62,7 @@ public struct RRSlider: View {
                     onValueChanged(value)
                 }
             }
-            .accentColor(.blue)
+            .accentColor(theme.colors.primary)
         }
     }
 }
@@ -67,6 +70,9 @@ public struct RRSlider: View {
 // MARK: - Range Slider
 
 public struct RRRangeSlider: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var lowerValue: Double
     @Binding private var upperValue: Double
     private let range: ClosedRange<Double>
@@ -88,23 +94,23 @@ public struct RRRangeSlider: View {
     }
     
     public var body: some View {
-        VStack(spacing: RRSpacing.sm) {
+        VStack(spacing: 8) {
             HStack {
                 Text("\(range.lowerBound, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.colors.onSurfaceVariant)
                 
                 Spacer()
                 
                 Text("\(lowerValue, specifier: "%.1f") - \(upperValue, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(theme.colors.onSurface)
                 
                 Spacer()
                 
                 Text("\(range.upperBound, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.colors.onSurfaceVariant)
             }
             
             HStack {
@@ -113,14 +119,14 @@ public struct RRRangeSlider: View {
                         onValueChanged(lowerValue, upperValue)
                     }
                 }
-                .accentColor(.blue)
+                .accentColor(theme.colors.primary)
                 
                 Slider(value: $upperValue, in: range, step: step) { isEditing in
                     if !isEditing {
                         onValueChanged(lowerValue, upperValue)
                     }
                 }
-                .accentColor(.blue)
+                .accentColor(theme.colors.primary)
             }
         }
     }
@@ -129,6 +135,9 @@ public struct RRRangeSlider: View {
 // MARK: - Stepped Slider
 
 public struct RRSteppedSlider: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     @Binding private var value: Double
     private let range: ClosedRange<Double>
     private let step: Double
@@ -147,23 +156,23 @@ public struct RRSteppedSlider: View {
     }
     
     public var body: some View {
-        VStack(spacing: RRSpacing.sm) {
+        VStack(spacing: 8) {
             HStack {
                 Text("\(range.lowerBound, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.colors.onSurfaceVariant)
                 
                 Spacer()
                 
                 Text("\(value, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(theme.colors.onSurface)
                 
                 Spacer()
                 
                 Text("\(range.upperBound, specifier: "%.1f")")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(theme.colors.onSurfaceVariant)
             }
             
             Slider(value: $value, in: range, step: step) { isEditing in
@@ -171,7 +180,7 @@ public struct RRSteppedSlider: View {
                     onValueChanged(value)
                 }
             }
-            .accentColor(.blue)
+            .accentColor(theme.colors.primary)
         }
     }
 }

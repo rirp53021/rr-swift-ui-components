@@ -89,13 +89,13 @@ public struct RRLabel: View {
     
     private var textColor: SwiftUI.Color {
         switch color {
-        case .primary: return colorScheme == .dark ? SwiftUI.Color(DesignTokens.Colors.neutral50) : SwiftUI.Color(DesignTokens.Colors.neutral900)
-        case .secondary: return colorScheme == .dark ? SwiftUI.Color(DesignTokens.Colors.neutral400) : SwiftUI.Color(DesignTokens.Colors.neutral600)
-        case .tertiary: return colorScheme == .dark ? SwiftUI.Color(DesignTokens.Colors.neutral500) : SwiftUI.Color(DesignTokens.Colors.neutral500)
-        case .success: return SwiftUI.Color(DesignTokens.Colors.success600)
-        case .warning: return SwiftUI.Color(DesignTokens.Colors.warning600)
-        case .error: return SwiftUI.Color(DesignTokens.Colors.error600)
-        case .info: return SwiftUI.Color(DesignTokens.Colors.info600)
+        case .primary: return colorScheme == .dark ? SwiftUI.Color.white : SwiftUI.Color.black
+        case .secondary: return colorScheme == .dark ? SwiftUI.Color.gray : SwiftUI.Color.gray
+        case .tertiary: return colorScheme == .dark ? SwiftUI.Color.gray : SwiftUI.Color.gray
+        case .success: return SwiftUI.Color.green
+        case .warning: return SwiftUI.Color.orange
+        case .error: return SwiftUI.Color.red
+        case .info: return SwiftUI.Color.blue
         }
     }
 }

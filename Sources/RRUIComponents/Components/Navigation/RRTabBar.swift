@@ -48,8 +48,8 @@ public struct RRTabBar: View {
                 tabButton(for: item, at: index)
             }
         }
-        .background(Color(DesignTokens.Colors.neutral50))
-        .shadow(color: Color(DesignTokens.Elevation.level1.color), radius: DesignTokens.Elevation.level1.radius, x: DesignTokens.Elevation.level1.x, y: DesignTokens.Elevation.level1.y)
+        .background(Color.gray.opacity(0.1))
+        .shadow(color: Color.black.opacity(0.1), radius: DesignTokens.Elevation.level1.radius, x: DesignTokens.Elevation.level1.x, y: DesignTokens.Elevation.level1.y)
         .keyboardNavigation(
             config: .navigation,
             onMovement: { action in
@@ -77,7 +77,7 @@ public struct RRTabBar: View {
     private func tabIcon(for item: TabItem, at index: Int) -> some View {
         ZStack {
             Image(systemName: selectedTab == index ? (item.selectedIcon ?? item.icon) : item.icon)
-                .foregroundColor(selectedTab == index ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral500))
+                .foregroundColor(selectedTab == index ? .blue : .gray)
                 .font(DesignTokens.Typography.titleSmall)
             
             if let badge = item.badge, selectedTab == index {
@@ -89,7 +89,7 @@ public struct RRTabBar: View {
     private func tabTitle(for item: TabItem, at index: Int) -> some View {
         Text(item.title)
             .font(DesignTokens.Typography.labelMedium)
-            .foregroundColor(selectedTab == index ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral500))
+            .foregroundColor(selectedTab == index ? .blue : .gray)
     }
     
     private func badgeView(_ badge: String) -> some View {
@@ -98,7 +98,7 @@ public struct RRTabBar: View {
             .foregroundColor(.white)
             .padding(.horizontal, DesignTokens.Spacing.xs)
             .padding(.vertical, DesignTokens.Spacing.xs)
-            .background(Color(DesignTokens.Colors.error600))
+            .background(.red)
             .cornerRadius(DesignTokens.BorderRadius.sm)
             .offset(x: 12, y: -8)
     }

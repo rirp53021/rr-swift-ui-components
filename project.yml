@@ -32,6 +32,8 @@ targets:
     deploymentTarget: "15.0"
     sources:
       - path: Sources/RRUIComponents
+    resources:
+      - path: Sources/RRUIComponents/Resources
     dependencies:
       - package: RRFoundation
     settings:

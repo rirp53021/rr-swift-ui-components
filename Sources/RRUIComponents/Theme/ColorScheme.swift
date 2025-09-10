@@ -5,7 +5,7 @@ import SwiftUI
 
 // MARK: - Nested Color Structures
 
-public struct NeutralColors {
+public struct NeutralColors: Equatable {
     public let text: Color
     public let textSecondary: Color
     public let textTertiary: Color
@@ -33,7 +33,7 @@ public struct NeutralColors {
     }
 }
 
-public struct SemanticColors {
+public struct SemanticColors: Equatable {
     public let success: Color
     public let warning: Color
     public let error: Color
@@ -54,7 +54,7 @@ public struct SemanticColors {
 
 // MARK: - Color Scheme
 
-public struct RRColorScheme {
+public struct ColorScheme: Equatable {
     public let primary: Color
     public let secondary: Color
     public let accent: Color
@@ -127,10 +127,10 @@ public struct RRColorScheme {
 
 // MARK: - Default Color Schemes
 
-public extension RRColorScheme {
+public extension ColorScheme {
     
     /// Light color scheme
-    static let light = RRColorScheme(
+    static let light = ColorScheme(
         primary: Color.blue,
         secondary: Color.gray,
         accent: Color.orange,
@@ -148,7 +148,7 @@ public extension RRColorScheme {
     )
     
     /// Dark color scheme
-    static let dark = RRColorScheme(
+    static let dark = ColorScheme(
         primary: Color.blue,
         secondary: Color.gray,
         accent: Color.orange,
@@ -166,7 +166,7 @@ public extension RRColorScheme {
     )
     
     /// Material color scheme
-    static let material = RRColorScheme(
+    static let material = ColorScheme(
         primary: Color.blue,
         secondary: Color.gray,
         accent: Color.orange,
@@ -184,7 +184,7 @@ public extension RRColorScheme {
     )
     
     /// Custom color scheme with CSS colors
-    static let custom = RRColorScheme(
+    static let custom = ColorScheme(
         primary: Color(hex: "#007AFF") ?? Color.blue,
         secondary: Color(hex: "#8E8E93") ?? Color.gray,
         accent: Color(hex: "#FF9500") ?? Color.orange,
@@ -202,34 +202,3 @@ public extension RRColorScheme {
     )
 }
 
-// MARK: - Color Extensions for Hex Support
-
-public extension Color {
-    /// Creates a color from a hex string
-    /// - Parameter hex: The hex string (e.g., "#FF0000", "FF0000", "#FF0000FF")
-    /// - Returns: A color object if the hex string is valid, nil otherwise
-    init?(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            return nil
-        }
-        
-        self.init(
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
-}

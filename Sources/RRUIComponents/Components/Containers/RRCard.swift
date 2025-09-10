@@ -112,7 +112,7 @@ public extension RRCard {
         var shadowColor: Color {
             switch self {
             case .standard, .elevated:
-                return Color(DesignTokens.Elevation.level2.color)
+                return Color.black.opacity(0.1)
             case .outlined, .filled, .flat:
                 return Color.clear
             }
@@ -121,11 +121,11 @@ public extension RRCard {
         var backgroundColor: Color {
             switch self {
             case .standard, .elevated, .flat:
-                return Color(DesignTokens.Colors.neutral50)
+                return .white
             case .outlined:
                 return Color.clear
             case .filled:
-                return Color(DesignTokens.Colors.neutral100)
+                return .gray
             }
         }
         
@@ -134,7 +134,7 @@ public extension RRCard {
             case .standard, .elevated, .filled, .flat:
                 return Color.clear
             case .outlined:
-                return Color(DesignTokens.Colors.neutral300)
+                return .gray
             }
         }
         

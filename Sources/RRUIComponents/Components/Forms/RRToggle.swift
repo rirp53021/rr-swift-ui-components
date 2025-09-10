@@ -36,7 +36,7 @@ public struct RRToggle: View {
             if let title = title {
                 Text(title)
                     .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
+                    .foregroundColor(.primary)
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -51,11 +51,11 @@ public struct RRToggle: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.lg)
-                        .fill(isOn ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral300))
+                        .fill(isOn ? .blue : .gray)
                         .frame(width: DesignTokens.ComponentSize.toggleWidth, height: DesignTokens.ComponentSize.toggleHeight)
                     
                     Circle()
-                        .fill(Color(DesignTokens.Colors.neutral50))
+                        .fill(.white)
                         .frame(width: DesignTokens.ComponentSize.toggleThumbSize, height: DesignTokens.ComponentSize.toggleThumbSize)
                         .offset(x: isOn ? 10 : -10)
                         .animation(.spring(response: DesignTokens.Animation.durationNormal), value: isOn)
@@ -88,7 +88,7 @@ public struct RRCustomToggle: View {
             if let title = title {
                 Text(title)
                     .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
+                    .foregroundColor(.primary)
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)
@@ -103,11 +103,11 @@ public struct RRCustomToggle: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm)
-                        .fill(isOn ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral300))
+                        .fill(isOn ? .blue : .gray)
                         .frame(width: DesignTokens.ComponentSize.toggleWidthSmall, height: DesignTokens.ComponentSize.toggleHeightSmall)
                     
                     Circle()
-                        .fill(Color(DesignTokens.Colors.neutral50))
+                        .fill(.white)
                         .frame(width: DesignTokens.ComponentSize.toggleThumbSizeSmall, height: DesignTokens.ComponentSize.toggleThumbSizeSmall)
                         .offset(x: isOn ? 10 : -10)
                         .animation(.spring(response: DesignTokens.Animation.durationNormal), value: isOn)
@@ -148,7 +148,7 @@ public struct RRSwitchToggle: View {
             if let title = title {
                 Text(title)
                     .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
+                    .foregroundColor(.primary)
                     .onTapGesture {
                         isOn.toggle()
                         onToggle(isOn)

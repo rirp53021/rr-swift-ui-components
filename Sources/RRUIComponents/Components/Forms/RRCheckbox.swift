@@ -43,12 +43,12 @@ public struct RRCheckbox: View {
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(isChecked ? Color(DesignTokens.Colors.primary600) : Color(DesignTokens.Colors.neutral400), lineWidth: 2)
+                        .stroke(isChecked ? Color.blue : Color.gray, lineWidth: 2)
                         .frame(width: size, height: size)
                     
                     if isChecked {
                         Image(systemName: "checkmark")
-                            .foregroundColor(Color(DesignTokens.Colors.primary600))
+                            .foregroundColor(.blue)
                             .font(.system(size: size * 0.6, weight: DesignTokens.Typography.weightBold))
                     }
                 }
@@ -58,7 +58,7 @@ public struct RRCheckbox: View {
             if let title = title {
                 Text(title)
                     .font(DesignTokens.Typography.bodyMedium)
-                    .foregroundColor(Color(DesignTokens.Colors.neutral900))
+                    .foregroundColor(.primary)
                     .onTapGesture {
                         isChecked.toggle()
                         onToggle(isChecked)

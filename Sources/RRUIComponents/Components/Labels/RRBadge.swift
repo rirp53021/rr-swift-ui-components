@@ -2,6 +2,8 @@ import SwiftUI
 
 /// A badge/chip component for displaying labels, counts, or status indicators
 public struct RRBadge: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
     public enum Style {
         case filled
         case outlined
@@ -171,26 +173,26 @@ public struct RRBadge: View {
     @Environment(\.colorScheme) private var colorScheme
     
     private var backgroundColor: SwiftUI.Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         switch style {
         case .filled:
-            return badgeColor(scheme: scheme)
+            return badgeColor(theme: theme)
         case .outlined:
             return SwiftUI.Color.clear
         case .soft:
-            return badgeColor(scheme: scheme).opacity(0.1)
+            return badgeColor(theme: theme).opacity(0.1)
         }
     }
     
     private var textColor: SwiftUI.Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         switch style {
         case .filled:
             return .white
         case .outlined, .soft:
-            return badgeColor(scheme: scheme)
+            return badgeColor(theme: theme)
         }
     }
     
@@ -199,25 +201,25 @@ public struct RRBadge: View {
     }
     
     private var borderColor: SwiftUI.Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         switch style {
         case .filled, .soft:
             return SwiftUI.Color.clear
         case .outlined:
-            return badgeColor(scheme: scheme)
+            return badgeColor(theme: theme)
         }
     }
     
-    private func badgeColor(scheme: RRColorScheme) -> SwiftUI.Color {
+    private func badgeColor(theme: Theme) -> SwiftUI.Color {
         switch color {
-        case .primary: return scheme.primary
-        case .secondary: return scheme.secondary
-        case .success: return scheme.semantic.success
-        case .warning: return scheme.semantic.warning
-        case .error: return scheme.semantic.error
-        case .info: return scheme.semantic.info
-        case .neutral: return scheme.neutral.textSecondary
+        case .primary: return theme.colors.primary
+        case .secondary: return theme.colors.onSurfaceVariant
+        case .success: return theme.colors.success
+        case .warning: return theme.colors.warning
+        case .error: return theme.colors.error
+        case .info: return theme.colors.info
+        case .neutral: return theme.colors.onSurfaceVariant
         }
     }
     

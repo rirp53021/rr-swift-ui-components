@@ -6,6 +6,9 @@ import Foundation
 /// A customizable timeline/progress tracker component
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RRTimeline: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let items: [TimelineItem]
     private let style: TimelineStyle
     private let orientation: TimelineOrientation
@@ -91,13 +94,13 @@ public enum TimelineStatus {
     case error
     case skipped
     
-    var color: Color {
+    func color(theme: Theme) -> Color {
         switch self {
-        case .pending: return Color.gray.opacity(0.3)
-        case .current: return .blue
-        case .completed: return .green
-        case .error: return .red
-        case .skipped: return Color.gray.opacity(0.4)
+        case .pending: return theme.colors.outlineVariant
+        case .current: return theme.colors.primary
+        case .completed: return theme.colors.success
+        case .error: return theme.colors.error
+        case .skipped: return theme.colors.outline
         }
     }
     
@@ -123,6 +126,9 @@ public enum TimelineOrientation {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 struct TimelineItemView: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     let item: TimelineItem
     let style: TimelineStyle
     let isFirst: Bool
@@ -162,7 +168,7 @@ struct TimelineItemView: View {
                     } else {
                         Image(systemName: item.status.iconName)
                             .font(.system(size: style.iconSize * 0.6, weight: .medium))
-                            .foregroundColor(item.status.color)
+                            .foregroundColor(item.status.color(theme: theme))
                     }
                 }
                 

@@ -11,12 +11,12 @@ public enum AlertStyle {
     case warning
     case info
     
-    var color: Color {
+    func color(theme: Theme) -> Color {
         switch self {
-        case .success: return Color(DesignTokens.Colors.success600)
-        case .error: return Color(DesignTokens.Colors.error600)
-        case .warning: return Color(DesignTokens.Colors.warning600)
-        case .info: return Color(DesignTokens.Colors.info600)
+        case .success: return theme.colors.success
+        case .error: return theme.colors.error
+        case .warning: return theme.colors.warning
+        case .info: return theme.colors.info
         }
     }
     
@@ -33,6 +33,9 @@ public enum AlertStyle {
 // MARK: - RRAlert
 
 public struct RRAlert<Content: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let content: Content
     private let style: AlertStyle
     private let isPresented: Binding<Bool>
@@ -51,7 +54,7 @@ public struct RRAlert<Content: View>: View {
         VStack(spacing: RRSpacing.md) {
             HStack {
                 Image(systemName: style.icon)
-                    .foregroundColor(style.color)
+                    .foregroundColor(style.color(theme: theme))
                     .font(.title2)
                 
                 VStack(alignment: .leading, spacing: RRSpacing.xs) {

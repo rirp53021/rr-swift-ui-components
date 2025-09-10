@@ -3,6 +3,9 @@ import SwiftUI
 /// A reusable empty state component with illustration, text, and action button
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public struct RREmptyState<Action: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     // MARK: - Properties
     
     private let illustration: Image?
@@ -43,7 +46,7 @@ public struct RREmptyState<Action: View>: View {
             // Illustration
             if let illustration = illustration {
                 illustration
-                    .foregroundColor(style.illustrationColor)
+                    .foregroundColor(style.illustrationColor(theme: theme))
                     .font(.system(size: style.illustrationSize))
                     .frame(width: style.illustrationSize, height: style.illustrationSize)
             } else {
@@ -54,14 +57,14 @@ public struct RREmptyState<Action: View>: View {
             VStack(spacing: 8) {
                 Text(title)
                     .font(style.titleFont)
-                    .foregroundColor(style.titleColor)
+                    .foregroundColor(style.titleColor(theme: theme))
                     .multilineTextAlignment(.center)
                     .dynamicTypeSize(.large) // Support Dynamic Type
                 
                 if let subtitle = subtitle {
                     Text(subtitle)
                         .font(style.subtitleFont)
-                        .foregroundColor(style.subtitleColor)
+                        .foregroundColor(style.subtitleColor(theme: theme))
                         .multilineTextAlignment(.center)
                         .dynamicTypeSize(.large) // Support Dynamic Type
                 }
@@ -81,7 +84,7 @@ public struct RREmptyState<Action: View>: View {
     
     private var defaultIllustration: some View {
         Image(systemName: style.defaultIcon)
-            .foregroundColor(style.illustrationColor)
+            .foregroundColor(style.illustrationColor(theme: theme))
             .font(.system(size: style.illustrationSize))
             .frame(width: style.illustrationSize, height: style.illustrationSize)
     }
@@ -117,24 +120,24 @@ public extension RREmptyState {
             }
         }
         
-        var titleColor: Color {
+        func titleColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent, .minimal:
-                return .primary
+                return theme.colors.onSurface
             }
         }
         
-        var subtitleColor: Color {
+        func subtitleColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent, .minimal:
-                return .secondary
+                return theme.colors.onSurfaceVariant
             }
         }
         
-        var illustrationColor: Color {
+        func illustrationColor(theme: Theme) -> Color {
             switch self {
             case .standard, .compact, .prominent, .minimal:
-                return .secondary
+                return theme.colors.onSurfaceVariant
             }
         }
         
@@ -259,7 +262,7 @@ struct RREmptyState_Previews: PreviewProvider {
                             print("Clear search tapped")
                         }
                         .font(.headline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.primary)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
                         .background(Color.blue.opacity(0.1))

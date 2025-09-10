@@ -3,6 +3,8 @@ import SwiftUI
 /// An avatar component with image, initials fallback, and various styles
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
 public struct RRAvatar: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
     public enum Size {
         case xs
         case sm
@@ -141,18 +143,18 @@ public struct RRAvatar: View {
             return backgroundColor
         }
         
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        return scheme.primary
+        
+        return theme.colors.primary
     }
     
     private var initialsColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         return .white
     }
     
     private var iconColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        return scheme.neutral.textSecondary
+        
+        return theme.colors.onSurfaceVariant
     }
 }
 

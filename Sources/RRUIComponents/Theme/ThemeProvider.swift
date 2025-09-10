@@ -8,26 +8,44 @@ import Combine
 // MARK: - Theme Provider
 
 /// SwiftUI environment-based theme provider for consistent theming across the app
+/// 
+/// This ThemeProvider guarantees that components use the colors configured in the app's Colors.xcassets.
+/// The Color extensions automatically read from the asset catalog, ensuring that:
+/// - Light and dark mode variants are properly applied
+/// - App-specific brand colors are respected
+/// - The library integrates seamlessly with the app's design system
+/// 
+/// Usage: Components should always use @Environment(\.themeProvider) and theme.colors.xxx
+/// instead of direct Color references to ensure proper theming.
 public class ThemeProvider: ObservableObject {
     @Published public var currentTheme: Theme = .light
-    @Published public var colorScheme: ColorScheme = .light
+    @Published public var colorScheme: SwiftUI.ColorScheme = .light
     
     public init(theme: Theme = .light) {
         self.currentTheme = theme
-        self.colorScheme = theme.colorScheme
+        self.colorScheme = theme.colorScheme == .light ? .light : .dark
     }
     
     /// Switch to a different theme
     public func setTheme(_ theme: Theme) {
         withAnimation(.easeInOut(duration: 0.3)) {
             self.currentTheme = theme
-            self.colorScheme = theme.colorScheme
+            self.colorScheme = theme.colorScheme == .light ? .light : .dark
         }
     }
     
     /// Toggle between light and dark themes
     public func toggleTheme() {
-        let newTheme: Theme = currentTheme == .light ? .dark : .light
+        let newTheme: Theme = currentTheme.name == "Light" ? .dark : .light
+        setTheme(newTheme)
+    }
+    
+    /// Update theme based on system color scheme
+    public func updateForSystemColorScheme(_ systemColorScheme: SwiftUI.ColorScheme) {
+        self.colorScheme = systemColorScheme
+        
+        // Always update the theme to match system color scheme
+        let newTheme: Theme = systemColorScheme == .light ? .light : .dark
         setTheme(newTheme)
     }
 }
@@ -93,86 +111,86 @@ public struct Theme: Equatable {
 
 public struct ThemeColors: Equatable {
     // Primary Colors
-    public let primary: RRColor
-    public let primaryVariant: RRColor
-    public let onPrimary: RRColor
+    public let primary: Color
+    public let primaryVariant: Color
+    public let onPrimary: Color
     
     // Secondary Colors
-    public let secondary: RRColor
-    public let secondaryVariant: RRColor
-    public let onSecondary: RRColor
+    public let secondary: Color
+    public let secondaryVariant: Color
+    public let onSecondary: Color
     
     // Background Colors
-    public let background: RRColor
-    public let surface: RRColor
-    public let surfaceVariant: RRColor
-    public let onBackground: RRColor
-    public let onSurface: RRColor
-    public let onSurfaceVariant: RRColor
+    public let background: Color
+    public let surface: Color
+    public let surfaceVariant: Color
+    public let onBackground: Color
+    public let onSurface: Color
+    public let onSurfaceVariant: Color
     
     // Outline Colors
-    public let outline: RRColor
-    public let outlineVariant: RRColor
-    public let onOutline: RRColor
-    public let onOutlineVariant: RRColor
+    public let outline: Color
+    public let outlineVariant: Color
+    public let onOutline: Color
+    public let onOutlineVariant: Color
     
     // State Colors
-    public let success: RRColor
-    public let onSuccess: RRColor
-    public let warning: RRColor
-    public let onWarning: RRColor
-    public let error: RRColor
-    public let onError: RRColor
-    public let info: RRColor
-    public let onInfo: RRColor
+    public let success: Color
+    public let onSuccess: Color
+    public let warning: Color
+    public let onWarning: Color
+    public let error: Color
+    public let onError: Color
+    public let info: Color
+    public let onInfo: Color
     
     // Neutral Colors
-    public let neutral50: RRColor
-    public let neutral100: RRColor
-    public let neutral200: RRColor
-    public let neutral300: RRColor
-    public let neutral400: RRColor
-    public let neutral500: RRColor
-    public let neutral600: RRColor
-    public let neutral700: RRColor
-    public let neutral800: RRColor
-    public let neutral900: RRColor
+    public let neutral50: Color
+    public let neutral100: Color
+    public let neutral200: Color
+    public let neutral300: Color
+    public let neutral400: Color
+    public let neutral500: Color
+    public let neutral600: Color
+    public let neutral700: Color
+    public let neutral800: Color
+    public let neutral900: Color
     
     public init(
-        primary: RRColor,
-        primaryVariant: RRColor,
-        onPrimary: RRColor,
-        secondary: RRColor,
-        secondaryVariant: RRColor,
-        onSecondary: RRColor,
-        background: RRColor,
-        surface: RRColor,
-        surfaceVariant: RRColor,
-        onBackground: RRColor,
-        onSurface: RRColor,
-        onSurfaceVariant: RRColor,
-        outline: RRColor,
-        outlineVariant: RRColor,
-        onOutline: RRColor,
-        onOutlineVariant: RRColor,
-        success: RRColor,
-        onSuccess: RRColor,
-        warning: RRColor,
-        onWarning: RRColor,
-        error: RRColor,
-        onError: RRColor,
-        info: RRColor,
-        onInfo: RRColor,
-        neutral50: RRColor,
-        neutral100: RRColor,
-        neutral200: RRColor,
-        neutral300: RRColor,
-        neutral400: RRColor,
-        neutral500: RRColor,
-        neutral600: RRColor,
-        neutral700: RRColor,
-        neutral800: RRColor,
-        neutral900: RRColor
+        primary: Color,
+        primaryVariant: Color,
+        onPrimary: Color,
+        secondary: Color,
+        secondaryVariant: Color,
+        onSecondary: Color,
+        background: Color,
+        surface: Color,
+        surfaceVariant: Color,
+        onBackground: Color,
+        onSurface: Color,
+        onSurfaceVariant: Color,
+        outline: Color,
+        outlineVariant: Color,
+        onOutline: Color,
+        onOutlineVariant: Color,
+        success: Color,
+        onSuccess: Color,
+        warning: Color,
+        onWarning: Color,
+        error: Color,
+        onError: Color,
+        info: Color,
+        onInfo: Color,
+        neutral50: Color,
+        neutral100: Color,
+        neutral200: Color,
+        neutral300: Color,
+        neutral400: Color,
+        neutral500: Color,
+        neutral600: Color,
+        neutral700: Color,
+        neutral800: Color,
+        neutral900: Color
     ) {
         self.primary = primary
         self.primaryVariant = primaryVariant
@@ -213,94 +231,94 @@ public struct ThemeColors: Equatable {
     // MARK: - Predefined Color Schemes
     
     public static let light = ThemeColors(
-        primary: DesignTokens.Colors.primary500,
-        primaryVariant: DesignTokens.Colors.primary700,
-        onPrimary: .white,
-        secondary: DesignTokens.Colors.secondary500,
-        secondaryVariant: DesignTokens.Colors.secondary700,
+        primary: .primary,
+        primaryVariant: .primary,
+        onPrimary: .onPrimary,
+        secondary: .primary,
+        secondaryVariant: .primary,
         onSecondary: .white,
-        background: DesignTokens.Colors.background,
-        surface: DesignTokens.Colors.surface,
-        surfaceVariant: DesignTokens.Colors.surfaceVariant,
-        onBackground: DesignTokens.Colors.onBackground,
-        onSurface: DesignTokens.Colors.onSurface,
-        onSurfaceVariant: DesignTokens.Colors.onSurfaceVariant,
-        outline: DesignTokens.Colors.outline,
-        outlineVariant: DesignTokens.Colors.outlineVariant,
-        onOutline: DesignTokens.Colors.onOutline,
-        onOutlineVariant: DesignTokens.Colors.onOutlineVariant,
-        success: DesignTokens.Colors.success500,
+        background: .background,
+        surface: .surface,
+        surfaceVariant: .surfaceVariant,
+        onBackground: .onBackground,
+        onSurface: .onSurface,
+        onSurfaceVariant: .onSurfaceVariant,
+        outline: .outline,
+        outlineVariant: .outlineVariant,
+        onOutline: .onOutline,
+        onOutlineVariant: .onOutlineVariant,
+        success: .success,
         onSuccess: .white,
-        warning: DesignTokens.Colors.warning500,
+        warning: .warning,
         onWarning: .white,
-        error: DesignTokens.Colors.error500,
+        error: .error,
         onError: .white,
-        info: DesignTokens.Colors.info500,
+        info: .info,
         onInfo: .white,
-        neutral50: DesignTokens.Colors.neutral50,
-        neutral100: DesignTokens.Colors.neutral100,
-        neutral200: DesignTokens.Colors.neutral200,
-        neutral300: DesignTokens.Colors.neutral300,
-        neutral400: DesignTokens.Colors.neutral400,
-        neutral500: DesignTokens.Colors.neutral500,
-        neutral600: DesignTokens.Colors.neutral600,
-        neutral700: DesignTokens.Colors.neutral700,
-        neutral800: DesignTokens.Colors.neutral800,
-        neutral900: DesignTokens.Colors.neutral900
+        neutral50: .surfaceVariant,
+        neutral100: .surfaceVariant,
+        neutral200: .outlineVariant,
+        neutral300: .outlineVariant,
+        neutral400: .outline,
+        neutral500: .outline,
+        neutral600: .onSurfaceVariant,
+        neutral700: .onSurfaceVariant,
+        neutral800: .onSurface,
+        neutral900: .onSurface
     )
     
     public static let dark = ThemeColors(
-        primary: DesignTokens.Colors.primary400,
-        primaryVariant: DesignTokens.Colors.primary200,
-        onPrimary: DesignTokens.Colors.neutral900,
-        secondary: DesignTokens.Colors.secondary400,
-        secondaryVariant: DesignTokens.Colors.secondary200,
-        onSecondary: DesignTokens.Colors.neutral900,
-        background: DesignTokens.Colors.neutral900,
-        surface: DesignTokens.Colors.neutral800,
-        surfaceVariant: DesignTokens.Colors.neutral700,
-        onBackground: DesignTokens.Colors.neutral50,
-        onSurface: DesignTokens.Colors.neutral50,
-        onSurfaceVariant: DesignTokens.Colors.neutral200,
-        outline: DesignTokens.Colors.neutral600,
-        outlineVariant: DesignTokens.Colors.neutral700,
-        onOutline: DesignTokens.Colors.neutral300,
-        onOutlineVariant: DesignTokens.Colors.neutral400,
-        success: DesignTokens.Colors.success400,
-        onSuccess: DesignTokens.Colors.neutral900,
-        warning: DesignTokens.Colors.warning400,
-        onWarning: DesignTokens.Colors.neutral900,
-        error: DesignTokens.Colors.error400,
-        onError: DesignTokens.Colors.neutral900,
-        info: DesignTokens.Colors.info400,
-        onInfo: DesignTokens.Colors.neutral900,
-        neutral50: DesignTokens.Colors.neutral900,
-        neutral100: DesignTokens.Colors.neutral800,
-        neutral200: DesignTokens.Colors.neutral700,
-        neutral300: DesignTokens.Colors.neutral600,
-        neutral400: DesignTokens.Colors.neutral500,
-        neutral500: DesignTokens.Colors.neutral400,
-        neutral600: DesignTokens.Colors.neutral300,
-        neutral700: DesignTokens.Colors.neutral200,
-        neutral800: DesignTokens.Colors.neutral100,
-        neutral900: DesignTokens.Colors.neutral50
+        primary: .primary,
+        primaryVariant: .primary,
+        onPrimary: .onPrimary,
+        secondary: .primary,
+        secondaryVariant: .primary,
+        onSecondary: .onSurface,
+        background: .background,
+        surface: .surface,
+        surfaceVariant: .surfaceVariant,
+        onBackground: .onBackground,
+        onSurface: .onSurface,
+        onSurfaceVariant: .onSurfaceVariant,
+        outline: .outline,
+        outlineVariant: .outlineVariant,
+        onOutline: .onOutline,
+        onOutlineVariant: .onOutlineVariant,
+        success: .success,
+        onSuccess: .onSurface,
+        warning: .warning,
+        onWarning: .onSurface,
+        error: .error,
+        onError: .onSurface,
+        info: .info,
+        onInfo: .onSurface,
+        neutral50: .background,
+        neutral100: .surface,
+        neutral200: .surfaceVariant,
+        neutral300: .outlineVariant,
+        neutral400: .outline,
+        neutral500: .outline,
+        neutral600: .onSurfaceVariant,
+        neutral700: .onSurfaceVariant,
+        neutral800: .onSurface,
+        neutral900: .onSurface
     )
     
     public static let highContrast = ThemeColors(
-        primary: RRColor(r: 0, g: 0, b: 0),
-        primaryVariant: RRColor(r: 0, g: 0, b: 0),
+        primary: .black,
+        primaryVariant: .black,
         onPrimary: .white,
-        secondary: RRColor(r: 0, g: 0, b: 0),
-        secondaryVariant: RRColor(r: 0, g: 0, b: 0),
+        secondary: .black,
+        secondaryVariant: .black,
         onSecondary: .white,
         background: .white,
         surface: .white,
-        surfaceVariant: RRColor(r: 240, g: 240, b: 240),
+        surfaceVariant: Color(r: 240, g: 240, b: 240),
         onBackground: .black,
         onSurface: .black,
         onSurfaceVariant: .black,
         outline: .black,
-        outlineVariant: RRColor(r: 100, g: 100, b: 100),
+        outlineVariant: Color(r: 100, g: 100, b: 100),
         onOutline: .white,
         onOutlineVariant: .white,
         success: .green,
@@ -312,14 +330,14 @@ public struct ThemeColors: Equatable {
         info: .blue,
         onInfo: .white,
         neutral50: .white,
-        neutral100: RRColor(r: 240, g: 240, b: 240),
-        neutral200: RRColor(r: 200, g: 200, b: 200),
-        neutral300: RRColor(r: 160, g: 160, b: 160),
-        neutral400: RRColor(r: 120, g: 120, b: 120),
-        neutral500: RRColor(r: 80, g: 80, b: 80),
-        neutral600: RRColor(r: 60, g: 60, b: 60),
-        neutral700: RRColor(r: 40, g: 40, b: 40),
-        neutral800: RRColor(r: 20, g: 20, b: 20),
+        neutral100: Color(r: 240, g: 240, b: 240),
+        neutral200: Color(r: 200, g: 200, b: 200),
+        neutral300: Color(r: 160, g: 160, b: 160),
+        neutral400: Color(r: 120, g: 120, b: 120),
+        neutral500: Color(r: 80, g: 80, b: 80),
+        neutral600: Color(r: 60, g: 60, b: 60),
+        neutral700: Color(r: 40, g: 40, b: 40),
+        neutral800: Color(r: 20, g: 20, b: 20),
         neutral900: .black
     )
 }
@@ -546,6 +564,14 @@ public extension View {
         self.environment(\.themeProvider, provider)
     }
     
+    /// Apply theme provider that automatically responds to system color scheme changes
+    func adaptiveThemeProvider(_ provider: ThemeProvider) -> some View {
+        self.environment(\.themeProvider, provider)
+            .background(
+                SystemColorSchemeDetector(themeProvider: provider)
+            )
+    }
+    
     /// Get current theme from environment
     func withTheme<Content: View>(@ViewBuilder content: @escaping (Theme) -> Content) -> some View {
         self.environmentObject(ThemeProvider())
@@ -565,5 +591,23 @@ private struct EnvironmentReader<Content: View>: View {
     
     var body: some View {
         content(themeProvider)
+    }
+}
+
+// MARK: - System Color Scheme Detector
+
+private struct SystemColorSchemeDetector: View {
+    @Environment(\.colorScheme) private var colorScheme
+    let themeProvider: ThemeProvider
+    
+    var body: some View {
+        Color.clear
+            .onAppear {
+                // Update theme based on current system color scheme
+                themeProvider.updateForSystemColorScheme(colorScheme)
+            }
+            .onChange(of: colorScheme) { newColorScheme in
+                themeProvider.updateForSystemColorScheme(newColorScheme)
+            }
     }
 }

@@ -13,12 +13,12 @@ public enum SnackbarStyle {
     case warning
     case info
     
-    var color: Color {
+    func color(theme: Theme) -> Color {
         switch self {
-        case .success: return Color.green
-        case .error: return Color.red
-        case .warning: return Color.orange
-        case .info: return Color.blue
+        case .success: return theme.colors.success
+        case .error: return theme.colors.error
+        case .warning: return theme.colors.warning
+        case .info: return theme.colors.info
         }
     }
     
@@ -35,6 +35,9 @@ public enum SnackbarStyle {
 // MARK: - RRSnackbar
 
 public struct RRSnackbar<Content: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let content: Content
     private let style: SnackbarStyle
     private let duration: TimeInterval
@@ -65,7 +68,7 @@ public struct RRSnackbar<Content: View>: View {
                 
                 HStack(spacing: RRSpacing.sm) {
                     Image(systemName: style.icon)
-                        .foregroundColor(style.color)
+                        .foregroundColor(style.color(theme: theme))
                         .font(.title3)
                     
                     content

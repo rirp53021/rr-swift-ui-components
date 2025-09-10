@@ -18,7 +18,7 @@ public struct RRLoadingIndicator: View {
     public init(
         style: LoadingStyle = .spinner,
         size: CGFloat = DesignTokens.ComponentSize.iconSizeLG,
-        color: Color = Color(DesignTokens.Colors.primary600),
+        color: Color = .blue,
         lineWidth: CGFloat = 3,
         animationSpeed: Double = DesignTokens.Animation.durationNormal
     ) {

@@ -44,16 +44,19 @@ Follow these rules at all times:
 
 ## Design System (MANDATORY)
 - **ALL UI components MUST use the design system** - this is non-negotiable.
+- **ALL colors MUST use ThemeProvider** - never use system colors like `.blue`, `.red`, `.white`, `.black`, `.gray`, `.secondary`, `.primary`, `.accentColor(.blue)`.
+- Use `@Environment(\.themeProvider)` and `theme.colors.xxx` for all color references to guarantee dark mode support.
 - Use `DesignTokens` for all styling: colors, typography, spacing, border radius, elevation, animations.
 - Use `ThemeProvider` for theme-aware components and dynamic theming.
 - Never use hardcoded values for colors, fonts, spacing, or other design properties.
 - All components must support size variants (xs, sm, md, lg, xl) using `DesignTokens.ComponentSize`.
 - All text components must use `DesignTokens.Typography` fonts and weights.
-- All color usage must reference `DesignTokens.Colors` with appropriate semantic naming.
+- All color usage must reference `theme.colors.xxx` (for dynamic theming) or `DesignTokens.Colors.xxx` (for static contexts like previews).
 - All spacing must use `DesignTokens.Spacing` values.
 - All border radius must use `DesignTokens.BorderRadius` values.
 - All shadows/elevation must use `DesignTokens.Elevation` values.
 - All animations must use `DesignTokens.Animation` values.
+- **FORBIDDEN**: Any usage of system colors like `Color.blue`, `Color.red`, `Color.white`, `Color.black`, `Color.gray`, `.secondary`, `.primary`, `.accentColor(.blue)`, etc.
 
 ## Security
 - Never commit API keys, secrets, or credentials.

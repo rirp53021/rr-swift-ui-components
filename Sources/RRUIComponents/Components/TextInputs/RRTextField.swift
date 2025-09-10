@@ -3,6 +3,9 @@ import SwiftUI
 /// A comprehensive text field component with validation states and styling
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
 public struct RRTextField: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     public enum Style {
         case standard
         case secure
@@ -222,58 +225,58 @@ public struct RRTextField: View {
     @Environment(\.colorScheme) private var colorScheme
     
     private var backgroundColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         if isDisabled {
-            return scheme.neutral.surface
+            return theme.colors.surface
         } else {
-            return scheme.neutral.background
+            return theme.colors.background
         }
     }
     
     private var textColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         if isDisabled {
-            return scheme.neutral.textSecondary
+            return theme.colors.onSurfaceVariant
         } else {
-            return scheme.neutral.text
+            return theme.colors.onSurface
         }
     }
     
     private var iconColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         if isDisabled {
-            return scheme.neutral.textSecondary
+            return theme.colors.onSurfaceVariant
         } else {
-            return scheme.neutral.textSecondary
+            return theme.colors.onSurfaceVariant
         }
     }
     
     private var borderColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
+        
         
         if isDisabled {
-            return scheme.neutral.border
+            return theme.colors.outline
         }
         
         switch validationState {
-        case .none: return scheme.neutral.border
-        case .success: return scheme.semantic.success
-        case .warning: return scheme.semantic.warning
-        case .error: return scheme.semantic.error
+        case .none: return theme.colors.outline
+        case .success: return theme.colors.success
+        case .warning: return theme.colors.warning
+        case .error: return theme.colors.error
         }
     }
     
     private var helperTextColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        return scheme.neutral.textSecondary
+        
+        return theme.colors.onSurfaceVariant
     }
     
     private var errorColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        return scheme.semantic.error
+        
+        return theme.colors.error
     }
     
     // MARK: - Accessibility

@@ -157,16 +157,16 @@ public struct RRButton<Label: View>: View {
         let theme = themeProvider.currentTheme
         
         if !isEnabled {
-            return Color(theme.colors.neutral300)
+            return theme.colors.neutral300
         }
         
         switch style {
         case .primary:
-            return Color(theme.colors.primary)
+            return theme.colors.primary
         case .secondary:
-            return Color(theme.colors.surfaceVariant)
+            return theme.colors.surfaceVariant
         case .destructive:
-            return Color(theme.colors.error)
+            return theme.colors.error
         case .outline:
             return Color.clear
         case .ghost:
@@ -178,20 +178,20 @@ public struct RRButton<Label: View>: View {
         let theme = themeProvider.currentTheme
         
         if !isEnabled {
-            return Color(theme.colors.neutral500)
+            return theme.colors.neutral500
         }
         
         switch style {
         case .primary:
-            return Color(theme.colors.onPrimary)
+            return theme.colors.onPrimary
         case .secondary:
-            return Color(theme.colors.onSurface)
+            return theme.colors.onSurface
         case .destructive:
-            return Color(theme.colors.onError)
+            return theme.colors.onError
         case .outline:
-            return Color(theme.colors.primary)
+            return theme.colors.primary
         case .ghost:
-            return Color(theme.colors.primary)
+            return theme.colors.primary
         }
     }
     
@@ -199,14 +199,14 @@ public struct RRButton<Label: View>: View {
         let theme = themeProvider.currentTheme
         
         if !isEnabled {
-            return Color(theme.colors.outlineVariant)
+            return theme.colors.outlineVariant
         }
         
         switch style {
         case .primary, .secondary, .destructive, .ghost:
             return Color.clear
         case .outline:
-            return Color(theme.colors.outline)
+            return theme.colors.outline
         }
     }
     

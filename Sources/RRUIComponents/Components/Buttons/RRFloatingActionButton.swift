@@ -2,6 +2,9 @@ import SwiftUI
 
 /// A floating action button component, typically used for primary actions
 public struct RRFloatingActionButton: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     public enum Size {
         case small
         case medium
@@ -90,13 +93,11 @@ public struct RRFloatingActionButton: View {
     @Environment(\.colorScheme) private var colorScheme
     
     private var backgroundColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        return scheme.primary
+        return theme.colors.primary
     }
     
     private var shadowColor: Color {
-        let scheme = colorScheme == .dark ? RRColorScheme.dark : RRColorScheme.light
-        return scheme.neutral.text.opacity(0.3)
+        return theme.colors.onSurface.opacity(0.3)
     }
     
     private var positionPoint: CGPoint {
