@@ -2,6 +2,9 @@ import SwiftUI
 
 /// An async image loader with placeholder and error states
 public struct RRAsyncImage<Content: View, Placeholder: View, ErrorView: View>: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     private let url: URL?
     private let content: (Image) -> Content
     private let placeholder: () -> Placeholder
@@ -45,32 +48,41 @@ public struct RRAsyncImage<Content: View, Placeholder: View, ErrorView: View>: V
 // MARK: - Default Views
 
 public struct DefaultPlaceholder: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     public init() {}
     
     public var body: some View {
         Rectangle()
-            .fill(Color.gray.opacity(0.3))
+            .fill(theme.colors.surfaceVariant)
             .overlay(
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
+                    .progressViewStyle(CircularProgressViewStyle(tint: theme.colors.primary))
             )
     }
 }
 
 public struct DefaultErrorView: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
     public init() {}
     
     public var body: some View {
         Rectangle()
-            .fill(Color.gray.opacity(0.3))
+            .fill(theme.colors.surfaceVariant)
             .overlay(
-                VStack(spacing: 8) {
+                VStack(spacing: DesignTokens.Spacing.sm) {
                     Image(systemName: "photo")
-                        .font(.largeTitle)
-                        .foregroundColor(.gray)
-                    Text("Failed to load image")
-                        .font(.caption)
-                        .foregroundColor(.gray)
+                        .font(DesignTokens.Typography.headlineLarge)
+                        .foregroundColor(theme.colors.error)
+                    RRLabel(
+                        "Failed to load image",
+                        style: .caption,
+                        weight: .medium,
+                        color: .secondary
+                    )
                 }
             )
     }
@@ -97,61 +109,75 @@ public extension RRAsyncImage where Content == Image, Placeholder == DefaultPlac
 #if DEBUG
 struct RRAsyncImage_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 20) {
-            // Simple async image
-            RRAsyncImage(
-                url: URL(string: "https://picsum.photos/200/200")
-            )
-            .frame(width: 200, height: 200)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+        RRAsyncImagePreview()
+            .themeProvider(ThemeProvider())
+            .previewDisplayName("RRAsyncImage Examples")
+    }
+}
+
+private struct RRAsyncImagePreview: View {
+    @Environment(\.themeProvider) private var themeProvider
+    private var theme: Theme { themeProvider.currentTheme }
+    
+    var body: some View {
+        VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel.title("Async Image Examples")
             
-            // Custom content
-            RRAsyncImage(
-                url: URL(string: "https://picsum.photos/300/200"),
-                content: { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                },
-                placeholder: {
-                    Circle()
-                        .fill(Color.blue.opacity(0.3))
-                        .overlay(
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        )
-                },
-                errorView: { _ in
-                    Circle()
-                        .fill(Color.red.opacity(0.3))
-                        .overlay(
-                            Image(systemName: "exclamationmark.triangle")
-                                .foregroundColor(.red)
-                        )
-                }
-            )
-            .frame(width: 100, height: 100)
-            
-            // Different aspect ratios
-            HStack(spacing: 16) {
+            VStack(spacing: DesignTokens.Spacing.md) {
+                // Simple async image
                 RRAsyncImage(
-                    url: URL(string: "https://picsum.photos/100/100"),
-                    aspectRatio: 1.0
+                    url: URL(string: "https://picsum.photos/200/200")
                 )
-                .frame(height: 100)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .frame(width: 200, height: 200)
+                .clipShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.md))
                 
+                // Custom content
                 RRAsyncImage(
-                    url: URL(string: "https://picsum.photos/150/100"),
-                    aspectRatio: 1.5
+                    url: URL(string: "https://picsum.photos/300/200"),
+                    content: { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .clipShape(Circle())
+                    },
+                    placeholder: {
+                        Circle()
+                            .fill(theme.colors.primary.opacity(0.3))
+                            .overlay(
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: theme.colors.primary))
+                            )
+                    },
+                    errorView: { _ in
+                        Circle()
+                            .fill(theme.colors.error.opacity(0.3))
+                            .overlay(
+                                Image(systemName: "exclamationmark.triangle")
+                                    .foregroundColor(theme.colors.error)
+                            )
+                    }
                 )
-                .frame(height: 100)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .frame(width: 100, height: 100)
+                
+                // Different aspect ratios
+                HStack(spacing: DesignTokens.Spacing.md) {
+                    RRAsyncImage(
+                        url: URL(string: "https://picsum.photos/100/100"),
+                        aspectRatio: 1.0
+                    )
+                    .frame(height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm))
+                    
+                    RRAsyncImage(
+                        url: URL(string: "https://picsum.photos/150/100"),
+                        aspectRatio: 1.5
+                    )
+                    .frame(height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.sm))
+                }
             }
         }
-        .padding()
-        .previewDisplayName("RRAsyncImage")
+        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif

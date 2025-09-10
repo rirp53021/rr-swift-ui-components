@@ -62,6 +62,18 @@ extension Color {
         case selected
         case active
         
+        // Gradient Colors
+        case primaryGradient
+        case secondaryGradient
+        case surfaceGradient
+        case backgroundGradient
+        
+        // Overlay Colors
+        case modalOverlay
+        case tooltipBackground
+        case dropdownOverlay
+        case loadingOverlay
+        
         // Basic Colors
         case white
         case black
@@ -99,6 +111,14 @@ extension Color {
             case .pressed: return "Pressed"
             case .selected: return "Selected"
             case .active: return "Active"
+            case .primaryGradient: return "PrimaryGradient"
+            case .secondaryGradient: return "SecondaryGradient"
+            case .surfaceGradient: return "SurfaceGradient"
+            case .backgroundGradient: return "BackgroundGradient"
+            case .modalOverlay: return "ModalOverlay"
+            case .tooltipBackground: return "TooltipBackground"
+            case .dropdownOverlay: return "DropdownOverlay"
+            case .loadingOverlay: return "LoadingOverlay"
             case .white: return "White"
             case .black: return "Black"
             }

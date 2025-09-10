@@ -199,6 +199,18 @@ public struct ThemeColors: Equatable {
     public let selected: Color
     public let active: Color
     
+    // Gradient Colors
+    public let primaryGradient: Color
+    public let secondaryGradient: Color
+    public let surfaceGradient: Color
+    public let backgroundGradient: Color
+    
+    // Overlay Colors
+    public let modalOverlay: Color
+    public let tooltipBackground: Color
+    public let dropdownOverlay: Color
+    public let loadingOverlay: Color
+    
     // Text Colors
     public let primaryText: Color
     public let secondaryText: Color
@@ -252,6 +264,14 @@ public struct ThemeColors: Equatable {
         pressed: Color,
         selected: Color,
         active: Color,
+        primaryGradient: Color,
+        secondaryGradient: Color,
+        surfaceGradient: Color,
+        backgroundGradient: Color,
+        modalOverlay: Color,
+        tooltipBackground: Color,
+        dropdownOverlay: Color,
+        loadingOverlay: Color,
         primaryText: Color,
         secondaryText: Color,
         white: Color,
@@ -299,6 +319,14 @@ public struct ThemeColors: Equatable {
         self.pressed = pressed
         self.selected = selected
         self.active = active
+        self.primaryGradient = primaryGradient
+        self.secondaryGradient = secondaryGradient
+        self.surfaceGradient = surfaceGradient
+        self.backgroundGradient = backgroundGradient
+        self.modalOverlay = modalOverlay
+        self.tooltipBackground = tooltipBackground
+        self.dropdownOverlay = dropdownOverlay
+        self.loadingOverlay = loadingOverlay
         self.primaryText = primaryText
         self.secondaryText = secondaryText
         self.white = white
@@ -366,6 +394,18 @@ public struct ThemeColors: Equatable {
         self.selected = Color.fromDesignSystem(.selected, bundle: bundle)
         self.active = Color.fromDesignSystem(.active, bundle: bundle)
         
+        // Gradient Colors
+        self.primaryGradient = Color.fromDesignSystem(.primaryGradient, bundle: bundle)
+        self.secondaryGradient = Color.fromDesignSystem(.secondaryGradient, bundle: bundle)
+        self.surfaceGradient = Color.fromDesignSystem(.surfaceGradient, bundle: bundle)
+        self.backgroundGradient = Color.fromDesignSystem(.backgroundGradient, bundle: bundle)
+        
+        // Overlay Colors
+        self.modalOverlay = Color.fromDesignSystem(.modalOverlay, bundle: bundle)
+        self.tooltipBackground = Color.fromDesignSystem(.tooltipBackground, bundle: bundle)
+        self.dropdownOverlay = Color.fromDesignSystem(.dropdownOverlay, bundle: bundle)
+        self.loadingOverlay = Color.fromDesignSystem(.loadingOverlay, bundle: bundle)
+        
         // Text Colors
         self.primaryText = Color.fromDesignSystem(.primaryText, bundle: bundle)
         self.secondaryText = Color.fromDesignSystem(.secondaryText, bundle: bundle)
@@ -426,6 +466,14 @@ public struct ThemeColors: Equatable {
             pressed: colors.pressed,
             selected: colors.selected,
             active: colors.active,
+            primaryGradient: colors.primaryGradient,
+            secondaryGradient: colors.secondaryGradient,
+            surfaceGradient: colors.surfaceGradient,
+            backgroundGradient: colors.backgroundGradient,
+            modalOverlay: colors.modalOverlay,
+            tooltipBackground: colors.tooltipBackground,
+            dropdownOverlay: colors.dropdownOverlay,
+            loadingOverlay: colors.loadingOverlay,
             primaryText: colors.primaryText,
             secondaryText: colors.secondaryText,
             white: colors.white,
@@ -480,6 +528,14 @@ public struct ThemeColors: Equatable {
             pressed: baseColors.pressed,
             selected: baseColors.selected,
             active: baseColors.active,
+            primaryGradient: baseColors.primaryGradient,
+            secondaryGradient: baseColors.secondaryGradient,
+            surfaceGradient: baseColors.surfaceGradient,
+            backgroundGradient: baseColors.backgroundGradient,
+            modalOverlay: baseColors.modalOverlay,
+            tooltipBackground: baseColors.tooltipBackground,
+            dropdownOverlay: baseColors.dropdownOverlay,
+            loadingOverlay: baseColors.loadingOverlay,
             primaryText: baseColors.black,
             secondaryText: baseColors.secondaryText,
             white: baseColors.white,

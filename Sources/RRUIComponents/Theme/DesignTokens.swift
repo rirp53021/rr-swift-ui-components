@@ -251,6 +251,68 @@ public struct DesignTokens {
         public static let background: CGFloat = 0
     }
     
+    // MARK: - Layout Tokens
+    
+    /// Layout design tokens for consistent grid and flexbox-like properties
+    public struct Layout {
+        // Grid System
+        public static let gridColumns: Int = 12
+        public static let gridGap: CGFloat = 16
+        public static let gridGapSmall: CGFloat = 8
+        public static let gridGapLarge: CGFloat = 24
+        
+        // Container Max Widths
+        public static let containerMaxWidth: CGFloat = 1200
+        public static let containerMaxWidthSmall: CGFloat = 768
+        public static let containerMaxWidthMedium: CGFloat = 1024
+        public static let containerMaxWidthLarge: CGFloat = 1440
+        
+        // Flexbox-like Properties
+        public static let flexGrow: CGFloat = 1
+        public static let flexShrink: CGFloat = 1
+        public static let flexBasis: CGFloat = 0
+        
+        // Alignment
+        public static let alignStart: Alignment = .leading
+        public static let alignCenter: Alignment = .center
+        public static let alignEnd: Alignment = .trailing
+        public static let alignStretch: Alignment = .center
+        
+        // Justification
+        public static let justifyStart: HorizontalAlignment = .leading
+        public static let justifyCenter: HorizontalAlignment = .center
+        public static let justifyEnd: HorizontalAlignment = .trailing
+        public static let justifySpaceBetween: HorizontalAlignment = .center
+        public static let justifySpaceAround: HorizontalAlignment = .center
+        public static let justifySpaceEvenly: HorizontalAlignment = .center
+        
+        // Content Distribution
+        public static let contentStart: VerticalAlignment = .top
+        public static let contentCenter: VerticalAlignment = .center
+        public static let contentEnd: VerticalAlignment = .bottom
+        public static let contentStretch: VerticalAlignment = .center
+        
+        // Layout Directions
+        public static let directionRow: Axis = .horizontal
+        public static let directionColumn: Axis = .vertical
+        
+        // Wrap Behavior
+        public static let wrapNoWrap: Bool = false
+        public static let wrapWrap: Bool = true
+        public static let wrapWrapReverse: Bool = true
+        
+        // Overflow
+        public static let overflowVisible: Bool = false
+        public static let overflowHidden: Bool = true
+        public static let overflowScroll: Bool = true
+        
+        // Position
+        public static let positionRelative: Bool = false
+        public static let positionAbsolute: Bool = true
+        public static let positionFixed: Bool = true
+        public static let positionSticky: Bool = true
+    }
+    
     // MARK: - Breakpoint Tokens
     
     /// Breakpoint design tokens for responsive design
