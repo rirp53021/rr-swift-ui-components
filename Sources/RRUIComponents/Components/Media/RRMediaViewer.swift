@@ -782,56 +782,58 @@ private struct RRMediaViewerPreview: View {
     ]
     
     var body: some View {
-        VStack(spacing: DesignTokens.Spacing.lg) {
-            RRLabel.title("Media Viewer Examples")
-            
-            // Basic media viewer
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Basic Media Viewer", style: .subtitle, weight: .semibold)
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                RRLabel.title("Media Viewer Examples", customColor: theme.colors.onSurface)
                 
-                RRMediaViewer(
-                    mediaItems: sampleMediaItems,
-                    style: .default,
-                    showThumbnails: true,
-                    showIndicators: true
-                )
-            }
-            
-            // Light theme
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Light Theme", style: .subtitle, weight: .semibold)
+                // Basic media viewer
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Basic Media Viewer", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRMediaViewer(
+                        mediaItems: sampleMediaItems,
+                        style: .default,
+                        showThumbnails: true,
+                        showIndicators: true
+                    )
+                }
                 
-                RRMediaViewer(
-                    mediaItems: sampleMediaItems,
-                    style: .light,
-                    showThumbnails: true,
-                    showIndicators: true
-                )
-            }
-            
-            // Dark theme
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Dark Theme", style: .subtitle, weight: .semibold)
+                // Light theme
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Light Theme", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRMediaViewer(
+                        mediaItems: sampleMediaItems,
+                        style: .light,
+                        showThumbnails: true,
+                        showIndicators: true
+                    )
+                }
                 
-                RRMediaViewer(
-                    mediaItems: sampleMediaItems,
-                    style: .dark,
-                    showThumbnails: true,
-                    showIndicators: true
-                )
-            }
-            
-            // Empty state
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Empty State", style: .subtitle, weight: .semibold)
+                // Dark theme
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Dark Theme", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRMediaViewer(
+                        mediaItems: sampleMediaItems,
+                        style: .dark,
+                        showThumbnails: true,
+                        showIndicators: true
+                    )
+                }
                 
-                RRMediaViewer(
-                    mediaItems: [],
-                    style: .default
-                )
+                // Empty state
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Empty State", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRMediaViewer(
+                        mediaItems: [],
+                        style: .default
+                    )
+                }
             }
+            .padding(DesignTokens.Spacing.md)
         }
-        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif

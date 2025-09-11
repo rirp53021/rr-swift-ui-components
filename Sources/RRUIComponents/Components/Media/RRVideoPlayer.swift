@@ -368,12 +368,13 @@ private struct RRVideoPlayerPreview: View {
     private var theme: Theme { themeProvider.currentTheme }
     
     var body: some View {
-        VStack(spacing: DesignTokens.Spacing.lg) {
-            RRLabel.title("Video Player Examples")
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+            RRLabel.title("Video Player Examples", customColor: theme.colors.onSurface)
             
             // Basic video players
             VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Basic Video Players", style: .subtitle, weight: .semibold)
+                RRLabel("Basic Video Players", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
                 
                 HStack(spacing: DesignTokens.Spacing.lg) {
                     RRVideoPlayer(
@@ -394,7 +395,7 @@ private struct RRVideoPlayerPreview: View {
             
             // Styled video players
             VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Styled Video Players", style: .subtitle, weight: .semibold)
+                RRLabel("Styled Video Players", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
                 
                 HStack(spacing: DesignTokens.Spacing.lg) {
                     RRVideoPlayer(
@@ -421,7 +422,7 @@ private struct RRVideoPlayerPreview: View {
             
             // Different aspect ratios
             VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Different Aspect Ratios", style: .subtitle, weight: .semibold)
+                RRLabel("Different Aspect Ratios", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
                 
                 HStack(spacing: DesignTokens.Spacing.lg) {
                     RRVideoPlayer(
@@ -443,8 +444,9 @@ private struct RRVideoPlayerPreview: View {
                     .frame(height: 150)
                 }
             }
+            }
+            .padding(DesignTokens.Spacing.md)
         }
-        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif

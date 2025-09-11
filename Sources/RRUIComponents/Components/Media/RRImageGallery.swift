@@ -456,60 +456,62 @@ private struct RRImageGalleryPreview: View {
     ]
     
     var body: some View {
-        VStack(spacing: DesignTokens.Spacing.lg) {
-            RRLabel.title("Image Gallery Examples")
-            
-            // Carousel layout
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Carousel Layout", style: .subtitle, weight: .semibold)
+        ScrollView {
+            VStack(spacing: DesignTokens.Spacing.lg) {
+                RRLabel.title("Image Gallery Examples", customColor: theme.colors.onSurface)
                 
-                RRImageGallery(
-                    images: sampleImages,
-                    style: .default,
-                    layout: .carousel,
-                    showThumbnails: true,
-                    showIndicators: true
-                )
-            }
-            
-            // Grid layout
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Grid Layout", style: .subtitle, weight: .semibold)
+                // Carousel layout
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Carousel Layout", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRImageGallery(
+                        images: sampleImages,
+                        style: .default,
+                        layout: .carousel,
+                        showThumbnails: true,
+                        showIndicators: true
+                    )
+                }
                 
-                RRImageGallery(
-                    images: sampleImages,
-                    style: .compact,
-                    layout: .grid,
-                    showThumbnails: false,
-                    showIndicators: false
-                )
-            }
-            
-            // Stack layout
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Stack Layout", style: .subtitle, weight: .semibold)
+                // Grid layout
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Grid Layout", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRImageGallery(
+                        images: sampleImages,
+                        style: .compact,
+                        layout: .grid,
+                        showThumbnails: false,
+                        showIndicators: false
+                    )
+                }
                 
-                RRImageGallery(
-                    images: sampleImages,
-                    style: .spacious,
-                    layout: .stack,
-                    showThumbnails: false,
-                    showIndicators: true
-                )
-            }
-            
-            // Empty state
-            VStack(spacing: DesignTokens.Spacing.md) {
-                RRLabel("Empty State", style: .subtitle, weight: .semibold)
+                // Stack layout
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Stack Layout", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRImageGallery(
+                        images: sampleImages,
+                        style: .spacious,
+                        layout: .stack,
+                        showThumbnails: false,
+                        showIndicators: true
+                    )
+                }
                 
-                RRImageGallery(
-                    images: [],
-                    style: .default,
-                    layout: .carousel
-                )
+                // Empty state
+                VStack(spacing: DesignTokens.Spacing.md) {
+                    RRLabel("Empty State", style: .subtitle, weight: .semibold, customColor: theme.colors.onSurface)
+                    
+                    RRImageGallery(
+                        images: [],
+                        style: .default,
+                        layout: .carousel
+                    )
+                }
             }
+            .padding(DesignTokens.Spacing.md)
         }
-        .padding(DesignTokens.Spacing.md)
     }
 }
 #endif
