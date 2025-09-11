@@ -76,6 +76,7 @@ public struct RRImageGallery: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity)
         .background(style.backgroundColor)
         .cornerRadius(style.cornerRadius)
         .overlay(
@@ -99,7 +100,7 @@ public struct RRImageGallery: View {
                 }
             }
             .tabViewStyle(DefaultTabViewStyle())
-            .frame(height: style.mainImageHeight)
+            .frame(maxWidth: .infinity, maxHeight: style.mainImageHeight)
             .onTapGesture {
                 onImageTap?(selectedIndex)
             }
@@ -117,6 +118,7 @@ public struct RRImageGallery: View {
                 thumbnailsView
             }
         }
+        .frame(maxWidth: .infinity)
     }
     
     // MARK: - Grid View
@@ -163,8 +165,9 @@ public struct RRImageGallery: View {
                     }
             }
         }
-        .frame(height: style.mainImageHeight)
+        .frame(maxWidth: .infinity, maxHeight: style.mainImageHeight)
         .padding(DesignTokens.Spacing.md)
+        .clipped()
     }
     
     // MARK: - Gallery Image View
@@ -174,9 +177,10 @@ public struct RRImageGallery: View {
             RRAsyncImage(
                 url: image.url,
                 aspectRatio: image.aspectRatio,
-                contentMode: .fill
+                contentMode: .fit
             )
-            .aspectRatio(image.aspectRatio, contentMode: .fill)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .aspectRatio(image.aspectRatio, contentMode: .fit)
             .clipped()
             .cornerRadius(DesignTokens.BorderRadius.sm)
             
@@ -190,6 +194,7 @@ public struct RRImageGallery: View {
                 RRLoadingIndicator(style: .spinner, size: DesignTokens.ComponentSize.iconSizeMD)
             }
         }
+        .frame(maxWidth: .infinity)
     }
     
     // MARK: - Page Indicators
@@ -471,6 +476,7 @@ private struct RRImageGalleryPreview: View {
                         showThumbnails: true,
                         showIndicators: true
                     )
+                    .frame(maxWidth: .infinity)
                 }
                 
                 // Grid layout
@@ -484,6 +490,7 @@ private struct RRImageGalleryPreview: View {
                         showThumbnails: false,
                         showIndicators: false
                     )
+                    .frame(maxWidth: .infinity)
                 }
                 
                 // Stack layout
@@ -497,6 +504,7 @@ private struct RRImageGalleryPreview: View {
                         showThumbnails: false,
                         showIndicators: true
                     )
+                    .frame(maxWidth: .infinity)
                 }
                 
                 // Empty state
@@ -508,6 +516,7 @@ private struct RRImageGalleryPreview: View {
                         style: .default,
                         layout: .carousel
                     )
+                    .frame(maxWidth: .infinity)
                 }
             }
             .padding(DesignTokens.Spacing.md)
