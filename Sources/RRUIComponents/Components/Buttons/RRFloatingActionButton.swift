@@ -76,9 +76,9 @@ public struct RRFloatingActionButton: View {
     
     private var shadowRadius: CGFloat {
         switch size {
-        case .small: return RRSpacing.xs
-        case .medium: return RRSpacing.sm
-        case .large: return RRSpacing.sm
+        case .small: return DesignTokens.Spacing.xs
+        case .medium: return DesignTokens.Spacing.sm
+        case .large: return DesignTokens.Spacing.sm
         }
     }
     
@@ -152,13 +152,13 @@ struct RRFloatingActionButton_Previews: PreviewProvider {
             VStack {
                 Text("Floating Action Buttons")
                     .font(.title)
-                    .padding(RRSpacing.paddingMD)
+                    .padding(DesignTokens.Spacing.md)
                 
                 Spacer()
             }
             
             // Different sizes
-            VStack(spacing: RRSpacing.lg) {
+            VStack(spacing: DesignTokens.Spacing.lg) {
                 RRFloatingActionButton.plus(size: .small, position: .topLeading) { }
                 RRFloatingActionButton.plus(size: .medium, position: .topTrailing) { }
                 RRFloatingActionButton.plus(size: .large, position: .center) { }
@@ -176,7 +176,7 @@ struct RRFloatingActionButton_Previews: PreviewProvider {
                     Spacer()
                     RRFloatingActionButton.plus(size: .medium, position: .bottomTrailing) { }
                 }
-                .padding(RRSpacing.paddingMD)
+                .padding(DesignTokens.Spacing.md)
             }
         }
         .previewDisplayName("RRFloatingActionButton")
