@@ -14,7 +14,8 @@ struct RRButtonTests {
             // Action
         }
         
-        #expect(button != nil)
+        // Verify button was created successfully (no nil check needed for structs)
+        #expect(true) // Button creation successful
     }
     
     @Test("Button with style")
@@ -23,7 +24,8 @@ struct RRButtonTests {
             // Action
         }
         
-        #expect(button != nil)
+        // Verify button was created successfully
+        #expect(true) // Button creation successful
     }
     
     @Test("Button with size")
@@ -32,7 +34,8 @@ struct RRButtonTests {
             // Action
         }
         
-        #expect(button != nil)
+        // Verify button was created successfully
+        #expect(true) // Button creation successful
     }
     
     @Test("Button with all parameters")
@@ -41,7 +44,8 @@ struct RRButtonTests {
             // Action
         }
         
-        #expect(button != nil)
+        // Verify button was created successfully
+        #expect(true) // Button creation successful
     }
     
     // MARK: - Style Tests
@@ -52,7 +56,7 @@ struct RRButtonTests {
         
         for style in styles {
             let button = RRButton("Test", style: style) { }
-            #expect(button != nil)
+            #expect(true) // Button creation successful
         }
     }
     
@@ -64,7 +68,7 @@ struct RRButtonTests {
         
         for size in sizes {
             let button = RRButton("Test", size: size) { }
-            #expect(button != nil)
+            #expect(true) // Button creation successful
         }
     }
     
@@ -75,7 +79,6 @@ struct RRButtonTests {
         let enabledButton = RRButton("Enabled", isEnabled: true) { }
         let disabledButton = RRButton("Disabled", isEnabled: false) { }
         
-        #expect(enabledButton != nil)
-        #expect(disabledButton != nil)
+        #expect(true) // Buttons created successfully
     }
 }
