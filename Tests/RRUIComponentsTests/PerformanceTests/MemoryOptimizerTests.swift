@@ -9,9 +9,7 @@ struct MemoryOptimizerTests {
     
     @Test("MemoryOptimizer initialization")
     func testMemoryOptimizerInitialization() {
-        let memoryOptimizer = MemoryOptimizer.shared
-        // Verify memory optimizer was created successfully
-        #expect(true) // Memory optimizer created successfully
+        let _ = MemoryOptimizer.shared
     }
     
     @Test("MemoryOptimizer singleton")
@@ -26,19 +24,15 @@ struct MemoryOptimizerTests {
     
     @Test("Memory cleanup")
     func testMemoryCleanup() {
-        let memoryOptimizer = MemoryOptimizer.shared
+        let _ = MemoryOptimizer.shared
         // Test that performMemoryCleanup method exists and can be called
-        memoryOptimizer.performMemoryCleanup()
-        // Verify memory optimizer was created successfully
-        #expect(true) // Memory optimizer created successfully
+        MemoryOptimizer.shared.performMemoryCleanup()
     }
     
     @Test("Cache optimization")
     func testCacheOptimization() {
-        let memoryOptimizer = MemoryOptimizer.shared
+        let _ = MemoryOptimizer.shared
         // Test that optimizeCaches method exists and can be called
-        memoryOptimizer.optimizeCaches()
-        // Verify memory optimizer was created successfully
-        #expect(true) // Memory optimizer created successfully
+        MemoryOptimizer.shared.optimizeCaches()
     }
 }

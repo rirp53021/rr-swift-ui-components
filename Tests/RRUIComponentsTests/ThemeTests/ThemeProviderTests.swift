@@ -45,9 +45,7 @@ struct ThemeProviderTests {
     @Test("Theme has required properties")
     func testThemeHasRequiredProperties() {
         let themeProvider = ThemeProvider()
-        let theme = themeProvider.currentTheme
+        let _ = themeProvider.currentTheme
         
-        // Verify theme has all required properties
-        #expect(true) // Theme properties exist
     }
 }

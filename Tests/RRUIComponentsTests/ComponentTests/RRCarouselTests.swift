@@ -15,8 +15,6 @@ struct RRCarouselTests {
             let id = UUID()
             let title: String
         }
-        // Verify carousel type exists
-        #expect(true) // Carousel type exists
     }
     
     @Test("Carousel initialization with identifiable data")
@@ -32,12 +30,10 @@ struct RRCarouselTests {
             TestItem(text: "Item 3")
         ]
         
-        let carousel = RRCarousel(data: data) { item in
+        let _ = RRCarousel(data: data) { item in
             Text(item.text)
         }
         
-        // Verify carousel was created successfully
-        #expect(true) // Carousel created successfully
     }
     
     @Test("Carousel with default style")
@@ -53,11 +49,9 @@ struct RRCarouselTests {
             TestItem(text: "Item 3")
         ]
         
-        let carousel = RRCarousel(data: data, style: .default) { item in
+        let _ = RRCarousel(data: data, style: .default) { item in
             Text(item.text)
         }
         
-        // Verify carousel was created successfully
-        #expect(true) // Carousel created successfully
     }
 }

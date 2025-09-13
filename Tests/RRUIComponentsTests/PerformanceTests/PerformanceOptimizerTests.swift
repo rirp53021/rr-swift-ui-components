@@ -9,9 +9,7 @@ struct PerformanceOptimizerTests {
     
     @Test("PerformanceOptimizer initialization")
     func testPerformanceOptimizerInitialization() {
-        let performanceOptimizer = PerformanceOptimizer.shared
-        // Verify performance optimizer was created successfully
-        #expect(true) // Performance optimizer created successfully
+        let _ = PerformanceOptimizer.shared
     }
     
     @Test("PerformanceOptimizer singleton")
@@ -26,19 +24,15 @@ struct PerformanceOptimizerTests {
     
     @Test("Clear all caches")
     func testClearAllCaches() {
-        let performanceOptimizer = PerformanceOptimizer.shared
+        let _ = PerformanceOptimizer.shared
         // Test that clearCaches method exists and can be called
-        performanceOptimizer.clearCaches()
-        // Verify performance optimizer was created successfully
-        #expect(true) // Performance optimizer created successfully
+        PerformanceOptimizer.shared.clearCaches()
     }
     
     @Test("Optimize caches")
     func testOptimizeCaches() {
-        let performanceOptimizer = PerformanceOptimizer.shared
+        let _ = PerformanceOptimizer.shared
         // Test that optimizeCaches method exists and can be called
-        performanceOptimizer.optimizeCaches()
-        // Verify performance optimizer was created successfully
-        #expect(true) // Performance optimizer created successfully
+        PerformanceOptimizer.shared.optimizeCaches()
     }
 }

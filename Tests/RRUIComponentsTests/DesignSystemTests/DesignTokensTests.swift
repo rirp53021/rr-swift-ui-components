@@ -21,8 +21,7 @@ struct DesignTokensTests {
         let themeProvider = ThemeProvider()
         
         // Test that theme provider has access to design tokens
-        let theme = themeProvider.currentTheme
-        #expect(true) // Theme properties exist
+        let _ = themeProvider.currentTheme
     }
     
     @Test("Theme switching works")
