@@ -49,7 +49,7 @@ public struct RRDivider: View {
     
     public var body: some View {
         Group {
-            if let label = label {
+            if label != nil {
                 labeledDivider
             } else {
                 simpleDivider
