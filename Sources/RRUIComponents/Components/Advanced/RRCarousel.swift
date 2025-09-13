@@ -61,14 +61,12 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
         guard autoplay, !data.isEmpty else { return }
         stopAutoplay()
         
-        autoPlayCancellable = Timer.publish(every: autoplayInterval, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                withAnimation(style.animation) {
-                    currentIndex = (currentIndex + 1) % itemCount
-                    onPageChanged?(currentIndex)
-                }
+        autoPlayCancellable = DelayedExecution.every(autoplayInterval) {
+            withAnimation(style.animation) {
+                currentIndex = (currentIndex + 1) % itemCount
+                onPageChanged?(currentIndex)
             }
+        }
     }
     
     private func stopAutoplay() {

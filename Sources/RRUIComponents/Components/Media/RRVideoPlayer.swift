@@ -226,14 +226,12 @@ public struct RRVideoPlayer: View {
             isPlaying = true
         }
         
-        // Add time observer using Combine
-        Timer.publish(every: 0.1, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak player] _ in
-                guard let player = player else { return }
-                currentTime = player.currentTime().seconds
-            }
-            .store(in: &cancellables)
+        // Add time observer using RRFoundation utilities
+        DelayedExecution.every(0.1) { [weak player] in
+            guard let player = player else { return }
+            currentTime = player.currentTime().seconds
+        }
+        .store(in: &cancellables)
         
         // Add end time observer using Combine
         NotificationCenter.default

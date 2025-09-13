@@ -148,7 +148,7 @@ public enum PerformanceLogLevel: String, CaseIterable, Sendable {
         let fileName = URL(fileURLWithPath: file).lastPathComponent
         let logMessage = "[\(timestamp)] [\(level.rawValue.uppercased())] [\(fileName):\(line)] \(function): \(message)"
         
-        print(logMessage)
+        Logger.shared.info(logMessage)
     }
     
     public func logPerformance<T>(_ operation: String, block: () throws -> T) rethrows -> T {

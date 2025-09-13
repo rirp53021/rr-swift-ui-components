@@ -279,13 +279,13 @@ public struct PerformanceDebugger {
     public func printStats() {
         let utilities = PerformanceUtilities.shared
         
-        print("=== Performance Statistics ===")
-        print("Memory Usage: \(utilities.memoryStats.formattedCurrentUsage)")
-        print("Memory Pressure: \(utilities.memoryStats.pressureLevel.rawValue)")
-        print("Cache Utilization: \(String(format: "%.1f%%", utilities.cacheStats.cacheUtilization * 100))")
-        print("FPS: \(String(format: "%.1f", utilities.currentMetrics.fps))")
-        print("Cache Hit Rate: \(String(format: "%.1f%%", utilities.currentMetrics.cacheHitRate * 100))")
-        print("=============================")
+        Logger.shared.info("=== Performance Statistics ===")
+        Logger.shared.info("Memory Usage: \(utilities.memoryStats.formattedCurrentUsage)")
+        Logger.shared.info("Memory Pressure: \(utilities.memoryStats.pressureLevel.rawValue)")
+        Logger.shared.info("Cache Utilization: \(String(format: "%.1f%%", utilities.cacheStats.cacheUtilization * 100))")
+        Logger.shared.info("FPS: \(String(format: "%.1f", utilities.currentMetrics.fps))")
+        Logger.shared.info("Cache Hit Rate: \(String(format: "%.1f%%", utilities.currentMetrics.cacheHitRate * 100))")
+        Logger.shared.info("=============================")
     }
     
     /// Export performance data
