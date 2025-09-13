@@ -329,11 +329,9 @@ public struct OptimizedColor: View {
     }
     
     private func loadColor() {
-        DispatchQueue.main.async {
-            let loadedColor = BundleOptimizer.shared.getColor(name: name, bundle: bundle)
-            self.color = loadedColor
-            self.isLoading = false
-        }
+        let loadedColor = BundleOptimizer.shared.getColor(name: name, bundle: bundle)
+        self.color = loadedColor
+        self.isLoading = false
     }
 }
 

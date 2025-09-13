@@ -11,7 +11,7 @@ options:
 packages:
   RRFoundation:
     url: https://github.com/rirp53021/rr-swift-foundation.git
-    majorVersion: 1.8.0
+    majorVersion: 1.8.1
 
 settings:
   PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents

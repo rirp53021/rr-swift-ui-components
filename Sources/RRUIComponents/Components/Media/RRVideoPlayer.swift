@@ -226,12 +226,14 @@ public struct RRVideoPlayer: View {
             isPlaying = true
         }
         
-        // Add time observer
-        _ = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { time in
-            DispatchQueue.main.async {
-                currentTime = time.seconds
+        // Add time observer using Combine
+        Timer.publish(every: 0.1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak player] _ in
+                guard let player = player else { return }
+                currentTime = player.currentTime().seconds
             }
-        }
+            .store(in: &cancellables)
         
         // Add end time observer using Combine
         NotificationCenter.default
