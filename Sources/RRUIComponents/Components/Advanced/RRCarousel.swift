@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import Combine
 
 // MARK: - Carousel Component
 
@@ -13,7 +14,7 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
     @State private var currentIndex: Int = 0
     @State private var dragOffset: CGFloat = 0
     @State private var isAutoPlaying = false
-    @State private var autoPlayTimer: Timer?
+    @State private var autoPlayCancellable: AnyCancellable?
     
     private let data: Data
     private let content: (Data.Element) -> Content
@@ -60,19 +61,19 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
         guard autoplay, !data.isEmpty else { return }
         stopAutoplay()
         
-        autoPlayTimer = Timer.scheduledTimer(withTimeInterval: autoplayInterval, repeats: true) { _ in
-            DispatchQueue.main.async {
+        autoPlayCancellable = Timer.publish(every: autoplayInterval, on: .main, in: .common)
+            .autoconnect()
+            .sink { _ in
                 withAnimation(style.animation) {
                     currentIndex = (currentIndex + 1) % itemCount
                     onPageChanged?(currentIndex)
                 }
             }
-        }
     }
     
     private func stopAutoplay() {
-        autoPlayTimer?.invalidate()
-        autoPlayTimer = nil
+        autoPlayCancellable?.cancel()
+        autoPlayCancellable = nil
     }
     
     private func goToNext() {
