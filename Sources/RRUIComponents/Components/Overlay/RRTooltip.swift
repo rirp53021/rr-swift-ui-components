@@ -189,13 +189,13 @@ public struct RRTooltip<Content: View, TooltipContent: View>: View {
     // MARK: - Actions
     
     private func showTooltip() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+        DelayedExecution.after(delay) {
             withAnimation {
                 isVisible = true
             }
             
             if duration > 0 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                DelayedExecution.after(duration) {
                     hideTooltip()
                 }
             }
@@ -231,7 +231,7 @@ private struct Triangle: Shape {
 }
 
 // MARK: - Tooltip Style
-
+@MainActor
 public struct TooltipStyle {
     public let background: Color
     public let foregroundColor: Color

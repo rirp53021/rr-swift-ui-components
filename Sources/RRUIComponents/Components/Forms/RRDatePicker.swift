@@ -2,7 +2,7 @@ import SwiftUI
 import Foundation
 
 // MARK: - Validation State
-
+@MainActor
 public enum ValidationState {
     case none
     case valid
@@ -186,6 +186,7 @@ public enum DatePickerStyleType: CaseIterable {
     case outlined
 }
 
+@MainActor
 public struct DatePickerStyle {
     public let backgroundColor: Color
     public let textColor: Color

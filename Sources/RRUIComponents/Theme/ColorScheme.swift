@@ -5,7 +5,7 @@ import SwiftUI
 
 // MARK: - Nested Color Structures
 
-public struct NeutralColors: Equatable {
+@MainActor public struct NeutralColors: Equatable {
     public let text: Color
     public let textSecondary: Color
     public let textTertiary: Color
@@ -33,7 +33,7 @@ public struct NeutralColors: Equatable {
     }
 }
 
-public struct SemanticColors: Equatable {
+@MainActor public struct SemanticColors: Equatable {
     public let success: Color
     public let warning: Color
     public let error: Color
@@ -54,7 +54,7 @@ public struct SemanticColors: Equatable {
 
 // MARK: - Color Scheme
 
-public struct ColorScheme: Equatable {
+@MainActor public struct ColorScheme: Equatable {
     public let primary: Color
     public let secondary: Color
     public let accent: Color

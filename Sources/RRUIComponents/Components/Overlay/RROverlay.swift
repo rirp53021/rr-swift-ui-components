@@ -121,7 +121,7 @@ public struct RROverlay<Content: View, OverlayContent: View>: View {
 }
 
 // MARK: - Overlay Style
-
+@MainActor
 public struct OverlayStyle {
     public let background: Color
     public let backgroundColor: Color
@@ -270,7 +270,7 @@ public extension RROverlay {
 }
 
 // MARK: - Overlay Manager
-
+@MainActor
 public class RROverlayManager: ObservableObject {
     @Published public var isPresented = false
     @Published public var content: AnyView?
@@ -288,7 +288,7 @@ public class RROverlayManager: ObservableObject {
         withAnimation {
             isPresented = false
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DelayedExecution.after(0.3) {
             self.content = nil
         }
     }

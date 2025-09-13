@@ -8,6 +8,7 @@
 import SwiftUI
 
 /// Configuration for keyboard navigation behavior of a component.
+@MainActor
 public struct NavigationConfig {
     public var isEnabled: Bool
     public var focusGroup: String? // For grouping related components

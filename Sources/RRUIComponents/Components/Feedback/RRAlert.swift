@@ -4,7 +4,7 @@
 import SwiftUI
 
 // MARK: - Alert Style
-
+@MainActor
 public enum AlertStyle {
     case success
     case error

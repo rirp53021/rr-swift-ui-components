@@ -6,7 +6,7 @@ import Combine
 import Foundation
 
 // MARK: - Snackbar Style
-
+@MainActor
 public enum SnackbarStyle {
     case success
     case error
@@ -112,7 +112,7 @@ public struct RRSnackbar<Content: View>: View {
                 )
                 .onAppear {
                     if duration > 0 {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                        DelayedExecution.after(duration) {
                             if !isDragging {
                                 dismiss()
                             }
@@ -135,7 +135,7 @@ public struct RRSnackbar<Content: View>: View {
 }
 
 // MARK: - Snackbar Manager
-
+@MainActor
 public class RRSnackbarManager: ObservableObject {
     public static let shared = RRSnackbarManager()
     

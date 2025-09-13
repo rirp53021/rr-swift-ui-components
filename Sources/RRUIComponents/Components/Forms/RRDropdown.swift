@@ -186,7 +186,7 @@ public struct RRDropdown<Item: Hashable>: View {
 }
 
 // MARK: - Dropdown Style
-
+@MainActor
 public struct DropdownStyle {
     public let backgroundColor: Color
     public let textColor: Color

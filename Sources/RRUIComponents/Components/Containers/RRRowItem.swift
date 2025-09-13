@@ -98,6 +98,7 @@ public struct RRRowItem<LeftIcon: View, RightAccessory: View>: View {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public extension RRRowItem {
+    @MainActor
     enum RowStyle {
         case standard
         case compact

@@ -82,7 +82,7 @@ public struct RRRating: View {
 }
 
 // MARK: - Rating Style
-
+@MainActor
 public enum RatingStyle {
     case stars
     case hearts

@@ -222,7 +222,7 @@ public struct ListFooter: View {
 }
 
 // MARK: - List Style
-
+@MainActor
 public struct ListStyle {
     public let cornerRadius: CGFloat
     public let borderWidth: CGFloat

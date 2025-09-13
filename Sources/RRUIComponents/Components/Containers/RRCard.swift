@@ -74,6 +74,7 @@ public struct RRCard<Content: View>: View {
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public extension RRCard {
+    @MainActor
     enum CardStyle {
         case standard
         case elevated

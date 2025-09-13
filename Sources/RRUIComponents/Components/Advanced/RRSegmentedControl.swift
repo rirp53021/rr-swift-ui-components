@@ -121,7 +121,7 @@ public struct SegmentedItem<Value: Hashable> {
 }
 
 // MARK: - Segmented Control Style
-
+@MainActor
 public struct SegmentedControlStyle {
     public let containerBackgroundColor: (Theme) -> Color
     public let containerBorderColor: (Theme) -> Color

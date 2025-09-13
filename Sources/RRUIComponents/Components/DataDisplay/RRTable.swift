@@ -202,7 +202,7 @@ public struct TableFooter: View {
 }
 
 // MARK: - Table Style
-
+@MainActor
 public struct TableStyle {
     public let cornerRadius: CGFloat
     public let borderWidth: CGFloat

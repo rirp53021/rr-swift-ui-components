@@ -94,6 +94,7 @@ public struct DesignTokens {
     // MARK: - Elevation Tokens
     
     /// Elevation design tokens for consistent shadow and depth
+    @MainActor
     public struct Elevation {
         public static let level0 = Shadow(color: .clear, radius: 0, x: 0, y: 0)
         public static let level1 = Shadow(color: Color(r: 0, g: 0, b: 0, a: 0.05), radius: 1, x: 0, y: 1)
@@ -339,7 +340,7 @@ public struct DesignTokens {
 // MARK: - Shadow Helper
 
 /// Helper struct for shadow definitions
-public struct Shadow: Equatable {
+@MainActor public struct Shadow: Equatable {
     public let color: Color
     public let radius: CGFloat
     public let x: CGFloat

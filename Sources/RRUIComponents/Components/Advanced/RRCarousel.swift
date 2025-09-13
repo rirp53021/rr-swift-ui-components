@@ -5,6 +5,7 @@ import Foundation
 
 /// A customizable carousel/image slider component with pagination and autoplay
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+@MainActor
 public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable {
     @Environment(\.themeProvider) private var themeProvider
     private var theme: Theme { themeProvider.currentTheme }
@@ -60,9 +61,11 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
         stopAutoplay()
         
         autoPlayTimer = Timer.scheduledTimer(withTimeInterval: autoplayInterval, repeats: true) { _ in
-            withAnimation(style.animation) {
-                currentIndex = (currentIndex + 1) % itemCount
-                onPageChanged?(currentIndex)
+            DispatchQueue.main.async {
+                withAnimation(style.animation) {
+                    currentIndex = (currentIndex + 1) % itemCount
+                    onPageChanged?(currentIndex)
+                }
             }
         }
     }
@@ -195,7 +198,7 @@ public struct RRCarousel<Data: RandomAccessCollection, Content: View>: View wher
 }
 
 // MARK: - Carousel Style
-
+@MainActor
 public struct CarouselStyle {
     public let animation: Animation
     public let arrowSize: CGFloat

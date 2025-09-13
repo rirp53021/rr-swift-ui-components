@@ -166,7 +166,7 @@ public struct RRModal<Content: View>: View {
 }
 
 // MARK: - Modal Manager
-
+@MainActor
 public class RRModalManager: ObservableObject {
     public static let shared = RRModalManager()
     

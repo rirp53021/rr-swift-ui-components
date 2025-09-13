@@ -318,7 +318,7 @@ public enum ChartType {
 }
 
 // MARK: - Chart Style
-
+@MainActor
 public struct ChartStyle {
     public let height: CGFloat
     public let padding: CGFloat

@@ -204,7 +204,7 @@ public struct DataGridFooter: View {
 }
 
 // MARK: - Data Grid Style
-
+@MainActor
 public struct DataGridStyle {
     public let columns: [SwiftUI.GridItem]
     public let spacing: CGFloat

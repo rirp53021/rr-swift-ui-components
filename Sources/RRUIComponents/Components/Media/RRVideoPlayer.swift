@@ -1,5 +1,6 @@
 import SwiftUI
 import AVKit
+import Combine
 
 /// A customizable video player component with design system integration
 public struct RRVideoPlayer: View {
@@ -17,6 +18,7 @@ public struct RRVideoPlayer: View {
     @State private var isFullscreen = false
     @State private var showError = false
     @State private var errorMessage = ""
+    @State private var cancellables = Set<AnyCancellable>()
     
     private let videoURL: URL?
     private let style: VideoPlayerStyle
@@ -213,7 +215,6 @@ public struct RRVideoPlayer: View {
     }
     
     // MARK: - Player Setup
-    
     private func setupPlayer() {
         guard let videoURL = videoURL else { return }
         
@@ -227,23 +228,25 @@ public struct RRVideoPlayer: View {
         
         // Add time observer
         _ = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { time in
-            currentTime = time.seconds
-        }
-        
-        // Add end time observer
-        NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemDidPlayToEndTime,
-            object: player?.currentItem,
-            queue: .main
-        ) { _ in
-            if loop {
-                player?.seek(to: .zero)
-                player?.play()
-            } else {
-                isPlaying = false
-                onEnd?()
+            DispatchQueue.main.async {
+                currentTime = time.seconds
             }
         }
+        
+        // Add end time observer using Combine
+        NotificationCenter.default
+            .publisher(for: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak player] _ in
+                if loop {
+                    player?.seek(to: .zero)
+                    player?.play()
+                } else {
+                    isPlaying = false
+                    onEnd?()
+                }
+            }
+            .store(in: &cancellables)
         
         // Get duration
         if let duration = player?.currentItem?.duration {
@@ -254,7 +257,7 @@ public struct RRVideoPlayer: View {
     private func cleanupPlayer() {
         player?.pause()
         player = nil
-        NotificationCenter.default.removeObserver(self)
+        cancellables.removeAll()
     }
     
     // MARK: - Actions
@@ -286,7 +289,7 @@ public struct RRVideoPlayer: View {
 }
 
 // MARK: - Video Player Style
-
+@MainActor
 public struct VideoPlayerStyle {
     public let backgroundColor: Color
     public let borderColor: Color

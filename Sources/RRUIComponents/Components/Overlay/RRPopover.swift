@@ -167,7 +167,7 @@ public struct RRPopover<Content: View, PopoverContent: View>: View {
 }
 
 // MARK: - Popover Style
-
+@MainActor
 public struct PopoverStyle {
     public let background: Color
     public let foregroundColor: Color

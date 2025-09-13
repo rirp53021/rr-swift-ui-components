@@ -669,7 +669,7 @@ public struct DocumentData {
 }
 
 // MARK: - Media Viewer Style
-
+@MainActor
 public struct MediaViewerStyle {
     public let backgroundColor: Color
     public let borderColor: Color

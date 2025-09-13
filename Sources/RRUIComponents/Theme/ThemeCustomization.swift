@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// Theme customization utilities for creating custom themes
+@MainActor
 public struct ThemeCustomization {
     
     // MARK: - Custom Theme Presets
@@ -25,6 +26,7 @@ public struct ThemeCustomization {
     
     // MARK: - Theme Categories
     
+    @MainActor
     public enum ThemeCategory: String, CaseIterable {
         case business = "Business"
         case creative = "Creative"
@@ -54,6 +56,7 @@ public struct ThemeCustomization {
     // MARK: - Theme Utilities
     
     /// All available custom themes
+    @MainActor
     public static let allThemes: [Theme] = [
         business, creative, nature, tech, minimalist, highContrast
     ]
@@ -82,6 +85,7 @@ public struct ThemeCustomization {
 // MARK: - Theme Validation
 
 /// Theme validation utilities
+@MainActor
 public struct ThemeValidator {
     
     /// Validates a theme for accessibility and design consistency
@@ -244,7 +248,7 @@ public struct ThemeValidationWarning {
 struct ThemeCustomization_Previews: PreviewProvider {
     static var previews: some View {
         ThemeCustomizationPreview()
-            .themeProvider(ThemeProvider())
+            .themeProvider(ThemeProvider(theme: .light))
             .previewDisplayName("Theme Customization Examples")
     }
 }

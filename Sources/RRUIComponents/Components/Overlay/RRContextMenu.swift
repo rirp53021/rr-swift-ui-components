@@ -55,7 +55,7 @@ public struct RRContextMenu<Content: View, MenuItems: View>: View {
 }
 
 // MARK: - Context Menu Style
-
+@MainActor
 public struct ContextMenuStyle {
     public let previewBackground: Color
     public let previewCornerRadius: CGFloat

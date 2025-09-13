@@ -169,7 +169,7 @@ struct TagView: View {
 }
 
 // MARK: - Tag Input Style
-
+@MainActor
 public struct TagInputStyle {
     public let containerBackgroundColor: (Theme) -> Color
     public let containerBorderColor: (Theme) -> Color
@@ -235,7 +235,7 @@ public struct TagInputStyle {
 }
 
 // MARK: - Tag Style
-
+@MainActor
 public struct TagStyle {
     public let backgroundColor: (Theme) -> Color
     public let textColor: (Theme) -> Color

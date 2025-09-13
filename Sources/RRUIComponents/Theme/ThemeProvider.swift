@@ -14,7 +14,7 @@ public extension Bundle {
 }
 
 // MARK: - Theme Color Scheme
-
+@MainActor
 public enum ThemeColorScheme: String, CaseIterable {
     case light = "light"
     case dark = "dark"
@@ -33,7 +33,7 @@ public enum ThemeColorScheme: String, CaseIterable {
 ///
 /// Usage: Components should always use @Environment(\.themeProvider) and theme.colors.xxx
 /// instead of direct Color references to ensure proper theming.
-public class ThemeProvider: ObservableObject {
+@MainActor public class ThemeProvider: ObservableObject {
     @Published public var currentTheme: Theme = .light
     @Published public var colorScheme: SwiftUI.ColorScheme = .light
     private let bundle: Bundle
@@ -71,7 +71,7 @@ public class ThemeProvider: ObservableObject {
 // MARK: - Theme Definition
 
 /// Comprehensive theme definition with all design tokens
-public struct Theme: Equatable {
+@MainActor public struct Theme: Equatable {
     public let name: String
     public let colorScheme: ThemeColorScheme
     public let colors: ThemeColors
@@ -149,7 +149,7 @@ public struct Theme: Equatable {
 }
 
 // MARK: - Theme Colors
-
+@MainActor
 public struct ThemeColors: Equatable {
     // MARK: - Bundle Helper
     private let bundle: Bundle
@@ -555,15 +555,18 @@ public struct ThemeColors: Equatable {
     
     // MARK: - Predefined Color Schemes
     
+    @MainActor
     public static let light = ThemeColors()
     
+    @MainActor
     public static let dark = ThemeColors.dark()
     
+    @MainActor
     public static let highContrast = ThemeColors.highContrast()
 }
 
 // MARK: - Theme Typography
-
+@MainActor
 public struct ThemeTypography: Equatable {
     public let displayLarge: Font
     public let displayMedium: Font
@@ -615,11 +618,12 @@ public struct ThemeTypography: Equatable {
         self.labelSmall = labelSmall
     }
     
+    @MainActor
     public static let `default` = ThemeTypography()
 }
 
 // MARK: - Theme Spacing
-
+@MainActor
 public struct ThemeSpacing: Equatable {
     public let xs: CGFloat
     public let sm: CGFloat
@@ -647,11 +651,12 @@ public struct ThemeSpacing: Equatable {
         self.xxxl = xxxl
     }
     
+    @MainActor
     public static let `default` = ThemeSpacing()
 }
 
 // MARK: - Theme Elevation
-
+@MainActor
 public struct ThemeElevation: Equatable {
     public let level0: Shadow
     public let level1: Shadow
@@ -676,11 +681,12 @@ public struct ThemeElevation: Equatable {
         self.level5 = level5
     }
     
+    @MainActor
     public static let `default` = ThemeElevation()
 }
 
 // MARK: - Theme Border Radius
-
+@MainActor
 public struct ThemeBorderRadius: Equatable {
     public let none: CGFloat
     public let xs: CGFloat
@@ -711,11 +717,12 @@ public struct ThemeBorderRadius: Equatable {
         self.full = full
     }
     
+    @MainActor
     public static let `default` = ThemeBorderRadius()
 }
 
 // MARK: - Theme Animation
-
+@MainActor
 public struct ThemeAnimation: Equatable {
     public let durationFast: Double
     public let durationNormal: Double
@@ -734,11 +741,12 @@ public struct ThemeAnimation: Equatable {
         self.durationSlower = durationSlower
     }
     
+    @MainActor
     public static let `default` = ThemeAnimation()
 }
 
 // MARK: - Theme Component Size
-
+@MainActor
 public struct ThemeComponentSize: Equatable {
     public let buttonHeightXS: CGFloat
     public let buttonHeightSM: CGFloat
@@ -760,12 +768,13 @@ public struct ThemeComponentSize: Equatable {
         self.buttonHeightXL = buttonHeightXL
     }
     
+    @MainActor
     public static let `default` = ThemeComponentSize()
 }
 
 // MARK: - Theme Environment
-
-private struct ThemeProviderKey: EnvironmentKey {
+@MainActor
+private struct ThemeProviderKey: @preconcurrency EnvironmentKey {
     static let defaultValue = ThemeProvider(theme: .light)
 }
 
@@ -794,7 +803,7 @@ public extension View {
     
     /// Get current theme from environment
     func withTheme<Content: View>(@ViewBuilder content: @escaping (Theme) -> Content) -> some View {
-        self.environmentObject(ThemeProvider())
+        self.environmentObject(ThemeProvider(theme: .light))
             .overlay(
                 EnvironmentReader { themeProvider in
                     content(themeProvider.currentTheme)

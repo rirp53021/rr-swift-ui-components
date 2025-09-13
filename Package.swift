@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -18,7 +18,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/rirp53021/rr-swift-foundation.git", from: "1.8.0")
+        .package(url: "https://github.com/rirp53021/rr-swift-foundation.git", from: "1.8.1")
     ],
     targets: [
         .target(

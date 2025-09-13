@@ -86,7 +86,7 @@ public struct TimelineItem {
 }
 
 // MARK: - Timeline Status
-
+@MainActor
 public enum TimelineStatus {
     case pending
     case current
@@ -216,7 +216,7 @@ struct TimelineItemView: View {
 }
 
 // MARK: - Timeline Style
-
+@MainActor
 public struct TimelineStyle {
     public let lineWidth: CGFloat
     public let lineHeight: CGFloat

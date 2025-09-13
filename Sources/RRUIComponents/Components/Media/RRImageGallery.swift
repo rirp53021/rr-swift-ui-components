@@ -383,7 +383,7 @@ public struct GalleryImage {
 }
 
 // MARK: - Gallery Style
-
+@MainActor
 public struct GalleryStyle {
     public let backgroundColor: Color
     public let borderColor: Color
