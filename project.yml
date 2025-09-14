@@ -11,7 +11,8 @@ options:
 packages:
   RRFoundation:
     url: https://github.com/rirp53021/rr-swift-foundation.git
-    majorVersion: 1.8.1
+    from: 1.9.0
+    generateScheme: false
 
 settings:
   PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
@@ -23,7 +24,7 @@ settings:
   WATCHOS_DEPLOYMENT_TARGET: 8.0
   XROS_DEPLOYMENT_TARGET: 1.0
   BUILD_LIBRARY_FOR_DISTRIBUTION: true
-  SWIFT_COMPILATION_MODE: "singlefile"
+  SWIFT_COMPILATION_MODE: "wholemodule"
 
 targets:
   RRUIComponents:
@@ -32,27 +33,31 @@ targets:
     deploymentTarget: "15.0"
     sources:
       - path: Sources/RRUIComponents
-    resources:
-      - path: Sources/RRUIComponents/Resources
+        excludes:
+          - "**/*.plist"
     dependencies:
       - package: RRFoundation
     settings:
-      PRODUCT_NAME: RRUIComponents
       PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents
-      BUILD_LIBRARY_FOR_DISTRIBUTION: true
-      SWIFT_ENABLE_LIBRARY_EVOLUTION: true
-      SWIFT_COMPILATION_MODE: "singlefile"
-      SWIFT_VERSION: 6.0
+      PRODUCT_NAME: RRUIComponents
+      CLANG_ENABLE_MODULES: "YES"
+      SWIFT_INSTALL_OBJC_HEADER: "NO"
+      BUILD_LIBRARY_FOR_DISTRIBUTION: "YES"
+      SWIFT_ENABLE_LIBRARY_EVOLUTION: "YES"
+      SWIFT_COMPILATION_MODE: "wholemodule"
+      SKIP_INSTALL: "NO"
+      DEFINES_MODULE: "YES"
+      MACH_O_TYPE: mh_dylib
     info:
       path: Sources/RRUIComponents/Info.plist
       properties:
+        CFBundleName: RRUIComponents
         CFBundleDisplayName: RRUIComponents
-        CFBundleExecutable: $(EXECUTABLE_NAME)
-        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
-        CFBundleName: $(PRODUCT_NAME)
+        CFBundleIdentifier: com.rrui.rruicomponents
+        CFBundleVersion: "2.1.0"
+        CFBundleShortVersionString: "2.1.0"
         CFBundlePackageType: FMWK
-        CFBundleShortVersionString: 1.2.2
-        CFBundleVersion: 1
+        CFBundleInfoDictionaryVersion: "6.0"
 
   RRUIComponentsTests:
     type: bundle.unit-test
@@ -64,26 +69,4 @@ targets:
       - target: RRUIComponents
     settings:
       PRODUCT_NAME: RRUIComponentsTests
-      PRODUCT_BUNDLE_IDENTIFIER: com.rrui.rruicomponents.tests
-      SWIFT_VERSION: 6.0
-    info:
-      path: Tests/RRUIComponentsTests/Info.plist
-      properties:
-        CFBundleDisplayName: RRUIComponentsTests
-        CFBundleExecutable: $(EXECUTABLE_NAME)
-        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
-        CFBundleName: $(PRODUCT_NAME)
-        CFBundlePackageType: BNDL
-        CFBundleShortVersionString: 1.2.2
-        CFBundleVersion: 1
-
-schemes:
-  RRUIComponents:
-    build:
-      targets:
-        RRUIComponents: all
-    test:
-      targets:
-        - RRUIComponentsTests
-    run:
-      config: Debug
+      PRODUCT_BUNDLE_IDENTIFIER: com.rrui.tests

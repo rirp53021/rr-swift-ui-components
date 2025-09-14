@@ -14,23 +14,25 @@ let package = Package(
     products: [
         .library(
             name: "RRUIComponents",
+            type: .dynamic,
             targets: ["RRUIComponents"]
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/rirp53021/rr-swift-foundation.git", from: "1.8.1")
+        .package(url: "https://github.com/rirp53021/rr-swift-foundation.git", from: "1.9.0")
     ],
     targets: [
         .target(
             name: "RRUIComponents",
-            dependencies: [.product(name: "RRFoundation", package: "rr-swift-foundation")],
-            path: "Sources/RRUIComponents",
-            resources: [.process("Resources")]
+            dependencies: [
+                .product(name: "RRFoundation", package: "rr-swift-foundation")
+            ],
+            path: "Sources/RRUIComponents"
         ),
         .testTarget(
             name: "RRUIComponentsTests",
             dependencies: ["RRUIComponents"],
             path: "Tests/RRUIComponentsTests"
-        ),
+        )
     ]
 )
