@@ -8,14 +8,14 @@ import SwiftUI
 public struct TabItem: Identifiable {
     public let id = UUID()
     public let title: String
-    public let icon: String
-    public let selectedIcon: String?
+    public let icon: Image
+    public let selectedIcon: Image?
     public let badge: String?
     
     public init(
         title: String,
-        icon: String,
-        selectedIcon: String? = nil,
+        icon: Image,
+        selectedIcon: Image? = nil,
         badge: String? = nil
     ) {
         self.title = title
@@ -79,7 +79,8 @@ public struct RRTabBar: View {
     
     private func tabIcon(for item: TabItem, at index: Int) -> some View {
         ZStack {
-            Image(systemName: selectedTab == index ? (item.selectedIcon ?? item.icon) : item.icon)
+            let displayIcon = selectedTab == index ? (item.selectedIcon ?? item.icon) : item.icon
+            displayIcon
                 .foregroundColor(selectedTab == index ? theme.colors.primary : theme.colors.secondaryText)
                 .font(DesignTokens.Typography.titleSmall)
             
@@ -191,10 +192,10 @@ private struct RRTabBarPreview: View {
             RRTabBar(
                 selectedTab: .constant(0),
                 items: [
-                    TabItem(title: "Home", icon: "house", selectedIcon: "house.fill"),
-                    TabItem(title: "Search", icon: "magnifyingglass", badge: "3"),
-                    TabItem(title: "Profile", icon: "person", selectedIcon: "person.fill"),
-                    TabItem(title: "Settings", icon: "gear")
+                    TabItem(title: "Home", icon: Image(systemName: "house"), selectedIcon: Image(systemName: "house.fill")),
+                    TabItem(title: "Search", icon: Image(systemName: "magnifyingglass"), badge: "3"),
+                    TabItem(title: "Profile", icon: Image(systemName: "person"), selectedIcon: Image(systemName: "person.fill")),
+                    TabItem(title: "Settings", icon: Image(systemName: "gear"))
                 ]
             )
         }

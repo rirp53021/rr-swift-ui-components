@@ -7,10 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Initial project setup with Swift Package Manager
-- XcodeGen configuration for Xcode project generation
-- Comprehensive documentation and examples
+## [2.2.0] - 2025-10-01
+
+### Changed
+- **RRTabBar**: Updated `TabItem` to use `Image` instead of `String` for icons
+  - `icon` property changed from `String` to `Image`
+  - `selectedIcon` property changed from `String?` to `Image?`
+  - Allows for more flexible icon usage (SF Symbols, custom images, etc.)
+  - **Breaking Change**: Existing code using string-based icons must be updated to use `Image(systemName:)`
+
+### Migration Guide
+```swift
+// Before (v2.1.0)
+TabItem(title: "Home", icon: "house", selectedIcon: "house.fill")
+
+// After (v2.2.0)
+TabItem(title: "Home", icon: Image(systemName: "house"), selectedIcon: Image(systemName: "house.fill"))
+```
 
 ## [1.0.0] - 2024-08-28
 
