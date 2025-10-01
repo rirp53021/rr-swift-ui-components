@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Allows for more flexible icon usage (SF Symbols, custom images, etc.)
   - **Breaking Change**: Existing code using string-based icons must be updated to use `Image(systemName:)`
 
+### Fixed
+- **Module Interface**: Renamed `RRUIComponents` enum to `RRUIComponentsInfo` to fix module interface generation bug
+  - Resolves Xcode build errors where types were incorrectly nested inside the enum
+  - Fixes "is not a member type of enum 'RRUIComponents.RRUIComponents'" errors
+
 ### Migration Guide
 ```swift
 // Before (v2.1.0)
@@ -23,6 +28,10 @@ TabItem(title: "Home", icon: "house", selectedIcon: "house.fill")
 
 // After (v2.2.0)
 TabItem(title: "Home", icon: Image(systemName: "house"), selectedIcon: Image(systemName: "house.fill"))
+
+// Library info access (if used)
+// Before: RRUIComponents.version
+// After: RRUIComponentsInfo.version
 ```
 
 ## [1.0.0] - 2024-08-28

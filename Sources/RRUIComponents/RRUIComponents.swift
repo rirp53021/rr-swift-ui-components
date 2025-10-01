@@ -18,7 +18,7 @@ import RRFoundation
 // RRFoundation provides core utilities including Logger, colors, formatters, etc.
 
 // MARK: - Library Information
-public enum RRUIComponents {
+public enum RRUIComponentsInfo {
     public static let version = "1.2.2"
     public static let name = "RRUIComponents"
 }
