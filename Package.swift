@@ -27,7 +27,10 @@ let package = Package(
             dependencies: [
                 .product(name: "RRFoundation", package: "rr-swift-foundation")
             ],
-            path: "Sources/RRUIComponents"
+            path: "Sources/RRUIComponents",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "RRUIComponentsTests",
