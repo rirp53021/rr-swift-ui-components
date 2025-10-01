@@ -7,6 +7,7 @@ options:
     tvOS: "15.0"
     watchOS: "8.0"
     visionOS: "1.0"
+  generateEmptyDirectories: true
 
 packages:
   RRFoundation:
@@ -70,3 +71,21 @@ targets:
     settings:
       PRODUCT_NAME: RRUIComponentsTests
       PRODUCT_BUNDLE_IDENTIFIER: com.rrui.tests
+
+schemes:
+  RRUIComponents:
+    build:
+      targets:
+        RRUIComponents: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - RRUIComponentsTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

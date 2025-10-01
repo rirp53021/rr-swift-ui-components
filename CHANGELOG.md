@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.2] - 2025-10-01
+
+### Fixed
+- **XcodeGen**: Added missing scheme configuration for Xcode project
+  - RRUIComponents scheme now properly generated
+  - Enables building and testing from Xcode UI
+
 ## [2.2.0] - 2025-10-01
 
 ### Changed
