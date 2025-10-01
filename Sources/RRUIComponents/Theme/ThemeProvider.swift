@@ -10,7 +10,13 @@ import Combine
 private final class BundleToken {}
 
 public extension Bundle {
-    static let uiComponents = Bundle(for: BundleToken.self)
+    static var uiComponents: Bundle {
+        #if SWIFT_PACKAGE
+        return Bundle.module
+        #else
+        return Bundle(for: BundleToken.self)
+        #endif
+    }
 }
 
 // MARK: - Theme Color Scheme
