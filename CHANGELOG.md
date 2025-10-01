@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.3] - 2025-10-01
+
+### Fixed
+- **Package.swift**: Added `Colors.xcassets` as a resource
+  - Fixes "No color named 'Primary' found in asset catalog" errors
+  - Ensures asset catalog is properly bundled when used as SPM dependency
+
 ## [2.2.2] - 2025-10-01
 
 ### Fixed
