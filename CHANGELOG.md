@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.4] - 2025-10-01
+
+### Fixed
+- **Bundle Loading**: Use `Bundle.module` for SPM resource loading
+  - Correctly loads `Colors.xcassets` when used as Swift Package dependency
+  - Fixes "No color named 'Primary' found in asset catalog" errors in consuming apps
+  - Maintains backward compatibility with non-SPM builds
+
 ## [2.2.3] - 2025-10-01
 
 ### Fixed
